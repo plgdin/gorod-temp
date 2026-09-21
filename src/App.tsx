@@ -2,6 +2,7 @@ import { useState, useEffect } from 'react';
 import Lenis from 'lenis';
 import gsap from 'gsap';
 import { ScrollTrigger } from 'gsap/ScrollTrigger';
+import { ComingSoon } from './sections/ComingSoon';
 import { Header } from './components/Header';
 import { NavigationMenu } from './components/NavigationMenu';
 import { Hero } from './sections/Hero';
@@ -19,6 +20,20 @@ import './styles/globals.css';
 gsap.registerPlugin(ScrollTrigger);
 
 export function App() {
+  // By default, only show the Coming Soon page.
+  // Full website can be previewed anytime with ?preview=full in URL.
+  const isFullPreview =
+    typeof window !== 'undefined' &&
+    window.location.search.includes('preview=full');
+
+  if (!isFullPreview) {
+    return <ComingSoon />;
+  }
+
+  return <FullWebsite />;
+}
+
+function FullWebsite() {
   const [isHeroReady, setIsHeroReady] = useState(true);
   const [menuOpen, setMenuOpen] = useState(false);
   const [isLightSection, setIsLightSection] = useState(false);

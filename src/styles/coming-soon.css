@@ -1,0 +1,27 @@
+.coming-soon-middle {
+  width: 100vw;
+  height: 100vh;
+  min-height: 100vh;
+  max-height: 100vh;
+  overflow: hidden;
+  background-color: var(--bg-dark, #0b1220);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  padding: 20px;
+  box-sizing: border-box;
+  margin: 0;
+  user-select: none;
+}
+
+.coming-soon-middle__text {
+  font-family: var(--font-display, sans-serif);
+  font-size: clamp(32px, 6vw, 92px);
+  line-height: 1;
+  letter-spacing: -0.02em;
+  text-transform: uppercase;
+  color: #ffffff;
+  text-align: center;
+  margin: 0;
+  max-width: 100%;
+}
