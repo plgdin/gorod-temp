@@ -82,7 +82,7 @@ export const StarkResearch: React.FC = () => {
       <div ref={pinnedSectRef} className="horizontal-scroll-images__pinned-sect research">
         <div className="horizontal-scroll-images__pinned-sect-header">
           <div className="horizontal-scroll-images__pinned-sect-header-text --title-0">
-            STARK
+            GOROD
           </div>
           <div ref={title1Ref} className="horizontal-scroll-images__pinned-sect-header-text --title-1">
             RESEARCH
@@ -97,16 +97,16 @@ export const StarkResearch: React.FC = () => {
 
         <div className="horizontal-scroll-images__pinned-sect-images">
           <div ref={img0Ref} className="horizontal-scroll-images__pinned-sect-img research --img-0">
-            <img src="/images/research-1.png" alt="Stark Research 1" loading="lazy" />
+            <img src="/images/research-1.png" alt="Gorod Research 1" loading="lazy" />
           </div>
           <div ref={img1Ref} className="horizontal-scroll-images__pinned-sect-img research --img-1">
-            <img src="/images/research-2.jpg" alt="Stark Research 2" loading="lazy" />
+            <img src="/images/research-2.jpg" alt="Gorod Research 2" loading="lazy" />
           </div>
           <div ref={img2Ref} className="horizontal-scroll-images__pinned-sect-img research --img-2">
-            <img src="/images/research-3.jpg" alt="Stark Research 3" loading="lazy" />
+            <img src="/images/research-3.jpg" alt="Gorod Research 3" loading="lazy" />
           </div>
           <div ref={img3Ref} className="horizontal-scroll-images__pinned-sect-img research --img-3">
-            <img src="/images/research-4.png" alt="Stark Research 4" loading="lazy" />
+            <img src="/images/research-4.png" alt="Gorod Research 4" loading="lazy" />
           </div>
         </div>
       </div>
@@ -129,7 +129,7 @@ export const StarkResearch: React.FC = () => {
               rel="noopener noreferrer"
               className="site-link"
             >
-              www.stark-research.net
+              www.gorod-research.net
             </a>
 
             <a

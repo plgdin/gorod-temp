@@ -56,8 +56,8 @@ export const Partners: React.FC = () => {
 
           <p className="partners__info-text">
             Dear Sirs, we are pleased to announce that since 04th of October 2019
-            Stark Shipping LLC is acting as Liner Agent of Neptune Lines. Service
-            will be provided by means of Stark Shipping headquarters located in
+            Gorod Shipping LLC is acting as Liner Agent of Neptune Lines. Service
+            will be provided by means of Gorod Shipping headquarters located in
             Chornomorsk Port. We are open for Your transportation requirements of
             Ro-Ro, heavy lifts, project cargoes in both export and import
             directions.

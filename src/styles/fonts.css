@@ -15,9 +15,9 @@
 }
 
 @font-face {
-  font-family: 'HeliosExt';
-  src: url('/fonts/HeliosExt-Bold.ttf') format('truetype');
-  font-weight: 700;
+  font-family: 'Articulat CF';
+  src: local('Articulat CF Extra Bold'), local('ArticulatCF-ExtraBold'), local('Articulat CF');
+  font-weight: 700 900;
   font-style: normal;
   font-display: swap;
 }

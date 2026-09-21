@@ -45,7 +45,7 @@ export const Team: React.FC = () => {
 
         <div className="team__wrap">
           <div className="team__img">
-            <img src="/images/team.jpg" alt="Stark Shipping team" loading="lazy" />
+            <img src="/images/team.jpg" alt="Gorod Shipping team" loading="lazy" />
           </div>
 
           <RoundButton label="Team" href="#team" />

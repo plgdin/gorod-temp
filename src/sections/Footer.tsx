@@ -1,62 +1,47 @@
-import React, { useState } from 'react';
+import React from 'react';
 
 export const Footer: React.FC = () => {
-  const [tilt, setTilt] = useState({ x: 0, y: 0, deg: 0 });
-
-  const handleMouseMove = (e: React.MouseEvent<HTMLDivElement>) => {
-    const rect = e.currentTarget.getBoundingClientRect();
-    const cx = rect.width / 2;
-    const cy = rect.height / 2;
-    const dx = e.clientX - rect.left - cx;
-    const dy = e.clientY - rect.top - cy;
-
-    const tiltx = dy / cy;
-    const tilty = -dx / cx;
-    const radius = Math.sqrt(tiltx * tiltx + tilty * tilty);
-    const deg = radius * 22;
-
-    setTilt({ x: tiltx, y: tilty, deg });
-  };
-
-  const handleMouseLeave = () => {
-    setTilt({ x: 0, y: 0, deg: 0 });
-  };
 
   return (
     <footer id="footer" className="footer">
-      <div
-        className="footer__main"
-        onMouseMove={handleMouseMove}
-        onMouseLeave={handleMouseLeave}
-      >
-        <a href="#about" className="footer__link">
-          ABOUT
-        </a>
-
-        <div
-          className="footer__image"
-          style={{
-            transform: `translate(-50%, -50%) rotate3d(${tilt.x}, ${tilt.y}, 0, ${tilt.deg}deg)`,
-          }}
-        >
-          <img src="/images/about-footer.jpg" alt="About Stark Shipping" />
+      <div className="fw-container footer__container">
+        <div className="footer__top-row">
+          <div className="footer__brand">
+            <img
+              src="/images/gorod-shipping-logo.png"
+              alt="Gorod Shipping"
+              className="footer__logo-img"
+            />
+            <p className="footer__brand-tagline">
+              European standards in maritime port agency across Ukrainian & Black Sea ports.
+            </p>
+          </div>
+          <div className="footer__nav-group">
+            <h4 className="footer__nav-title">Navigation</h4>
+            <ul className="footer__links">
+              <li><a href="#">Home</a></li>
+              <li><a href="#about">About Us</a></li>
+              <li><a href="#services">Our Services</a></li>
+              <li><a href="#contact">Contact & PDA</a></li>
+            </ul>
+          </div>
+          <div className="footer__nav-group">
+            <h4 className="footer__nav-title">Operations</h4>
+            <ul className="footer__links">
+              <li><span>Odesa &bull; Chornomorsk</span></li>
+              <li><span>Pivdennyi &bull; Danube Ports</span></li>
+              <li><span>24/7 Dispatch Desk</span></li>
+              <li><a href="mailto:agency@gorodshipping.com">agency@gorodshipping.com</a></li>
+            </ul>
+          </div>
         </div>
-      </div>
 
-      <div className="fw-container">
-        <div className="footer__content">
+        <div className="footer__bottom-row">
           <div className="copyright">
-            <span>&copy; 2014–2026. Stark Shipping</span>
+            <span>&copy; 2014&ndash;2026 Gorod Shipping. All rights reserved.</span>
           </div>
           <div className="developer">
-            Site developed by{' '}
-            <a
-              href="https://solar-digital.com/"
-              target="_blank"
-              rel="noopener noreferrer"
-            >
-              SOLAR Digital
-            </a>
+            Independent Marine Agency Services
           </div>
         </div>
       </div>

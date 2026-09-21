@@ -10,14 +10,9 @@ interface MenuItem {
 
 const menuItems: MenuItem[] = [
   { num: '01', label: 'HOME PAGE', align: 'right', preview: '/images/menu-home.jpg', href: '#' },
-  { num: '02', label: 'ABOUT COMPANY', align: 'left', preview: '/images/menu-about.jpg', href: '#about' },
-  { num: '03', label: 'OUR CASES', align: 'right', preview: '/images/menu-cases.jpg', href: '#cases' },
-  { num: '04', label: 'TEAM', align: 'left', preview: '/images/menu-team.jpg', href: '#team' },
-  { num: '05', label: 'ANALYTICAL REPORTS', align: 'right', preview: '/images/menu-reports.jpg', href: '#reports' },
-  { num: '06', label: 'STARK RESEARCH', align: 'left', preview: '/images/menu-research.jpg', href: '#research' },
-  { num: '07', label: 'STARK PORTAL', align: 'right', preview: '/images/menu-portal.jpg', href: '#portal' },
-  { num: '08', label: 'NEPTUNE LINES', align: 'left', preview: '/images/menu-neptune.jpg', href: '#partners' },
-  { num: '09', label: 'CONTACT INFORMATION', align: 'right', preview: '/images/menu-contact.jpg', href: '#footer' },
+  { num: '02', label: 'ABOUT US', align: 'left', preview: '/images/menu-about.jpg', href: '#about' },
+  { num: '03', label: 'OUR SERVICES', align: 'right', preview: '/images/menu-cases.jpg', href: '#services' },
+  { num: '04', label: 'CONTACT US', align: 'left', preview: '/images/menu-contact.jpg', href: '#contact' },
 ];
 
 interface NavigationMenuProps {

@@ -73,7 +73,7 @@ export const StarkPortal: React.FC = () => {
       <div ref={pinnedSectRef} className="horizontal-scroll-images__pinned-sect portal">
         <div className="horizontal-scroll-images__pinned-sect-header">
           <div className="horizontal-scroll-images__pinned-sect-header-text --title-0">
-            STARK
+            GOROD
           </div>
           <div ref={title1Ref} className="horizontal-scroll-images__pinned-sect-header-text --title-1">
             PORTAL
@@ -88,13 +88,13 @@ export const StarkPortal: React.FC = () => {
 
         <div className="horizontal-scroll-images__pinned-sect-images">
           <div ref={img0Ref} className="horizontal-scroll-images__pinned-sect-img portal --img-0">
-            <img src="/images/portal-1.png" alt="Stark Portal 1" loading="lazy" />
+            <img src="/images/portal-1.png" alt="Gorod Portal 1" loading="lazy" />
           </div>
           <div ref={img1Ref} className="horizontal-scroll-images__pinned-sect-img portal --img-1">
-            <img src="/images/portal-2.png" alt="Stark Portal 2" loading="lazy" />
+            <img src="/images/portal-2.png" alt="Gorod Portal 2" loading="lazy" />
           </div>
           <div ref={img2Ref} className="horizontal-scroll-images__pinned-sect-img portal --img-2">
-            <img src="/images/portal-3.jpg" alt="Stark Portal 3" loading="lazy" />
+            <img src="/images/portal-3.jpg" alt="Gorod Portal 3" loading="lazy" />
           </div>
         </div>
       </div>
@@ -103,7 +103,7 @@ export const StarkPortal: React.FC = () => {
         <div className="horizontal-scroll-images__info portal">
           <div className="horizontal-scroll-images__info-text">
             <p>
-              We have created and are developing the Stark Portal project, which
+              We have created and are developing the Gorod Portal project, which
               contains all documents, proposals, cost calculations, etc for the
               efficient operation of the broker. Moreover system has other useful
               information (Port/Terminal restrictions, DAs...
@@ -117,7 +117,7 @@ export const StarkPortal: React.FC = () => {
               rel="noopener noreferrer"
               className="site-link"
             >
-              www.portal.starkshipping.net
+              www.portal.gorodshipping.net
             </a>
           </div>
         </div>

@@ -1,20 +1,36 @@
 :root {
-  --bg-dark: #0b1220;
-  --bg-light: #f1f2f7;
-  --bg-slate: #60697a;
-  --bg-footer: #606979;
-  --bg-menu: #dce1eb;
+  /* Brand Guidelines Colors */
+  --deep-cyan: #006873;
+  --light-cyan: #67abaf;
+  --shadow-black: #191919;
+  --snow-white: #ffffff;
+  --les-grey: #c1c1c1;
 
-  --text-white: #f2f2f0;
-  --text-dark: #0b1220;
-  --text-muted: rgba(242, 242, 240, 0.6);
+  /* Semantic Theme Tokens: Snow White Theme */
+  --bg-dark: #ffffff;
+  --bg-dark-card: #f8fafb;
+  --bg-cyan: #006873;
+  --bg-light: #ffffff;
+  --bg-slate: #006873;
+  --bg-footer: #f4f7f8;
+  --bg-menu: #ffffff;
 
-  --font-display: 'DrukWideMedium', sans-serif;
-  --font-body: 'HeliosExt', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+  --text-white: #191919;
+  --text-dark: #191919;
+  --text-muted: #55626a;
+  --text-accent: #006873;
+  --text-cyan: #006873;
 
-  --border-light: rgba(255, 255, 255, 0.12);
-  --border-dark: rgba(18, 26, 39, 0.2);
+  --accent-primary: #006873;
+  --accent-light: #67abaf;
 
-  --header-height: 74px;
+  --font-display: 'Articulat CF', 'Outfit', 'Plus Jakarta Sans', sans-serif;
+  --font-body: 'Plus Jakarta Sans', 'Outfit', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+
+  --border-light: rgba(0, 104, 115, 0.12);
+  --border-dark: rgba(0, 104, 115, 0.2);
+  --border-cyan: rgba(0, 104, 115, 0.28);
+
+  --header-height: 70px;
   --transition-smooth: cubic-bezier(0.25, 1, 0.5, 1);
 }
