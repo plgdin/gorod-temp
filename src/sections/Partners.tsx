@@ -1,14 +1,48 @@
-import React from 'react';
+import React, { useEffect, useRef } from 'react';
+import { gsap } from 'gsap';
+import { ScrollTrigger } from 'gsap/ScrollTrigger';
 import { RoundButton } from '../components/RoundButton';
 
+gsap.registerPlugin(ScrollTrigger);
+
 export const Partners: React.FC = () => {
+  const sectionRef = useRef<HTMLElement>(null);
+
+  useEffect(() => {
+    if (!sectionRef.current) return;
+    const ctx = gsap.context(() => {
+      const titles = sectionRef.current?.querySelectorAll('.partners__title');
+      const img = sectionRef.current?.querySelector('.partners__img');
+      if (!titles || titles.length < 3) return;
+
+      const tl = gsap.timeline()
+        .to(titles[0], { xPercent: 30 }, 0)
+        .to(titles[1], { xPercent: -20 }, 0)
+        .to(titles[2], { xPercent: 40 }, 0);
+
+      if (img) {
+        tl.to(img, { yPercent: -30 }, 0);
+      }
+
+      ScrollTrigger.create({
+        trigger: sectionRef.current,
+        start: 'top bottom',
+        end: 'bottom top',
+        animation: tl,
+        scrub: true,
+      });
+    }, sectionRef);
+
+    return () => ctx.revert();
+  }, []);
+
   return (
-    <section id="partners" className="partners-section">
+    <section id="partners" ref={sectionRef} className="partners-section">
       <div className="fw-container">
         <div className="partners__header">
-          <div className="partners__title">PARTNERS</div>
+          <div className="partners__title --item-0">PARTNERS</div>
           <div className="partners__title --item-1">OF NEPTUNE</div>
-          <div className="partners__title">LINES</div>
+          <div className="partners__title --item-2">LINES</div>
         </div>
 
         <div className="partners__wrap">

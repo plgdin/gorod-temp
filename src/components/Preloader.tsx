@@ -1,22 +1,28 @@
 import React from 'react';
 
 interface PreloaderProps {
-  isLoading: boolean;
+  isDone?: boolean;
 }
 
-export const Preloader: React.FC<PreloaderProps> = ({ isLoading }) => {
+export const Preloader: React.FC<PreloaderProps> = ({ isDone = false }) => {
   return (
-    <div className={`preloader ${!isLoading ? '--hidden' : ''}`}>
-      <div className="preloader__center">
+    <div className={`main-screen__preloader ${isDone ? '--done' : ''}`}>
+      <div className="main-screen__preloader-center">
         <img
-          src="/icons/dots-img.svg"
-          alt=""
-          className="preloader__dots"
-        />
-        <img
+          width="119"
+          height="119"
           src="/icons/star-img.svg"
-          alt=""
-          className="preloader__star"
+          alt="Star symbol"
+          className="lazyloaded"
+        />
+      </div>
+      <div className="main-screen__preloader-dots">
+        <img
+          width="608"
+          height="608"
+          src="/icons/dots-img.svg"
+          alt="Dots pattern"
+          className="lazyloaded"
         />
       </div>
     </div>

@@ -4,15 +4,27 @@ interface HeaderProps {
   menuOpen: boolean;
   onToggleMenu: () => void;
   isLightSection?: boolean;
+  isReady?: boolean;
 }
 
 export const Header: React.FC<HeaderProps> = ({
   menuOpen,
   onToggleMenu,
   isLightSection = false,
+  isReady = false,
 }) => {
   const [scrollDown, setScrollDown] = useState(false);
   const [lastScrollY, setLastScrollY] = useState(0);
+  const [startPosition, setStartPosition] = useState(true);
+
+  useEffect(() => {
+    if (isReady) {
+      const timer = setTimeout(() => {
+        setStartPosition(false);
+      }, 1000);
+      return () => clearTimeout(timer);
+    }
+  }, [isReady]);
 
   useEffect(() => {
     const handleScroll = () => {
@@ -32,7 +44,9 @@ export const Header: React.FC<HeaderProps> = ({
   return (
     <header
       id="header"
-      className={`header --ready ${scrollDown ? '--scroll-down' : ''} ${
+      className={`header ${startPosition ? '--start-position' : ''} ${
+        isReady ? '--ready' : ''
+      } ${scrollDown ? '--scroll-down' : ''} ${
         menuOpen ? '--menu-opened' : ''
       } ${isLightSection && !menuOpen ? '--dark-compact' : ''}`}
     >

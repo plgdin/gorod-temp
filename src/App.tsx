@@ -1,7 +1,9 @@
 import { useState, useEffect } from 'react';
+import Lenis from 'lenis';
+import gsap from 'gsap';
+import { ScrollTrigger } from 'gsap/ScrollTrigger';
 import { Header } from './components/Header';
 import { NavigationMenu } from './components/NavigationMenu';
-import { Preloader } from './components/Preloader';
 import { Hero } from './sections/Hero';
 import { SkewRibbon } from './sections/SkewRibbon';
 import { OurCases } from './sections/OurCases';
@@ -14,37 +16,46 @@ import { Team } from './sections/Team';
 import { Footer } from './sections/Footer';
 import './styles/globals.css';
 
+gsap.registerPlugin(ScrollTrigger);
+
 export function App() {
-  const [isLoading, setIsLoading] = useState(true);
+  const [isHeroReady, setIsHeroReady] = useState(true);
   const [menuOpen, setMenuOpen] = useState(false);
   const [isLightSection, setIsLightSection] = useState(false);
 
   useEffect(() => {
-    // Initial preloader duration
-    const timer = setTimeout(() => {
-      setIsLoading(false);
-    }, 1200);
-    return () => clearTimeout(timer);
-  }, []);
+    const lenis = new Lenis({
+      duration: 1.2,
+      easing: (t) => Math.min(1, 1.001 - Math.pow(2, -10 * t)),
+      orientation: 'vertical',
+      gestureOrientation: 'vertical',
+      smoothWheel: true,
+      wheelMultiplier: 1,
+    });
 
-  useEffect(() => {
+    lenis.on('scroll', ScrollTrigger.update);
+
+    const tickerUpdate = (time: number) => {
+      lenis.raf(time * 1000);
+    };
+
+    gsap.ticker.add(tickerUpdate);
+    gsap.ticker.lagSmoothing(0);
+
     const handleScroll = () => {
       const reportsEl = document.getElementById('reports');
       const portalEl = document.getElementById('portal');
-      const scrollPos = window.scrollY + 74;
 
       let inLight = false;
       if (reportsEl) {
-        const top = reportsEl.offsetTop;
-        const bottom = top + reportsEl.offsetHeight;
-        if (scrollPos >= top && scrollPos < bottom) {
+        const rect = reportsEl.getBoundingClientRect();
+        if (rect.top <= 80 && rect.bottom >= 80) {
           inLight = true;
         }
       }
       if (portalEl) {
-        const top = portalEl.offsetTop;
-        const bottom = top + portalEl.offsetHeight;
-        if (scrollPos >= top && scrollPos < bottom) {
+        const rect = portalEl.getBoundingClientRect();
+        if (rect.top <= 80 && rect.bottom >= 80) {
           inLight = true;
         }
       }
@@ -52,16 +63,21 @@ export function App() {
     };
 
     window.addEventListener('scroll', handleScroll, { passive: true });
-    return () => window.removeEventListener('scroll', handleScroll);
+
+    return () => {
+      window.removeEventListener('scroll', handleScroll);
+      gsap.ticker.remove(tickerUpdate);
+      lenis.destroy();
+    };
   }, []);
 
   return (
     <>
-      <Preloader isLoading={isLoading} />
       <Header
         menuOpen={menuOpen}
         onToggleMenu={() => setMenuOpen(!menuOpen)}
         isLightSection={isLightSection}
+        isReady={isHeroReady}
       />
       <NavigationMenu
         isOpen={menuOpen}
@@ -69,7 +85,7 @@ export function App() {
       />
 
       <main>
-        <Hero />
+        <Hero onReady={() => setIsHeroReady(true)} />
         <SkewRibbon />
         <OurCases />
         <AwardsTable />
