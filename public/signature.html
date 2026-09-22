@@ -1,0 +1,274 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>GOROD Marine - Email Signature</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --bg-color: #061e23;
+      --card-bg: rgba(14, 46, 53, 0.85);
+      --card-border: rgba(255, 255, 255, 0.12);
+      --accent: #0da5ba;
+      --accent-hover: #13c0d8;
+      --text: #e6f1f3;
+      --text-muted: #8ba9b0;
+    }
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+    body {
+      font-family: 'Inter', system-ui, -apple-system, sans-serif;
+      background: radial-gradient(circle at 50% 20%, #0d3840 0%, #061e23 100%);
+      color: var(--text);
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      padding: 32px 16px;
+    }
+    .container {
+      width: 100%;
+      max-width: 640px;
+      background: var(--card-bg);
+      border: 1px solid var(--card-border);
+      border-radius: 16px;
+      padding: 32px;
+      box-shadow: 0 20px 40px rgba(0, 0, 0, 0.4);
+      backdrop-filter: blur(12px);
+    }
+    h1 {
+      font-size: 22px;
+      font-weight: 700;
+      letter-spacing: -0.02em;
+      margin-bottom: 8px;
+      text-align: center;
+      color: #ffffff;
+    }
+    p.subtitle {
+      font-size: 14px;
+      color: var(--text-muted);
+      text-align: center;
+      margin-bottom: 24px;
+    }
+    .preview-card {
+      background: #ffffff;
+      border-radius: 12px;
+      padding: 24px;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      margin-bottom: 24px;
+      border: 1px solid rgba(255, 255, 255, 0.2);
+      box-shadow: inset 0 2px 4px rgba(0, 0, 0, 0.05);
+    }
+    .actions {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 12px;
+      margin-bottom: 24px;
+    }
+    .btn {
+      flex: 1 1 180px;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+      padding: 12px 18px;
+      font-size: 14px;
+      font-weight: 600;
+      border-radius: 8px;
+      cursor: pointer;
+      transition: all 0.2s ease;
+      text-decoration: none;
+      border: none;
+    }
+    .btn-primary {
+      background: var(--accent);
+      color: #032025;
+    }
+    .btn-primary:hover {
+      background: var(--accent-hover);
+      transform: translateY(-1px);
+    }
+    .btn-secondary {
+      background: rgba(255, 255, 255, 0.08);
+      color: #ffffff;
+      border: 1px solid var(--card-border);
+    }
+    .btn-secondary:hover {
+      background: rgba(255, 255, 255, 0.15);
+      transform: translateY(-1px);
+    }
+    .instructions {
+      background: rgba(0, 0, 0, 0.25);
+      border-radius: 10px;
+      padding: 16px 20px;
+      font-size: 13px;
+      line-height: 1.6;
+      color: var(--text-muted);
+    }
+    .instructions strong {
+      color: #ffffff;
+      display: block;
+      margin-bottom: 6px;
+    }
+    .instructions ol {
+      padding-left: 20px;
+    }
+    .instructions li {
+      margin-bottom: 4px;
+    }
+    .toast {
+      position: fixed;
+      bottom: 24px;
+      background: #10b981;
+      color: #ffffff;
+      padding: 10px 20px;
+      border-radius: 30px;
+      font-size: 14px;
+      font-weight: 600;
+      box-shadow: 0 10px 25px rgba(0,0,0,0.3);
+      opacity: 0;
+      transform: translateY(20px);
+      transition: all 0.3s ease;
+      pointer-events: none;
+      z-index: 100;
+    }
+    .toast.show {
+      opacity: 1;
+      transform: translateY(0);
+    }
+    .links-bar {
+      margin-top: 16px;
+      display: flex;
+      justify-content: center;
+      gap: 16px;
+      font-size: 12px;
+    }
+    .links-bar a {
+      color: var(--accent);
+      text-decoration: none;
+    }
+    .links-bar a:hover {
+      text-decoration: underline;
+    }
+  </style>
+</head>
+<body>
+
+  <div class="container">
+    <h1>GOROD Marine Email Signature</h1>
+    <p class="subtitle">Official email signature banner for Outlook, Gmail, and Apple Mail.</p>
+
+    <!-- LIVE PREVIEW & COPY CONTAINER -->
+    <div class="preview-card" id="signature-preview">
+      <div id="signature-target">
+        <table role="presentation" cellpadding="0" cellspacing="0" border="0" style="margin:0;padding:0;border-collapse:collapse;font-family:Arial,sans-serif;">
+          <tr>
+            <td style="padding:0;margin:0;">
+              <a href="https://gorod-main.vercel.app" target="_blank" rel="noopener noreferrer" style="display:inline-block;text-decoration:none;border:none;">
+                <img src="https://gorod-main.vercel.app/images/emailsign.png" alt="GOROD Marine" width="400" height="200" style="display:block;width:400px;max-width:100%;height:auto;border:0;outline:none;text-decoration:none;-ms-interpolation-mode:bicubic;" />
+              </a>
+            </td>
+          </tr>
+        </table>
+      </div>
+    </div>
+
+    <!-- ACTION BUTTONS -->
+    <div class="actions">
+      <button class="btn btn-primary" id="copy-btn" onclick="copySignature()">
+        📋 Copy for Outlook / Gmail
+      </button>
+      <button class="btn btn-secondary" onclick="copyRawHtml()">
+        &lt;/&gt; Copy HTML Code
+      </button>
+    </div>
+
+    <!-- INSTRUCTIONS -->
+    <div class="instructions">
+      <strong>How to add to Outlook:</strong>
+      <ol>
+        <li>Click <strong>Copy for Outlook / Gmail</strong> above.</li>
+        <li>Open Outlook &rarr; <strong>Settings / Options</strong> &rarr; <strong>Signatures</strong>.</li>
+        <li>Create new signature &amp; press <strong>Ctrl + V</strong> (Paste) in the edit box.</li>
+        <li>Click <strong>Save</strong>.</li>
+      </ol>
+    </div>
+
+    <div class="links-bar">
+      <a href="/signature-raw.html" target="_blank">View Raw HTML</a>
+      <span>&bull;</span>
+      <a href="/images/emailsign.png" target="_blank">Direct Image Link</a>
+      <span>&bull;</span>
+      <a href="/" target="_blank">Gorod Website</a>
+    </div>
+  </div>
+
+  <div class="toast" id="toast">Copied to clipboard!</div>
+
+  <script>
+    function showToast(msg) {
+      const toast = document.getElementById('toast');
+      toast.textContent = msg;
+      toast.classList.add('show');
+      setTimeout(() => toast.classList.remove('show'), 2500);
+    }
+
+    async function copySignature() {
+      const target = document.getElementById('signature-target');
+      const html = target.innerHTML.trim();
+      const text = target.innerText.trim() || 'GOROD Marine';
+
+      try {
+        if (navigator.clipboard && window.ClipboardItem) {
+          const blobHtml = new Blob([html], { type: 'text/html' });
+          const blobText = new Blob([text], { type: 'text/plain' });
+          await navigator.clipboard.write([
+            new ClipboardItem({ 'text/html': blobHtml, 'text/plain': blobText })
+          ]);
+        } else {
+          fallbackCopy(target);
+        }
+        showToast('✓ Signature copied! Paste (Ctrl+V) in Outlook.');
+      } catch (err) {
+        fallbackCopy(target);
+      }
+    }
+
+    function fallbackCopy(el) {
+      const range = document.createRange();
+      range.selectNode(el);
+      window.getSelection().removeAllRanges();
+      window.getSelection().addRange(range);
+      document.execCommand('copy');
+      window.getSelection().removeAllRanges();
+      showToast('✓ Signature copied! Paste (Ctrl+V) in Outlook.');
+    }
+
+    async function copyRawHtml() {
+      const target = document.getElementById('signature-target');
+      const html = target.innerHTML.trim();
+      try {
+        await navigator.clipboard.writeText(html);
+        showToast('✓ HTML code copied to clipboard!');
+      } catch (e) {
+        const input = document.createElement('textarea');
+        input.value = html;
+        document.body.appendChild(input);
+        input.select();
+        document.execCommand('copy');
+        document.body.removeChild(input);
+        showToast('✓ HTML code copied to clipboard!');
+      }
+    }
+  </script>
+</body>
+</html>
