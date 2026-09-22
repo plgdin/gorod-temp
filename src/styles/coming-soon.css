@@ -8,7 +8,7 @@
   max-height: 100vh;
   overflow: hidden;
   background-color: #006873;
-  background: radial-gradient(ellipse at 50% 45%, #007986 0%, #006873 55%, #00525b 100%);
+  background: #006873;
   color: #ffffff;
   display: flex;
   justify-content: center;
@@ -20,18 +20,7 @@
   position: relative;
 }
 
-/* Subtle background grid texture */
-.maintenance-page::before {
-  content: '';
-  position: absolute;
-  inset: 0;
-  background-image: 
-    linear-gradient(rgba(255, 255, 255, 0.035) 1px, transparent 1px),
-    linear-gradient(90deg, rgba(255, 255, 255, 0.035) 1px, transparent 1px);
-  background-size: 60px 60px;
-  background-position: center center;
-  pointer-events: none;
-}
+
 
 .maintenance-card {
   position: relative;
