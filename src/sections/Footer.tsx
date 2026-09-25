@@ -8,8 +8,8 @@ export const Footer: React.FC = () => {
         <div className="footer__top-row">
           <div className="footer__brand">
             <img
-              src="/images/gorod-shipping-logo.png"
-              alt="Gorod Shipping"
+              src="/images/gorod-marine-logo.png"
+              alt="Gorod Marine"
               className="footer__logo-img"
             />
             <p className="footer__brand-tagline">

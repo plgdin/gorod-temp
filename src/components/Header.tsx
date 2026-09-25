@@ -52,10 +52,10 @@ export const Header: React.FC<HeaderProps> = ({
     >
       <div className="header__top">
         <div className="header__logo">
-          <a href="/" className="logo --pc" aria-label="Gorod Shipping">
+          <a href="/" className="logo --pc" aria-label="Gorod Marine">
             <img
-              src="/images/gorod-shipping-logo.png"
-              alt="Gorod Shipping"
+              src="/images/gorod-marine-logo.png"
+              alt="Gorod Marine"
               className="logo-img"
             />
           </a>

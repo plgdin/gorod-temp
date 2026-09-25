@@ -461,16 +461,16 @@ button {
   flex-direction: column;
   justify-content: space-between;
   font-family: 'DrukWideMedium', sans-serif;
-  font-size: clamp(28px, 5.2vw, 82px);
+  font-size: clamp(24px, 3.8vw, 68px);
   font-weight: 500;
-  line-height: 1;
+  line-height: 1.1;
   text-transform: uppercase;
   color: #ffffff;
-  letter-spacing: -0.02em;
+  letter-spacing: -0.01em;
   text-shadow: 0 4px 30px rgba(0, 0, 0, 0.45);
   pointer-events: none;
   padding: 0 clamp(16px, 3vw, 48px);
-  overflow: hidden;
+  box-sizing: border-box;
 }
 
 .main-screen__row {
@@ -478,11 +478,17 @@ button {
   width: 100%;
   justify-content: space-between;
   align-items: center;
+  gap: clamp(16px, 3vw, 48px);
 }
 
 .main-screen__main-title {
   overflow: hidden;
   display: block;
+  flex-shrink: 0;
+}
+
+.main-screen__main-title.--line-1 {
+  overflow: visible;
 }
 
 .main-screen__main-title-text {
@@ -493,6 +499,43 @@ button {
   font-weight: 500;
 }
 
+/* 3D Tagline Flipper for Multi-Vessels */
+.main-screen__flipper {
+  position: relative;
+  display: inline-block;
+  perspective: 1000px;
+  transform-style: preserve-3d;
+  vertical-align: baseline;
+  text-align: right;
+}
+
+.main-screen__flipper-spacer {
+  display: inline-block;
+  white-space: nowrap;
+  font-family: 'DrukWideMedium', sans-serif;
+  font-weight: 500;
+  visibility: hidden;
+  opacity: 0;
+  pointer-events: none;
+  line-height: 1.1;
+  user-select: none;
+}
+
+.main-screen__flipper-word {
+  position: absolute;
+  top: 0;
+  right: 0;
+  display: inline-block;
+  white-space: nowrap;
+  font-family: 'DrukWideMedium', sans-serif;
+  font-weight: 500;
+  line-height: 1.1;
+  will-change: transform, opacity;
+  transform-style: preserve-3d;
+  backface-visibility: hidden;
+  transform-origin: 50% 50% -12px;
+}
+
 .ships {
   position: absolute;
   top: 50%;
@@ -501,6 +544,7 @@ button {
   z-index: 4;
   width: clamp(840px, 75vw, 1450px);
   max-width: 96vw;
+  aspect-ratio: 2.85 / 1;
   font-size: 0;
   line-height: 0;
   pointer-events: none;
@@ -509,6 +553,24 @@ button {
   display: flex;
   justify-content: center;
   align-items: center;
+}
+
+.ships__vessel {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  will-change: transform, opacity;
+}
+
+.ships__vessel.--tugboat .ships__tanker {
+  width: 86%;
+  height: 86%;
+  object-fit: contain;
 }
 
 .ships__swoosh {
@@ -546,7 +608,7 @@ button {
   position: relative;
   z-index: 2;
   width: 100%;
-  height: auto;
+  height: 100%;
   object-fit: contain;
   display: block;
   user-select: none;
@@ -559,14 +621,14 @@ button {
 }
 
 @media (max-width: 992px) {
-  .main-screen.--mob-ready .main-screen__main {
-    height: auto;
-    min-height: 480px;
-    gap: 150px;
+  .main-screen__main {
+    height: calc(100vh - 130px);
+    font-size: clamp(20px, 4.2vw, 36px);
+    padding: 0 clamp(12px, 3vw, 24px);
   }
   .main-screen__row {
     flex-direction: column;
-    gap: 10px;
+    gap: 8px;
     align-items: flex-start;
   }
   .main-screen__row.--top .main-screen__main-title:nth-child(2),
@@ -575,11 +637,22 @@ button {
   }
   .ships {
     top: 50% !important;
-    width: clamp(280px, 86vw, 500px);
+    width: clamp(280px, 86vw, 540px);
   }
 }
 
 @media (max-width: 576px) {
+  .main-screen {
+    padding: 70px 16px 30px;
+  }
+  .main-screen__main {
+    height: calc(100vh - 110px);
+    font-size: clamp(17px, 5.4vw, 24px);
+    padding: 0 8px;
+  }
+  .main-screen__row {
+    gap: 6px;
+  }
   .ships {
     width: clamp(260px, 92vw, 420px);
   }
