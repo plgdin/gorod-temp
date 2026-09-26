@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from 'react';
+import gorodLogo from '../assets/gorod-shipping-logo-white.png';
 
 interface HeaderProps {
   menuOpen: boolean;
@@ -52,10 +53,10 @@ export const Header: React.FC<HeaderProps> = ({
     >
       <div className="header__top">
         <div className="header__logo">
-          <a href="/" className="logo --pc" aria-label="Gorod Marine">
+          <a href="/" className="logo --pc" aria-label="Gorod Shipping">
             <img
-              src="/images/gorod-marine-logo.png"
-              alt="Gorod Marine"
+              src={gorodLogo}
+              alt="Gorod Shipping"
               className="logo-img"
             />
           </a>
@@ -67,20 +68,28 @@ export const Header: React.FC<HeaderProps> = ({
           <a href="#contact" className="header__nav-item">Contact</a>
         </nav>
 
-        <div
-          className={`header__burger ${menuOpen ? '--open' : ''}`}
-          onClick={onToggleMenu}
-          aria-label="Toggle Navigation"
-          role="button"
-          tabIndex={0}
-          onKeyDown={(e) => e.key === 'Enter' && onToggleMenu()}
-        >
-          <svg width="32" height="32" viewBox="0 0 48 48">
-            <line x1="8" y1="18" x2="40" y2="18" strokeWidth="2.5" />
-            <line x1="8" y1="30" x2="40" y2="30" strokeWidth="2.5" />
-          </svg>
+        <div className="header__actions">
+          <a href="#contact" className="header__enquire-btn">
+            <span>Enquire Now</span>
+            <span className="header__enquire-arrow">→</span>
+          </a>
+
+          <div
+            className={`header__burger ${menuOpen ? '--open' : ''}`}
+            onClick={onToggleMenu}
+            aria-label="Toggle Navigation"
+            role="button"
+            tabIndex={0}
+            onKeyDown={(e) => e.key === 'Enter' && onToggleMenu()}
+          >
+            <svg width="28" height="28" viewBox="0 0 28 28" fill="none">
+              <line x1="4" y1="10" x2="24" y2="10" stroke="currentColor" strokeWidth="2" strokeLinecap="round" />
+              <line x1="4" y1="18" x2="24" y2="18" stroke="currentColor" strokeWidth="2" strokeLinecap="round" />
+            </svg>
+          </div>
         </div>
       </div>
     </header>
   );
 };
+

@@ -18,28 +18,28 @@ const VESSELS: VesselItem[] = [
   {
     id: 'carrier',
     name: 'Carrier',
-    word: 'Carriers',
+    word: 'CARRIERS',
     imageSrc: '/images/Gorod.png',
     alt: 'Gorod Container Carrier Vessel',
   },
   {
     id: 'tanker',
     name: 'Tanker',
-    word: 'Tankers',
+    word: 'TANKERS',
     imageSrc: '/images/Gorod_tanker.png',
     alt: 'Gorod Oil Tanker Vessel',
   },
   {
     id: 'cruise',
     name: 'Cruise',
-    word: 'Cruises',
+    word: 'CRUISES',
     imageSrc: '/images/Gorod_cruise.png',
     alt: 'Gorod Cruise Ship Vessel',
   },
   {
     id: 'tugboat',
     name: 'Tugboat',
-    word: 'Tugboats',
+    word: 'TUGBOATS',
     imageSrc: '/images/Gorod_tug.png',
     alt: 'Gorod Port Tugboat Vessel',
   },
@@ -55,6 +55,7 @@ export const Hero: React.FC<HeroProps> = ({ onReady }) => {
 
   const loopTlRef = useRef<gsap.core.Timeline | null>(null);
 
+  const [activeIdx, setActiveIdx] = useState(0);
   const [isPreloaderDone, setIsPreloaderDone] = useState(false);
   const onReadyRef = useRef(onReady);
   onReadyRef.current = onReady;
@@ -98,14 +99,19 @@ export const Hero: React.FC<HeroProps> = ({ onReady }) => {
       });
 
       // Word reveal initial states
-      gsap.set([wordRepresenting, words[0]], {
+      gsap.set(wordRepresenting, {
         opacity: 0,
         y: -28,
       });
 
-      gsap.set([wordAcross, wordSeas], {
+      gsap.set([words[0], wordAcross, wordSeas], {
         opacity: 0,
         y: 28,
+      });
+
+      gsap.set(['.main-screen__sub-row', '.main-screen__bottom-bar'], {
+        opacity: 0,
+        y: 20,
       });
 
       // Words 1..N start hidden and flipped out
@@ -176,6 +182,8 @@ export const Hero: React.FC<HeroProps> = ({ onReady }) => {
             },
             `${label}+=0.25`
           );
+
+          loopTl.call(() => setActiveIdx(nextIdx), [], `${label}+=0.25`);
 
           // 5. Reset current word for next round
           loopTl.set(
@@ -289,6 +297,17 @@ export const Hero: React.FC<HeroProps> = ({ onReady }) => {
             ease: 'power2.out',
           },
           1.2
+        )
+        .to(
+          ['.main-screen__sub-row', '.main-screen__bottom-bar'],
+          {
+            opacity: 1,
+            y: 0,
+            duration: 0.8,
+            stagger: 0.1,
+            ease: 'power2.out',
+          },
+          1.4
         );
 
       // Fast-forward on quick scroll/touch
@@ -313,7 +332,7 @@ export const Hero: React.FC<HeroProps> = ({ onReady }) => {
       ref={mainScreenRef}
       className="main-screen"
       style={{
-        backgroundColor: '#0a1d24',
+        backgroundColor: '#071820',
         backgroundImage: `url('/images/background.png')`,
         backgroundSize: 'cover',
         backgroundPosition: 'center',
@@ -334,10 +353,13 @@ export const Hero: React.FC<HeroProps> = ({ onReady }) => {
               Representing
             </div>
           </div>
+        </div>
+
+        <div className="main-screen__row --bottom">
           <div className="main-screen__main-title translation-block --line-1">
             <div className="main-screen__flipper">
               <span className="main-screen__flipper-spacer" aria-hidden="true">
-                Tugboats
+                TUGBOATS
               </span>
               {VESSELS.map((vessel, idx) => (
                 <span
@@ -352,25 +374,34 @@ export const Hero: React.FC<HeroProps> = ({ onReady }) => {
               ))}
             </div>
           </div>
+
+          <div className="main-screen__main-title translation-block --line-2">
+            <div className="main-screen__main-title-text">
+              <span ref={wordAcrossRef} style={{ display: 'inline-block' }}>Across</span>{' '}
+              <span ref={wordSeasRef} style={{ display: 'inline-block' }}>Seas</span>
+            </div>
+          </div>
         </div>
 
-        <div className="main-screen__row --bottom">
-          <div className="main-screen__main-title translation-block --line-2">
-            <div
-              ref={wordAcrossRef}
-              className="main-screen__main-title-text"
-            >
-              Across
-            </div>
+        {/* Sub-row: Maritime agency text on left, Explore button on right */}
+        <div className="main-screen__sub-row">
+          <div className="main-screen__subtitle">
+            Maritime agency and operational support<br />
+            for vessel owners and operators worldwide.
           </div>
-          <div className="main-screen__main-title translation-block --line-3">
-            <div
-              ref={wordSeasRef}
-              className="main-screen__main-title-text"
-            >
-              Seas
+
+          <a href="#services" className="main-screen__explore" aria-label="Explore our services">
+            <div className="main-screen__explore-circle">
+              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round">
+                <line x1="12" y1="5" x2="12" y2="19" />
+                <polyline points="19 12 12 19 5 12" />
+              </svg>
             </div>
-          </div>
+            <div className="main-screen__explore-text">
+              <span>EXPLORE</span>
+              <span>OUR SERVICES</span>
+            </div>
+          </a>
         </div>
       </div>
 
@@ -392,6 +423,29 @@ export const Hero: React.FC<HeroProps> = ({ onReady }) => {
             />
           </div>
         ))}
+      </div>
+
+      {/* Bottom Timeline & Pagination Bar */}
+      <div className="main-screen__bottom-bar">
+        <div className="main-screen__dots">
+          {VESSELS.map((_, idx) => (
+            <span
+              key={idx}
+              className={`main-screen__dot ${activeIdx === idx ? '--active' : ''}`}
+            />
+          ))}
+        </div>
+        <div className="main-screen__line" />
+        <div className="main-screen__numbers">
+          {VESSELS.map((_, idx) => (
+            <span
+              key={idx}
+              className={`main-screen__num ${activeIdx === idx ? '--active' : ''}`}
+            >
+              {String(idx + 1).padStart(2, '0')}
+            </span>
+          ))}
+        </div>
       </div>
     </section>
   );
