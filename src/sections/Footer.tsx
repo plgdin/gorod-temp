@@ -8,7 +8,7 @@ export const Footer: React.FC = () => {
         <div className="footer__top-row">
           <div className="footer__brand">
             <img
-              src="/images/gorod-marine-logo.png"
+              src="/images/gorod-marine-teal.png"
               alt="Gorod Marine"
               className="footer__logo-img"
             />

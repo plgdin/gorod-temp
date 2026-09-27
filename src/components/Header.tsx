@@ -1,5 +1,4 @@
 import React, { useState, useEffect } from 'react';
-import gorodLogo from '../assets/gorod-shipping-logo-white.png';
 
 interface HeaderProps {
   menuOpen: boolean;
@@ -17,6 +16,7 @@ export const Header: React.FC<HeaderProps> = ({
   const [scrollDown, setScrollDown] = useState(false);
   const [lastScrollY, setLastScrollY] = useState(0);
   const [startPosition, setStartPosition] = useState(true);
+  const [isScrolled, setIsScrolled] = useState(false);
 
   useEffect(() => {
     if (isReady) {
@@ -30,7 +30,14 @@ export const Header: React.FC<HeaderProps> = ({
   useEffect(() => {
     const handleScroll = () => {
       const currentScrollY = window.scrollY;
-      if (currentScrollY > 100 && currentScrollY > lastScrollY && !menuOpen) {
+      const hero = document.getElementById('main-screen');
+      const isPastHero = hero
+        ? hero.getBoundingClientRect().bottom <= 80
+        : currentScrollY > 100;
+
+      setIsScrolled(isPastHero);
+
+      if (isPastHero && currentScrollY > 100 && currentScrollY > lastScrollY && !menuOpen) {
         setScrollDown(true);
       } else {
         setScrollDown(false);
@@ -38,6 +45,7 @@ export const Header: React.FC<HeaderProps> = ({
       setLastScrollY(currentScrollY);
     };
 
+    handleScroll();
     window.addEventListener('scroll', handleScroll, { passive: true });
     return () => window.removeEventListener('scroll', handleScroll);
   }, [lastScrollY, menuOpen]);
@@ -49,14 +57,14 @@ export const Header: React.FC<HeaderProps> = ({
         isReady ? '--ready' : ''
       } ${scrollDown ? '--scroll-down' : ''} ${
         menuOpen ? '--menu-opened' : ''
-      } ${isLightSection && !menuOpen ? '--dark-compact' : ''}`}
+      } ${isScrolled || isLightSection ? '--scrolled' : ''}`}
     >
       <div className="header__top">
         <div className="header__logo">
-          <a href="/" className="logo --pc" aria-label="Gorod Shipping">
+          <a href="/" className="logo --pc" aria-label="Gorod Marine">
             <img
-              src={gorodLogo}
-              alt="Gorod Shipping"
+              src="/images/gorod-marine-white.png"
+              alt="Gorod Marine"
               className="logo-img"
             />
           </a>
