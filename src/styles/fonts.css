@@ -14,10 +14,44 @@
   font-display: swap;
 }
 
+/* Articulat CF - Extra Bold / Bold (Display Typeface 1) */
 @font-face {
   font-family: 'Articulat CF';
-  src: local('Articulat CF Extra Bold'), local('ArticulatCF-ExtraBold'), local('Articulat CF');
+  src: local('Articulat CF Extra Bold'),
+       local('ArticulatCF-ExtraBold'),
+       local('Articulat CF Extrabold'),
+       local('Articulat CF-ExtraBold'),
+       local('Articulat CF Bold'),
+       local('ArticulatCF-Bold'),
+       local('Articulat CF Heavy'),
+       local('Articulat CF');
   font-weight: 700 900;
   font-style: normal;
+  font-display: swap;
+}
+
+/* Articulat CF - Regular / Normal / Medium */
+@font-face {
+  font-family: 'Articulat CF';
+  src: local('Articulat CF Regular'),
+       local('ArticulatCF-Regular'),
+       local('Articulat CF Normal'),
+       local('ArticulatCF-Normal'),
+       local('Articulat CF Medium'),
+       local('ArticulatCF-Medium'),
+       local('Articulat CF');
+  font-weight: 400 600;
+  font-style: normal;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: 'Articulat CF';
+  src: local('Articulat CF Italic'),
+       local('ArticulatCF-Italic'),
+       local('Articulat CF Extra Bold Italic'),
+       local('ArticulatCF-ExtraBoldItalic');
+  font-weight: 100 900;
+  font-style: italic;
   font-display: swap;
 }

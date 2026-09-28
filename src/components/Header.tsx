@@ -30,11 +30,14 @@ export const Header: React.FC<HeaderProps> = ({
   useEffect(() => {
     const handleScroll = () => {
       const currentScrollY = window.scrollY;
-      const isPastTop = currentScrollY > 40;
+      const heroEl = document.getElementById('main-screen');
+      const heroHeight = heroEl ? heroEl.offsetHeight : window.innerHeight;
+      // Only switch to scrolled state when user scrolls out of the hero section
+      const isPastHero = currentScrollY > heroHeight - 100;
 
-      setIsScrolled(isPastTop);
+      setIsScrolled(isPastHero);
 
-      if (isPastTop && currentScrollY > 100 && currentScrollY > lastScrollY && !menuOpen) {
+      if (isPastHero && currentScrollY > 100 && currentScrollY > lastScrollY && !menuOpen) {
         setScrollDown(true);
       } else {
         setScrollDown(false);
@@ -46,6 +49,46 @@ export const Header: React.FC<HeaderProps> = ({
     window.addEventListener('scroll', handleScroll, { passive: true });
     return () => window.removeEventListener('scroll', handleScroll);
   }, [lastScrollY, menuOpen]);
+
+  const [activeSection, setActiveSection] = useState<string | null>(null);
+
+  useEffect(() => {
+    const handleActiveTrack = () => {
+      const scrollY = window.scrollY;
+      const viewMiddle = scrollY + 200;
+
+      const aboutEl = document.getElementById('about');
+      const servicesEl = document.getElementById('services');
+      const contactEl = document.getElementById('contact');
+
+      if (contactEl && viewMiddle >= contactEl.offsetTop - 120) {
+        setActiveSection('contact');
+      } else if (servicesEl && viewMiddle >= servicesEl.offsetTop - 120) {
+        setActiveSection('services');
+      } else if (aboutEl && viewMiddle >= aboutEl.offsetTop - 120) {
+        setActiveSection('about');
+      } else {
+        setActiveSection(null);
+      }
+    };
+
+    window.addEventListener('scroll', handleActiveTrack, { passive: true });
+    handleActiveTrack();
+    return () => window.removeEventListener('scroll', handleActiveTrack);
+  }, []);
+
+  const handleSmoothScroll = (e: React.MouseEvent<HTMLAnchorElement>, targetId: string) => {
+    e.preventDefault();
+    const el = document.getElementById(targetId);
+    if (el) {
+      const lenis = (window as unknown as { __lenis?: { scrollTo: (target: HTMLElement, options: Record<string, unknown>) => void } }).__lenis;
+      if (lenis && typeof lenis.scrollTo === 'function') {
+        lenis.scrollTo(el, { duration: 1.2, offset: -70 });
+      } else {
+        el.scrollIntoView({ behavior: 'smooth' });
+      }
+    }
+  };
 
   return (
     <header
@@ -73,13 +116,35 @@ export const Header: React.FC<HeaderProps> = ({
         </div>
 
         <nav className="header__nav-links">
-          <a href="#about" className="header__nav-item">About Us</a>
-          <a href="#services" className="header__nav-item">Services</a>
-          <a href="#contact" className="header__nav-item">Contact</a>
+          <a
+            href="#about"
+            className={`header__nav-item ${activeSection === 'about' ? '--active' : ''}`}
+            onClick={(e) => handleSmoothScroll(e, 'about')}
+          >
+            About Us
+          </a>
+          <a
+            href="#services"
+            className={`header__nav-item ${activeSection === 'services' ? '--active' : ''}`}
+            onClick={(e) => handleSmoothScroll(e, 'services')}
+          >
+            Services
+          </a>
+          <a
+            href="#contact"
+            className={`header__nav-item ${activeSection === 'contact' ? '--active' : ''}`}
+            onClick={(e) => handleSmoothScroll(e, 'contact')}
+          >
+            Contact
+          </a>
         </nav>
 
         <div className="header__actions">
-          <a href="#contact" className="header__enquire-btn">
+          <a
+            href="#contact"
+            className="header__enquire-btn"
+            onClick={(e) => handleSmoothScroll(e, 'contact')}
+          >
             <span>Enquire Now</span>
             <span className="header__enquire-arrow">→</span>
           </a>

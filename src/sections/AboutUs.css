@@ -1,0 +1,318 @@
+/* ======================================================
+   ABOUT US SECTION - EXACT REFERENCE REDESIGN
+   Clean White Background, Editorial Maritime Layout
+   ====================================================== */
+
+.about-section-ref {
+  position: relative;
+  background-color: #ffffff;
+  padding: 100px clamp(24px, 5vw, 80px) 90px;
+  overflow: hidden;
+  box-sizing: border-box;
+}
+
+.about-ref-container {
+  max-width: 1360px;
+  margin: 0 auto;
+  display: flex;
+  flex-direction: column;
+  gap: 56px;
+}
+
+/* ------------------------------------------------------
+   TOP TWO-COLUMN GRID (Narrative + Shaped Image)
+   ------------------------------------------------------ */
+.about-top-grid {
+  display: grid;
+  grid-template-columns: 1.15fr 0.85fr;
+  gap: clamp(40px, 5vw, 84px);
+  align-items: center;
+}
+
+/* Left Narrative Column */
+.about-narrative-col {
+  display: flex;
+  flex-direction: column;
+}
+
+.about-eyebrow-tag {
+  font-family: 'Articulat CF', var(--font-display, sans-serif);
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  color: #007a87;
+  margin-bottom: 14px;
+  display: inline-block;
+}
+
+.about-main-headline {
+  font-family: 'Articulat CF', var(--font-display, sans-serif);
+  font-size: clamp(38px, 4.4vw, 62px);
+  font-weight: 800;
+  line-height: 1.08;
+  letter-spacing: -0.025em;
+  color: #0c1e28;
+  margin: 0 0 16px 0;
+}
+
+.about-main-headline-italic {
+  display: block;
+  font-style: italic;
+  font-weight: 700;
+  color: #006873;
+}
+
+.about-headline-divider {
+  width: 28px;
+  height: 2px;
+  background-color: #0c1e28;
+  margin-bottom: 22px;
+  border-radius: 2px;
+}
+
+.about-lead-paragraph {
+  font-family: 'Articulat CF', var(--font-body, sans-serif);
+  font-size: 14.5px;
+  line-height: 1.68;
+  color: #4b5862;
+  margin: 0 0 38px 0;
+  max-width: 580px;
+}
+
+/* 4-Column Horizontal Stats Row */
+.about-stats-row {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: clamp(14px, 2vw, 24px);
+  align-items: flex-start;
+}
+
+.about-stat-item {
+  display: flex;
+  flex-direction: column;
+}
+
+.about-stat-icon-box {
+  width: 36px;
+  height: 36px;
+  border-radius: 8px;
+  background-color: #e6f4f6;
+  color: #006873;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin-bottom: 14px;
+  transition: transform 0.3s ease, background-color 0.3s ease;
+}
+
+.about-stat-item:hover .about-stat-icon-box {
+  transform: translateY(-2px) scale(1.05);
+  background-color: #d4eff2;
+}
+
+.about-stat-number {
+  font-family: 'Articulat CF', var(--font-display, sans-serif);
+  font-size: clamp(24px, 2.2vw, 30px);
+  font-weight: 800;
+  color: #0c1e28;
+  line-height: 1.1;
+  margin-bottom: 4px;
+  letter-spacing: -0.01em;
+}
+
+.about-stat-title {
+  font-family: 'Articulat CF', var(--font-display, sans-serif);
+  font-size: 10px;
+  font-weight: 700;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: #006873;
+  margin-bottom: 4px;
+}
+
+.about-stat-caption {
+  font-family: 'Articulat CF', var(--font-body, sans-serif);
+  font-size: 11px;
+  line-height: 1.45;
+  color: #6d7d8b;
+  margin: 0;
+}
+
+/* Right Shaped Image Column */
+.about-image-wrapper {
+  position: relative;
+  width: 100%;
+  display: flex;
+  justify-content: flex-end;
+  perspective: 1000px;
+}
+
+/* Soft Cyan Background Geometric Accent */
+.about-image-backdrop-accent {
+  position: absolute;
+  top: 18%;
+  left: 2%;
+  width: 140px;
+  height: 80px;
+  background: #d8edf3;
+  border-radius: 12px;
+  transform: skewX(-20deg);
+  z-index: 1;
+  opacity: 0.85;
+  pointer-events: none;
+  transition: transform 0.4s ease;
+}
+
+.about-image-container {
+  position: relative;
+  width: 100%;
+  max-width: 580px;
+  height: 480px;
+  z-index: 2;
+  will-change: transform, opacity;
+  filter: drop-shadow(0 20px 35px rgba(6, 24, 32, 0.12));
+}
+
+.about-vessel-photo {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  object-position: center;
+  display: block;
+  clip-path: url(#aboutVesselClipPath);
+  -webkit-clip-path: url(#aboutVesselClipPath);
+  transition: filter 0.5s ease;
+}
+
+.about-image-container:hover .about-vessel-photo {
+  filter: brightness(1.03) contrast(1.02);
+}
+
+/* ------------------------------------------------------
+   BOTTOM ROW: OUR VISION DOSSIER CARD
+   ------------------------------------------------------ */
+.about-vision-banner {
+  background: #f1f7f9;
+  border-radius: 14px;
+  padding: 34px 44px;
+  display: grid;
+  grid-template-columns: 0.85fr 1px 2.15fr;
+  align-items: center;
+  gap: 36px;
+  box-sizing: border-box;
+  border: 1px solid rgba(0, 104, 115, 0.08);
+}
+
+.about-vision-left {
+  display: flex;
+  flex-direction: column;
+}
+
+.about-vision-tag {
+  font-family: 'Articulat CF', var(--font-display, sans-serif);
+  font-size: 10.5px;
+  font-weight: 800;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+  color: #006873;
+  margin-bottom: 8px;
+}
+
+.about-vision-heading {
+  font-family: 'Articulat CF', var(--font-display, sans-serif);
+  font-size: clamp(21px, 2vw, 27px);
+  font-weight: 800;
+  line-height: 1.2;
+  color: #0c1e28;
+  margin: 0 0 12px 0;
+  letter-spacing: -0.01em;
+}
+
+.about-vision-heading-italic {
+  font-style: italic;
+  font-weight: 700;
+  color: #006873;
+}
+
+.about-vision-divider {
+  width: 24px;
+  height: 2px;
+  background-color: #0c1e28;
+  border-radius: 2px;
+}
+
+.about-vision-vertical-rule {
+  width: 1px;
+  height: 100%;
+  min-height: 80px;
+  background-color: #d1e2e6;
+}
+
+.about-vision-right {
+  display: flex;
+  align-items: center;
+}
+
+.about-vision-paragraph {
+  font-family: 'Articulat CF', var(--font-body, sans-serif);
+  font-size: 13.5px;
+  line-height: 1.68;
+  color: #4a5763;
+  margin: 0;
+}
+
+/* ------------------------------------------------------
+   RESPONSIVE BREAKPOINTS
+   ------------------------------------------------------ */
+@media (max-width: 1100px) {
+  .about-top-grid {
+    grid-template-columns: 1fr;
+    gap: 48px;
+  }
+
+  .about-image-wrapper {
+    justify-content: center;
+  }
+
+  .about-image-container {
+    max-width: 100%;
+    height: 400px;
+  }
+
+  .about-vision-banner {
+    grid-template-columns: 1fr;
+    gap: 24px;
+    padding: 28px 24px;
+  }
+
+  .about-vision-vertical-rule {
+    display: none;
+  }
+}
+
+@media (max-width: 768px) {
+  .about-section-ref {
+    padding: 70px 20px 60px;
+  }
+
+  .about-stats-row {
+    grid-template-columns: repeat(2, 1fr);
+    gap: 24px 16px;
+  }
+
+  .about-image-container {
+    height: 320px;
+  }
+}
+
+@media (max-width: 480px) {
+  .about-stats-row {
+    grid-template-columns: 1fr 1fr;
+    gap: 20px 12px;
+  }
+
+  .about-main-headline {
+    font-size: 34px;
+  }
+}
