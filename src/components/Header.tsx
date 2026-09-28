@@ -30,14 +30,11 @@ export const Header: React.FC<HeaderProps> = ({
   useEffect(() => {
     const handleScroll = () => {
       const currentScrollY = window.scrollY;
-      const hero = document.getElementById('main-screen');
-      const isPastHero = hero
-        ? hero.getBoundingClientRect().bottom <= 80
-        : currentScrollY > 100;
+      const isPastTop = currentScrollY > 40;
 
-      setIsScrolled(isPastHero);
+      setIsScrolled(isPastTop);
 
-      if (isPastHero && currentScrollY > 100 && currentScrollY > lastScrollY && !menuOpen) {
+      if (isPastTop && currentScrollY > 100 && currentScrollY > lastScrollY && !menuOpen) {
         setScrollDown(true);
       } else {
         setScrollDown(false);
@@ -65,7 +62,12 @@ export const Header: React.FC<HeaderProps> = ({
             <img
               src="/images/gorod-marine-white.png"
               alt="Gorod Marine"
-              className="logo-img"
+              className="logo-img logo-img--white"
+            />
+            <img
+              src="/images/gorod-marine-black.png"
+              alt="Gorod Marine"
+              className="logo-img logo-img--black"
             />
           </a>
         </div>
