@@ -2048,37 +2048,598 @@ button {
 }
 
 /* =========================================================
-   TRI-PANEL BROCHURE UI (HIGH-END MARITIME EDITORIAL)
+   TRI-PANEL BROCHURE UI (AUTHENTIC PAPER UNFOLDING MARITIME EDITORIAL)
 ========================================================== */
 .brochure-showcase-stage {
   width: 100%;
   display: flex;
-  justify-content: center;
+  flex-direction: column;
   align-items: center;
-  padding: 10px 0 20px;
+  padding: 10px 0 40px;
+  position: relative;
+  user-select: none;
 }
 
-.tri-brochure {
+/* --- TACTILE HIGH-END TOOLBAR --- */
+.brochure-toolbar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  width: 100%;
+  max-width: 1220px;
+  margin-bottom: 22px;
+  padding: 7px 12px 7px 18px;
+  background: rgba(255, 255, 255, 0.92);
+  backdrop-filter: blur(14px);
+  -webkit-backdrop-filter: blur(14px);
+  border: 1px solid rgba(0, 104, 115, 0.16);
+  border-radius: 999px;
+  box-shadow: 
+    0 8px 24px -8px rgba(5, 30, 36, 0.08),
+    0 2px 6px rgba(0, 0, 0, 0.03);
+  z-index: 25;
+}
+
+.brochure-toolbar__brand {
+  display: flex;
+  align-items: center;
+  gap: 11px;
+}
+
+.brochure-toolbar__compass-box {
+  width: 26px;
+  height: 26px;
+  border-radius: 50%;
+  background: #E6EFF0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: var(--deep-cyan);
+}
+
+.brochure-toolbar__compass {
+  animation: spinSlow 30s linear infinite;
+}
+
+@keyframes spinSlow {
+  from { transform: rotate(0deg); }
+  to { transform: rotate(360deg); }
+}
+
+.brochure-toolbar__meta {
+  display: flex;
+  flex-direction: column;
+  gap: 1px;
+}
+
+.brochure-toolbar__title {
+  font-family: var(--font-body);
+  font-size: 11px;
+  font-weight: 800;
+  letter-spacing: 0.14em;
+  color: #0A1C22;
+  text-transform: uppercase;
+}
+
+.brochure-toolbar__sub {
+  font-family: var(--font-body);
+  font-size: 9px;
+  font-weight: 600;
+  letter-spacing: 0.12em;
+  color: #728285;
+  text-transform: uppercase;
+  transition: color 0.3s ease;
+}
+
+.brochure-toolbar__actions {
+  display: flex;
+  align-items: center;
+}
+
+.brochure-toolbar__toggle-btn {
+  display: flex;
+  align-items: center;
+  gap: 7px;
+  padding: 7px 16px;
+  border-radius: 999px;
+  border: none;
+  font-family: var(--font-body);
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: 0.06em;
+  cursor: pointer;
+  transition: all 0.25s cubic-bezier(0.16, 1, 0.3, 1);
+  outline: none;
+}
+
+.brochure-toolbar__toggle-btn.--is-closed {
+  background: #006873;
+  color: #ffffff;
+  box-shadow: 0 4px 14px rgba(0, 104, 115, 0.35);
+}
+
+.brochure-toolbar__toggle-btn.--is-closed:hover {
+  background: #005660;
+  transform: translateY(-1px);
+  box-shadow: 0 6px 18px rgba(0, 104, 115, 0.45);
+}
+
+.brochure-toolbar__toggle-btn.--is-open {
+  background: #EEF4F5;
+  color: #073E45;
+}
+
+.brochure-toolbar__toggle-btn.--is-open:hover {
+  background: #E1EBEB;
+  color: #002B30;
+  transform: translateY(-1px);
+}
+
+/* --- MOBILE TABS (< 1024px) --- */
+.brochure-mobile-tabs {
+  display: none;
+  width: 100%;
+  max-width: 540px;
+  background: #EEF4F5;
+  padding: 4px;
+  border-radius: 10px;
+  margin-bottom: 16px;
+  gap: 4px;
+}
+
+.mobile-tab-btn {
+  flex: 1;
+  padding: 9px 8px;
+  border-radius: 7px;
+  border: none;
+  background: transparent;
+  font-family: var(--font-body);
+  font-size: 11.5px;
+  font-weight: 700;
+  letter-spacing: 0.02em;
+  color: #55666A;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  white-space: nowrap;
+  text-overflow: ellipsis;
+  overflow: hidden;
+}
+
+.mobile-tab-btn.--active {
+  background: #006873;
+  color: #ffffff;
+  box-shadow: 0 2px 8px rgba(0, 104, 115, 0.25);
+}
+
+/* --- BROCHURE STAGE WRAPPER (PERSPECTIVE RIG) --- */
+.brochure-stage-wrapper {
   width: 100%;
   max-width: 1280px;
-  min-height: 770px;
-  display: grid;
-  grid-template-columns: 1.02fr 0.85fr 1.25fr;
-  border-radius: 8px;
-  overflow: hidden;
-  background: #ffffff;
-  box-shadow: 
-    0 35px 80px -15px rgba(5, 30, 36, 0.28),
-    0 15px 35px -5px rgba(0, 0, 0, 0.12),
-    0 0 0 1px rgba(0, 0, 0, 0.04);
   position: relative;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  perspective: 1600px;
+  perspective-origin: 50% 48%;
+  transform-style: preserve-3d;
+  padding: 10px 10px 30px;
 }
 
+/* --- REALISTIC DIFFUSED GROUND SHADOW --- */
+.brochure-ground-shadow {
+  position: absolute;
+  bottom: 0px;
+  height: 38px;
+  pointer-events: none;
+  z-index: 1;
+  border-radius: 50%;
+  transition: 
+    left 0.92s cubic-bezier(0.22, 1, 0.36, 1),
+    right 0.92s cubic-bezier(0.22, 1, 0.36, 1),
+    transform 0.4s ease,
+    opacity 0.4s ease;
+}
+
+.brochure-ground-shadow.--closed {
+  left: 38%;
+  right: 38%;
+  background: radial-gradient(ellipse at 50% 50%, rgba(5, 30, 36, 0.38) 0%, rgba(5, 30, 36, 0.08) 55%, transparent 75%);
+  filter: blur(12px);
+  transform: translateY(14px) scaleY(0.6);
+}
+
+.brochure-stage-wrapper:has(.tri-brochure--closed:hover) .brochure-ground-shadow.--closed {
+  transform: translateY(20px) scaleY(0.68) scaleX(1.05);
+  opacity: 0.9;
+}
+
+.brochure-ground-shadow.--open {
+  left: 5%;
+  right: 5%;
+  background: radial-gradient(ellipse at 50% 50%, rgba(5, 30, 36, 0.22) 0%, rgba(5, 30, 36, 0.05) 55%, transparent 75%);
+  filter: blur(18px);
+  transform: translateY(12px) scaleY(0.5);
+}
+
+/* --- THE TRIFOLD BROCHURE CONTAINER --- */
+.tri-brochure {
+  width: 100%;
+  min-height: 600px;
+  height: 600px;
+  display: flex;
+  align-items: stretch;
+  position: relative;
+  z-index: 5;
+  transform-style: preserve-3d;
+  transition: 
+    max-width 0.82s cubic-bezier(0.16, 1, 0.3, 1),
+    transform 0.35s ease;
+}
+
+/* CLOSED STATE: Authentic slender trifold brochure panel (380px x 600px) */
+.tri-brochure--closed {
+  max-width: 380px;
+  cursor: pointer;
+  transform: translateY(0);
+  transition: max-width 0.75s cubic-bezier(0.4, 0, 0.2, 1), transform 0.35s ease;
+}
+
+/* Tactile 3D leaflet hover lift when closed */
+.tri-brochure--closed:not(.tri-brochure--open):hover {
+  transform: translateY(-5px);
+}
+
+.tri-brochure--closed:not(.tri-brochure--open):hover .brochure-panel-wrap--left {
+  transform: translateY(-2px) rotateY(-4deg) translateZ(8px);
+  transition: transform 0.35s cubic-bezier(0.2, 0.8, 0.2, 1);
+  box-shadow: 
+    6px 16px 32px -4px rgba(3, 18, 24, 0.42),
+    0 0 0 1px rgba(255, 255, 255, 0.12);
+}
+
+/* OPEN STATE: 1140px x 600px completely flat 3-panel brochure spread (3x 380px equal panels) */
+.tri-brochure--open {
+  max-width: 1140px;
+  cursor: default;
+  transform: none;
+  transition: max-width 0.85s cubic-bezier(0.16, 1, 0.3, 1), transform 0.35s ease;
+}
+
+/* --- 3-PANEL FLEX/3D WRAPPERS --- */
+.brochure-panel-wrap {
+  position: relative;
+  display: flex;
+  transform-style: preserve-3d;
+  box-sizing: border-box;
+  height: 100%;
+}
+
+/* PANEL 1: LEFT WING / COVER - 380px EQUAL WIDTH */
+.brochure-panel-wrap--left {
+  position: relative;
+  z-index: 20;
+  transform-style: preserve-3d;
+  transform-origin: right center;
+  flex: 1 0 380px;
+  width: 380px;
+  min-width: 380px;
+  max-width: 380px;
+  opacity: 1 !important;
+  transition: transform 0.75s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.tri-brochure--closed .brochure-panel-wrap--left {
+  border-radius: 3px;
+  transform: rotateY(0deg) translateZ(2px);
+}
+
+.tri-brochure--open .brochure-panel-wrap--left {
+  border-radius: 3px 0 0 3px;
+  animation: bookCoverOpen 0.88s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+}
+
+/* Folded Brochure Underlay: Peeks out on the right edge when closed */
+.brochure-flap-underlay {
+  position: absolute;
+  top: 1px;
+  bottom: 1px;
+  left: 3px;
+  right: -5px;
+  background: #021a20;
+  border-radius: 3px;
+  pointer-events: none;
+  z-index: -1;
+  box-shadow: 
+    3px 0 8px -1px rgba(0, 0, 0, 0.35),
+    1px 0 2px rgba(0, 0, 0, 0.2);
+  opacity: 1;
+  transition: opacity 0.3s ease;
+}
+
+.tri-brochure--open .brochure-flap-underlay {
+  opacity: 0;
+}
+
+/* Paper Score Fold on Left Edge */
+.brochure-left-fold-line {
+  position: absolute;
+  left: 0;
+  top: 0;
+  bottom: 0;
+  width: 2px;
+  z-index: 15;
+  pointer-events: none;
+  background: linear-gradient(
+    to right,
+    rgba(255, 255, 255, 0.45) 0%,
+    rgba(255, 255, 255, 0.12) 50%,
+    rgba(0, 0, 0, 0.08) 100%
+  );
+  opacity: 0.85;
+}
+
+/* PANEL 2: CENTER PANEL / SELECTOR - 380px EQUAL WIDTH */
+.brochure-panel-wrap--center {
+  position: relative;
+  z-index: 8;
+  transform-style: preserve-3d;
+  flex: 1 0 380px;
+  width: 380px;
+  min-width: 380px;
+  max-width: 380px;
+  transform: translateZ(0);
+  transition: opacity 0.4s ease;
+}
+
+.tri-brochure--closed .brochure-panel-wrap--center {
+  opacity: 0;
+  pointer-events: none;
+  transform: translateZ(0);
+}
+
+.tri-brochure--open .brochure-panel-wrap--center {
+  opacity: 1;
+  pointer-events: auto;
+  transform: translateZ(0);
+}
+
+/* PANEL 3: RIGHT WING / 3RD PAGE - 380px EQUAL WIDTH */
+.brochure-panel-wrap--right {
+  position: relative;
+  z-index: 15;
+  transform-style: preserve-3d;
+  transform-origin: left center;
+  border-radius: 0 3px 3px 0;
+  backface-visibility: hidden;
+  -webkit-backface-visibility: hidden;
+  flex: 1 0 380px;
+  width: 380px;
+  min-width: 380px;
+  max-width: 380px;
+}
+
+.tri-brochure--closed .brochure-panel-wrap--right {
+  opacity: 0;
+  pointer-events: none;
+  transform: rotateY(-180deg);
+  transition: 
+    transform 0.7s cubic-bezier(0.4, 0, 0.2, 1),
+    opacity 0.3s ease 0.25s;
+}
+
+.tri-brochure--open .brochure-panel-wrap--right {
+  opacity: 1;
+  pointer-events: auto;
+  transform: rotateY(0deg);
+  transition: 
+    transform 0.85s cubic-bezier(0.16, 1, 0.3, 1) 0.08s,
+    opacity 0.4s ease 0.08s;
+}
+
+.brochure-panel-wrap--right.is-folding-in {
+  animation: panel3FoldIn 0.26s cubic-bezier(0.4, 0, 0.7, 1) forwards !important;
+  pointer-events: none;
+}
+
+.brochure-panel-wrap--right.is-folding-out {
+  animation: panel3FoldOut 0.38s cubic-bezier(0.16, 1, 0.3, 1) forwards !important;
+}
+
+@keyframes panel3FoldIn {
+  0% {
+    transform: rotateY(0deg);
+    filter: brightness(1);
+  }
+  100% {
+    transform: rotateY(-180deg);
+    filter: brightness(0.68);
+  }
+}
+
+@keyframes panel3FoldOut {
+  0% {
+    transform: rotateY(-180deg);
+    filter: brightness(0.7);
+  }
+  68% {
+    transform: rotateY(3.5deg);
+    filter: brightness(1.02);
+  }
+  86% {
+    transform: rotateY(-0.8deg);
+    filter: brightness(1);
+  }
+  100% {
+    transform: rotateY(0deg);
+    filter: brightness(1);
+  }
+}
+
+/* Dynamic Crease Shadow on Fold */
+.brochure-panel-wrap--right.is-folding-in .crease-occlusion--left {
+  opacity: 0.45 !important;
+  transition: opacity 0.22s ease;
+}
+
+.brochure-panel-wrap--right.is-folding-out .crease-occlusion--left {
+  opacity: 0.06 !important;
+  transition: opacity 0.32s ease;
+}
+
+/* Dynamic Sheen Sweep on Page Fold-Out */
+.brochure-panel-wrap--right.is-folding-out .panel-paper-sheen {
+  animation: pageSheenSweep 0.32s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+}
+
+@keyframes pageSheenSweep {
+  0% {
+    opacity: 0.35;
+    transform: translateX(-35%) rotate(18deg);
+  }
+  100% {
+    opacity: 0.04;
+    transform: translateX(115%) rotate(18deg);
+  }
+}
+
+/* KEYFRAMES: BOOK COVER OPEN (Pivots open in 3D arc from right crease hinge) */
+@keyframes bookCoverOpen {
+  0% {
+    transform: rotateY(0deg) translateZ(0);
+    opacity: 1;
+  }
+  30% {
+    /* Outer left edge lifts toward the viewer, anchored to the right crease */
+    transform: rotateY(-36deg) translateZ(20px);
+    opacity: 1;
+  }
+  70% {
+    transform: rotateY(3deg) translateZ(1px);
+    opacity: 1;
+  }
+  100% {
+    /* Settles flat on the spread */
+    transform: rotateY(0deg) translateZ(0);
+    opacity: 1;
+  }
+}
+
+/* KEYFRAME: SHEEN SWEEP ACROSS OPENING COVER */
+.tri-brochure--open .brochure-panel-wrap--left .panel-paper-sheen {
+  animation: coverSheenSweep 0.82s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+}
+
+@keyframes coverSheenSweep {
+  0% {
+    opacity: 0.12;
+    transform: translateX(-50%) rotate(22deg);
+  }
+  35% {
+    opacity: 0.55;
+    transform: translateX(20%) rotate(22deg);
+  }
+  100% {
+    opacity: 0.04;
+    transform: translateX(120%) rotate(22deg);
+  }
+}
+
+/* --- PAPER SCORE CREASES --- */
+.brochure-crease {
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  width: 2px;
+  z-index: 20;
+  pointer-events: none;
+  transition: opacity 0.4s ease;
+}
+
+.brochure-crease--left {
+  right: -1px;
+}
+
+.brochure-crease--right {
+  right: -1px;
+}
+
+.tri-brochure--open .brochure-crease {
+  opacity: 1;
+  background: linear-gradient(
+    to right,
+    rgba(0, 0, 0, 0.15) 0%,
+    rgba(0, 0, 0, 0.03) 45%,
+    rgba(255, 255, 255, 0.35) 55%,
+    transparent 100%
+  );
+}
+
+.tri-brochure--closed .brochure-crease {
+  opacity: 0;
+}
+
+/* Ambient Crease Occlusion (gather in fold, flat when open) */
+.crease-occlusion {
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  pointer-events: none;
+  z-index: 12;
+  transition: opacity 0.5s ease;
+}
+
+.crease-occlusion--right {
+  right: 0;
+  width: 45px;
+  background: linear-gradient(
+    to left,
+    rgba(3, 18, 24, 0.18) 0%,
+    rgba(3, 18, 24, 0.03) 18px,
+    transparent 100%
+  );
+}
+
+.crease-occlusion--left {
+  left: 0;
+  width: 45px;
+  background: linear-gradient(
+    to right,
+    rgba(3, 18, 24, 0.15) 0%,
+    rgba(3, 18, 24, 0.03) 18px,
+    transparent 100%
+  );
+}
+
+.tri-brochure--open .crease-occlusion {
+  opacity: 0.06; /* Subdued when completely flat */
+}
+
+.tri-brochure--closed .crease-occlusion {
+  opacity: 0;
+}
+
+/* Paper Surface Sheen */
+.panel-paper-sheen {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  z-index: 9;
+  background: linear-gradient(
+    135deg,
+    rgba(255, 255, 255, 0.04) 0%,
+    transparent 45%,
+    rgba(0, 0, 0, 0.02) 100%
+  );
+}
+
+/* --- COMMON PANEL BASE --- */
 .tri-panel {
   position: relative;
   display: flex;
   flex-direction: column;
   box-sizing: border-box;
+  width: 100%;
+  height: 100%;
 }
 
 /* --- PANEL 1: BRAND / COVER --- */
@@ -2089,13 +2650,30 @@ button {
   background-position: center center;
   background-repeat: no-repeat;
   color: #ffffff;
-  padding: 36px 30px 30px;
+  padding: 30px 22px 24px;
   overflow: hidden;
   display: flex;
   flex-direction: column;
   justify-content: space-between;
-  z-index: 2;
+  border-radius: 3px 0 0 3px;
   position: relative;
+  transition: border-radius 0.4s ease, box-shadow 0.4s ease;
+}
+
+/* Folded brochure closed state */
+.tri-brochure--closed .tri-panel--cover {
+  border-radius: 3px;
+  box-shadow: 
+    0 4px 12px -2px rgba(0, 0, 0, 0.18),
+    0 16px 36px -6px rgba(5, 30, 36, 0.28),
+    0 0 0 1px rgba(255, 255, 255, 0.08);
+}
+
+.tri-brochure--open .tri-panel--cover {
+  border-radius: 3px 0 0 3px;
+  box-shadow: 
+    0 18px 40px -10px rgba(5, 30, 36, 0.18),
+    0 0 0 1px rgba(0, 0, 0, 0.06);
 }
 
 .tri-panel--cover::before {
@@ -2104,11 +2682,11 @@ button {
   top: 0;
   left: 0;
   right: 0;
-  height: 48%;
+  height: 52%;
   background: linear-gradient(
     to bottom,
-    rgba(3, 24, 30, 0.45) 0%,
-    rgba(3, 24, 30, 0.15) 60%,
+    rgba(3, 24, 30, 0.5) 0%,
+    rgba(3, 24, 30, 0.16) 60%,
     transparent 100%
   );
   pointer-events: none;
@@ -2121,7 +2699,7 @@ button {
   display: flex;
   align-items: flex-start;
   justify-content: space-between;
-  gap: 16px;
+  gap: 14px;
 }
 
 .panel-cover__logo-wrap {
@@ -2130,9 +2708,9 @@ button {
 }
 
 .panel-cover__logo-img {
-  height: 38px;
+  height: 35px;
   width: auto;
-  max-width: 140px;
+  max-width: 130px;
   display: block;
   object-fit: contain;
   filter: drop-shadow(0 2px 8px rgba(0, 0, 0, 0.4));
@@ -2148,7 +2726,7 @@ button {
 
 .panel-cover__tag-text {
   font-family: var(--font-body);
-  font-size: 8.5px;
+  font-size: 8px;
   font-weight: 600;
   letter-spacing: 0.16em;
   text-transform: uppercase;
@@ -2158,24 +2736,24 @@ button {
 }
 
 .panel-cover__tag-line {
-  width: 24px;
+  width: 22px;
   height: 1.2px;
   background: rgba(255, 255, 255, 0.5);
-  margin-top: 5px;
+  margin-top: 4px;
 }
 
 .panel-cover__center {
   position: relative;
   z-index: 3;
-  margin-top: 36px;
+  margin-top: 24px;
   margin-bottom: auto;
 }
 
 .panel-cover__headline {
   font-family: var(--font-display);
-  font-size: clamp(34px, 3.2vw, 42px);
+  font-size: clamp(25px, 2.2vw, 32px);
   font-weight: 800;
-  line-height: 1.05;
+  line-height: 1.08;
   letter-spacing: -0.025em;
   color: #ffffff;
   margin: 0;
@@ -2183,7 +2761,7 @@ button {
 }
 
 .panel-cover__subline {
-  margin-top: 16px;
+  margin-top: 14px;
   display: flex;
   flex-direction: column;
   gap: 2px;
@@ -2191,9 +2769,9 @@ button {
 
 .panel-cover__subline span {
   font-family: var(--font-body);
-  font-size: 8.5px;
+  font-size: 8px;
   font-weight: 600;
-  letter-spacing: 0.16em;
+  letter-spacing: 0.15em;
   text-transform: uppercase;
   color: rgba(255, 255, 255, 0.78);
   line-height: 1.5;
@@ -2211,64 +2789,111 @@ button {
 
 .panel-cover__bottom-tag span {
   font-family: var(--font-body);
-  font-size: 8.5px;
+  font-size: 8px;
   font-weight: 600;
-  letter-spacing: 0.18em;
+  letter-spacing: 0.16em;
   text-transform: uppercase;
-  color: rgba(255, 255, 255, 0.92);
+  color: rgba(255, 255, 255, 0.9);
   line-height: 1.45;
   text-shadow: 0 2px 8px rgba(0, 0, 0, 0.7);
 }
 
-/* --- PANEL 2: SERVICE SELECTOR (SLIGHTLY MORE COMPACT, LARGER TEXT & ICONS) --- */
+/* Callout ribbon for closed state */
+.cover-unfold-callout {
+  position: absolute;
+  bottom: 24px;
+  left: 22px;
+  right: 22px;
+  z-index: 25;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  padding: 12px 18px;
+  border-radius: 999px;
+  background: #ffffff;
+  color: #006873;
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.32);
+  cursor: pointer;
+  animation: pulseCallout 2.5s infinite;
+  transition: transform 0.2s ease, background 0.2s ease;
+}
+
+.cover-unfold-callout:hover {
+  transform: translateY(-2px) scale(1.02);
+  background: #f8fafb;
+}
+
+.callout-text {
+  font-family: var(--font-body);
+  font-size: 10.5px;
+  font-weight: 800;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+}
+
+.callout-sparkle,
+.callout-arrow {
+  flex-shrink: 0;
+}
+
+@keyframes pulseCallout {
+  0%, 100% {
+    box-shadow: 0 8px 24px rgba(0, 0, 0, 0.32);
+  }
+  50% {
+    box-shadow: 0 10px 30px rgba(0, 104, 115, 0.55);
+  }
+}
+
+/* --- PANEL 2: SERVICE SELECTOR --- */
 .tri-panel--selector {
   background-color: #F7F7F4;
   color: #0A1C22;
-  padding: 34px 22px 24px;
+  padding: 26px 20px 20px;
   border-left: 1px solid rgba(0, 0, 0, 0.08);
-  box-shadow: inset 14px 0 18px -10px rgba(0, 0, 0, 0.08);
-  z-index: 3;
+  box-shadow: inset 12px 0 16px -10px rgba(0, 0, 0, 0.07);
   justify-content: space-between;
 }
 
 .selector-header {
-  margin-bottom: 14px;
+  margin-bottom: 10px;
 }
 
 .selector-eyebrow {
   display: flex;
   align-items: center;
-  gap: 8px;
+  gap: 7px;
 }
 
 .selector-eyebrow__text {
   font-family: var(--font-body);
-  font-size: 9.5px;
+  font-size: 9px;
   font-weight: 700;
-  letter-spacing: 0.18em;
+  letter-spacing: 0.16em;
   text-transform: uppercase;
   color: #6E7C80;
 }
 
 .selector-eyebrow__line {
-  width: 28px;
+  width: 24px;
   height: 1px;
   background: #CCD5D7;
 }
 
 .selector-title {
   font-family: var(--font-display);
-  font-size: 27px;
+  font-size: 23px;
   font-weight: 800;
-  line-height: 1.14;
+  line-height: 1.15;
   letter-spacing: -0.015em;
   color: #0A1C22;
-  margin: 11px 0 6px;
+  margin: 7px 0 4px;
 }
 
 .selector-subtitle {
   font-family: var(--font-body);
-  font-size: 12.5px;
+  font-size: 11.5px;
   color: #728285;
   margin: 0;
 }
@@ -2276,7 +2901,7 @@ button {
 .selector-list {
   display: flex;
   flex-direction: column;
-  gap: 5px;
+  gap: 3px;
   margin-top: 4px;
 }
 
@@ -2285,8 +2910,8 @@ button {
   align-items: center;
   justify-content: space-between;
   width: 100%;
-  padding: 10.5px 15px;
-  border-radius: 7px;
+  padding: 7.5px 12px;
+  border-radius: 6px;
   background: transparent;
   border: 1px solid transparent;
   cursor: pointer;
@@ -2298,7 +2923,7 @@ button {
 .selector-item__left {
   display: flex;
   align-items: center;
-  gap: 13px;
+  gap: 10px;
 }
 
 .selector-item__icon {
@@ -2308,7 +2933,7 @@ button {
 
 .selector-item__title {
   font-family: var(--font-body);
-  font-size: 14.5px;
+  font-size: 13px;
   font-weight: 600;
   letter-spacing: -0.01em;
   transition: color 0.2s ease;
@@ -2317,12 +2942,12 @@ button {
 .selector-item__right {
   display: flex;
   align-items: center;
-  gap: 10px;
+  gap: 8px;
 }
 
 .selector-item__index {
   font-family: var(--font-body);
-  font-size: 11.5px;
+  font-size: 10.5px;
   font-weight: 600;
   letter-spacing: 0.05em;
   transition: color 0.2s ease;
@@ -2352,11 +2977,11 @@ button {
   transform: translateX(2px);
 }
 
-/* Active Item Styles (matches reference exactly) */
+/* Active Item Styles */
 .selector-item.--active {
   background: #073E45;
   color: #ffffff;
-  box-shadow: 0 4px 14px rgba(7, 62, 69, 0.24);
+  box-shadow: 0 3px 12px rgba(7, 62, 69, 0.24);
 }
 
 .selector-item.--active .selector-item__icon,
@@ -2371,42 +2996,63 @@ button {
 
 .selector-footer {
   margin-top: auto;
-  padding-top: 14px;
+  padding-top: 10px;
   display: flex;
   align-items: center;
-  gap: 8px;
+  gap: 7px;
 }
 
 .selector-footer__text {
   font-family: var(--font-body);
-  font-size: 8.5px;
+  font-size: 8px;
   font-weight: 600;
-  letter-spacing: 0.16em;
+  letter-spacing: 0.15em;
   text-transform: uppercase;
   color: #8C9C9F;
 }
 
 .selector-footer__line {
-  width: 22px;
+  width: 20px;
   height: 1px;
   background: #CCD5D7;
 }
 
-/* --- PANEL 3: DYNAMIC SERVICE DETAILS (SPACIOUS, LARGER TEXT & CARDS) --- */
+/* --- PANEL 3: DYNAMIC SERVICE DETAILS --- */
 .tri-panel--details {
   background-color: #ffffff;
   color: #0A1C22;
   border-left: 1px solid rgba(0, 0, 0, 0.08);
-  box-shadow: inset 14px 0 18px -10px rgba(0, 0, 0, 0.06);
-  z-index: 2;
+  box-shadow: inset 12px 0 16px -10px rgba(0, 0, 0, 0.05);
+  border-radius: 0 8px 8px 0;
+  overflow: hidden;
   display: flex;
   flex-direction: column;
+}
+
+.details-mobile-back-bar {
+  display: none;
+  padding: 10px 16px;
+  background: #F7F7F4;
+  border-bottom: 1px solid rgba(0, 0, 0, 0.08);
+}
+
+.details-mobile-back-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  background: transparent;
+  border: none;
+  color: var(--deep-cyan);
+  font-family: var(--font-body);
+  font-size: 12.5px;
+  font-weight: 700;
+  cursor: pointer;
 }
 
 .details-hero {
   position: relative;
   width: 100%;
-  height: 230px;
+  height: 180px;
   overflow: hidden;
   background-color: #062b32;
   flex-shrink: 0;
@@ -2418,7 +3064,6 @@ button {
   object-fit: cover;
   object-position: center;
   display: block;
-  transition: opacity 0.3s ease;
 }
 
 .details-hero__overlay {
@@ -2441,7 +3086,7 @@ button {
   top: 0;
   left: 0;
   right: 0;
-  padding: 22px 28px;
+  padding: 16px 22px;
   display: flex;
   align-items: flex-start;
   justify-content: space-between;
@@ -2452,21 +3097,21 @@ button {
 .details-hero__meta-left {
   display: flex;
   flex-direction: column;
-  gap: 3px;
+  gap: 2px;
 }
 
 .details-hero__index {
   font-family: var(--font-body);
-  font-size: 9.5px;
+  font-size: 9px;
   font-weight: 600;
-  letter-spacing: 0.16em;
+  letter-spacing: 0.15em;
   color: rgba(255, 255, 255, 0.85);
   text-transform: uppercase;
 }
 
 .details-hero__category {
   font-family: var(--font-body);
-  font-size: 12px;
+  font-size: 11px;
   font-weight: 700;
   letter-spacing: 0.14em;
   text-transform: uppercase;
@@ -2483,7 +3128,7 @@ button {
 
 .details-hero__meta-right span {
   font-family: var(--font-body);
-  font-size: 9px;
+  font-size: 8.5px;
   font-weight: 600;
   letter-spacing: 0.14em;
   text-transform: uppercase;
@@ -2492,7 +3137,7 @@ button {
 }
 
 .details-body {
-  padding: 28px 32px 24px;
+  padding: 16px 20px 14px;
   display: flex;
   flex-direction: column;
   flex: 1;
@@ -2501,7 +3146,7 @@ button {
 .details-badge {
   display: inline-flex;
   align-items: center;
-  gap: 8px;
+  gap: 6px;
 }
 
 .details-badge__icon {
@@ -2511,36 +3156,36 @@ button {
 
 .details-badge__text {
   font-family: var(--font-body);
-  font-size: 10.5px;
+  font-size: 9.5px;
   font-weight: 700;
-  letter-spacing: 0.16em;
+  letter-spacing: 0.15em;
   text-transform: uppercase;
   color: #6E7C80;
 }
 
 .details-headline {
   font-family: var(--font-display);
-  font-size: 28px;
+  font-size: 20px;
   font-weight: 800;
   line-height: 1.16;
-  letter-spacing: -0.018em;
+  letter-spacing: -0.015em;
   color: #0A1C22;
-  margin: 11px 0 9px;
+  margin: 6px 0 5px;
 }
 
 .details-description {
   font-family: var(--font-body);
-  font-size: 13px;
-  line-height: 1.58;
+  font-size: 11.5px;
+  line-height: 1.48;
   color: #506165;
-  margin: 0 0 22px;
+  margin: 0 0 12px;
 }
 
 .details-grid {
   display: grid;
   grid-template-columns: 1fr 1fr;
-  gap: 16px 20px;
-  margin-bottom: 24px;
+  gap: 8px 12px;
+  margin-bottom: 12px;
 }
 
 .capability-card {
@@ -2551,7 +3196,7 @@ button {
 .capability-card__header {
   display: flex;
   align-items: center;
-  gap: 7px;
+  gap: 6px;
 }
 
 .capability-card__icon {
@@ -2561,75 +3206,138 @@ button {
 
 .capability-card__title {
   font-family: var(--font-body);
-  font-size: 12px;
+  font-size: 10.5px;
   font-weight: 700;
-  letter-spacing: 0.03em;
+  letter-spacing: 0.02em;
   text-transform: uppercase;
   color: #0A1C22;
 }
 
 .capability-card__desc {
   font-family: var(--font-body);
-  font-size: 11px;
-  line-height: 1.48;
+  font-size: 10px;
+  line-height: 1.36;
   color: #55666A;
-  margin: 5px 0 0;
+  margin: 2px 0 0;
 }
 
 .details-cta-btn {
   display: flex;
   align-items: center;
   justify-content: center;
-  gap: 10px;
+  gap: 8px;
   width: 100%;
-  height: 50px;
+  height: 38px;
   border-radius: 6px;
   background: #063B42;
   color: #ffffff;
   font-family: var(--font-body);
-  font-size: 12px;
+  font-size: 11.5px;
   font-weight: 700;
-  letter-spacing: 0.16em;
+  letter-spacing: 0.15em;
   text-transform: uppercase;
   text-decoration: none;
   transition: all 0.25s cubic-bezier(0.16, 1, 0.3, 1);
-  box-shadow: 0 4px 16px rgba(6, 59, 66, 0.22);
+  box-shadow: 0 3px 14px rgba(6, 59, 66, 0.2);
   margin-top: auto;
 }
 
 .details-cta-arrow {
-  font-size: 15px;
+  font-size: 14px;
   transition: transform 0.2s ease;
 }
 
 .details-cta-btn:hover {
   background: #00505a;
   transform: translateY(-1px);
-  box-shadow: 0 6px 20px rgba(6, 59, 66, 0.32);
+  box-shadow: 0 5px 18px rgba(6, 59, 66, 0.3);
 }
 
 .details-cta-btn:hover .details-cta-arrow {
   transform: translateX(4px);
 }
 
-/* Responsive adjustments */
+/* --- TACTILE HINT ROW --- */
+.brochure-hint-row {
+  margin-top: 14px;
+  display: flex;
+  justify-content: center;
+}
+
+.brochure-hint-pill {
+  font-family: var(--font-body);
+  font-size: 10px;
+  font-weight: 600;
+  letter-spacing: 0.08em;
+  color: #6C7D82;
+  background: rgba(255, 255, 255, 0.65);
+  padding: 5px 15px;
+  border-radius: 999px;
+  border: 1px solid rgba(0, 104, 115, 0.1);
+  backdrop-filter: blur(8px);
+}
+
+/* --- RESPONSIVE ADJUSTMENTS --- */
 @media (max-width: 1024px) {
-  .tri-brochure {
-    grid-template-columns: 1fr;
-    max-width: 580px;
+  .brochure-stage-wrapper {
+    perspective: none;
+    padding: 0;
   }
 
-  .tri-panel--selector,
-  .tri-panel--details {
-    border-left: none;
-    border-top: 1px solid rgba(0, 0, 0, 0.08);
+  .brochure-toolbar__sub,
+  .brochure-hint-row {
+    display: none;
+  }
+
+  .brochure-mobile-tabs {
+    display: flex;
+  }
+
+  .tri-brochure {
+    display: block;
+    max-width: 520px !important;
+    min-height: auto;
+    height: auto;
+    transform: none !important;
     box-shadow: none;
   }
 
-  .panel-cover__visual-wrap {
-    height: 260px;
+  .brochure-ground-shadow,
+  .brochure-flap-underlay,
+  .brochure-left-fold-line {
+    display: none;
+  }
+
+  .brochure-crease,
+  .crease-occlusion {
+    display: none;
+  }
+
+  .brochure-panel-wrap {
+    display: none;
+    transform: none !important;
+    animation: none !important;
+    width: 100% !important;
+    min-width: 100% !important;
+    flex: none !important;
+    opacity: 1 !important;
+    height: auto;
+  }
+
+  .brochure-panel-wrap.--mobile-active {
+    display: flex;
+  }
+
+  .tri-panel {
+    border-radius: 8px !important;
+    border: 1px solid rgba(0, 0, 0, 0.08);
+  }
+
+  .details-mobile-back-bar {
+    display: block;
   }
 }
+
 
 
 /* --- CONTACT / CTA SECTION --- */
