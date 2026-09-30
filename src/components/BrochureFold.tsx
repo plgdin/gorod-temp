@@ -466,7 +466,7 @@ export default function BrochureFold() {
             <div className="panel-cover__header">
               <a href="/" className="panel-cover__logo-wrap" aria-label="Gorod Marine Home">
                 <img
-                  src="/images/gorod-marine-white.png"
+                  src="/images/gorod-marine-teal.png"
                   alt="Gorod Marine"
                   className="panel-cover__logo-img"
                 />

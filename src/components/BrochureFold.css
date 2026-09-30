@@ -128,7 +128,7 @@
 }
 
 .panel-content-cover {
-  background-color: #05262e;
+  background-color: #071820;
   background-image: url('/images/panel1-background.jpg');
   background-size: cover;
   background-position: center center;
@@ -173,12 +173,13 @@
 }
 
 .panel-cover__logo-img {
-  height: 38px;
+  height: 60px;
   width: auto;
-  max-width: 140px;
+  max-width: 190px;
   display: block;
   object-fit: contain;
-  filter: drop-shadow(0 2px 8px rgba(0, 0, 0, 0.4));
+  /* teal logo on dark bg — no filter needed */
+  filter: none;
 }
 
 .panel-cover__tag {
