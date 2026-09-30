@@ -1,5 +1,5 @@
 import React from 'react';
-import { TrifoldBrochure } from '@/components/ui/TrifoldBrochure';
+import BrochureFold from '../components/BrochureFold';
 
 export const Services: React.FC = () => {
   return (
@@ -22,7 +22,7 @@ export const Services: React.FC = () => {
           </p>
         </div>
 
-        <TrifoldBrochure />
+        <BrochureFold />
       </div>
     </section>
   );

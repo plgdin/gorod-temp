@@ -1,0 +1,199 @@
+.fold-brochure-section {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  width: 100%;
+  padding: clamp(36px, 4vw, 58px) 24px 32px;
+  box-sizing: border-box;
+  background: #e8edf0;
+}
+
+.fold-brochure {
+  position: relative;
+  display: block;
+  width: min(1282px, calc(100vw - 48px));
+  aspect-ratio: 1282 / 772;
+  padding: 0;
+  border: 0;
+  background: transparent;
+  appearance: none;
+  cursor: pointer;
+  perspective: 1800px;
+  text-align: left;
+  -webkit-tap-highlight-color: transparent;
+}
+
+.fold-brochure:focus-visible {
+  outline: 3px solid #087082;
+  outline-offset: 8px;
+}
+
+.fold-brochure:disabled {
+  cursor: default;
+}
+
+.fold-brochure__panel,
+.fold-brochure__face {
+  position: absolute;
+  top: 0;
+  height: 100%;
+}
+
+.fold-brochure__panel {
+  transform-style: preserve-3d;
+  transition: transform 1650ms cubic-bezier(0.45, 0, 0.2, 1);
+}
+
+.fold-brochure__face {
+  inset: 0;
+  width: 100%;
+  background-image: var(--brochure-image);
+  background-repeat: no-repeat;
+  backface-visibility: hidden;
+  -webkit-backface-visibility: hidden;
+  box-shadow: 0 8px 20px rgb(15 37 44 / 10%);
+}
+
+.fold-brochure__face--back,
+.fold-brochure__face--reverse {
+  transform: rotateY(180deg);
+}
+
+/* Only the OUTER edges are rounded: the inside edges form paper creases. */
+.fold-brochure__face--left,
+.fold-brochure__face--back {
+  border-radius: 5px 0 0 5px;
+}
+
+.fold-brochure__face--right,
+.fold-brochure__face--reverse {
+  border-radius: 0 5px 5px 0;
+}
+
+.fold-brochure__face--left::after,
+.fold-brochure__face--right::after,
+.fold-brochure__panel--middle::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+}
+
+/* Subtle lighting along the folds, without changing the artwork. */
+.fold-brochure__face--left::after {
+  background: linear-gradient(
+    90deg,
+    transparent 88%,
+    rgb(5 29 35 / 13%)
+  );
+}
+
+.fold-brochure__face--right::after {
+  background: linear-gradient(
+    90deg,
+    rgb(5 29 35 / 12%),
+    transparent 12%
+  );
+}
+
+/* Plain paper color on the reverse of the right panel. */
+.fold-brochure__face--reverse {
+  background: linear-gradient(
+    90deg,
+    #e8e9e3,
+    #fafaf6 12%,
+    #f3f3ed 92%,
+    #d9dedb
+  );
+}
+
+/*
+ * The measurements below crop the three original panels from the
+ * uploaded 1919 × 965 screenshot. Do not change these measurements
+ * if using that exact image.
+ */
+.fold-brochure__panel--middle {
+  left: 32.6833%;
+  width: 27.3011%;
+  z-index: 1;
+  background-image: var(--brochure-image);
+  background-size: 548.286% 125%;
+  background-position: 46.59% 100%;
+  background-repeat: no-repeat;
+  box-shadow: 0 12px 26px rgb(15 37 44 / 14%);
+}
+
+.fold-brochure__panel--middle::after {
+  background: linear-gradient(
+    90deg,
+    rgb(5 29 35 / 8%),
+    transparent 8%,
+    transparent 92%,
+    rgb(5 29 35 / 8%)
+  );
+}
+
+.fold-brochure__panel--right {
+  left: 59.9844%;
+  width: 40.0156%;
+  z-index: 2;
+  transform-origin: left center;
+
+  /* Positive rotation makes this flap fold BACKWARD. */
+  /* The smaller folded width lets it tuck behind the middle panel. */
+  transform: rotateY(180deg) scaleX(0.683);
+}
+
+.fold-brochure__face--right {
+  background-size: 374.074% 125%;
+  background-position: 76.88% 100%;
+}
+
+.fold-brochure__panel--left {
+  left: 0;
+  width: 32.6833%;
+  z-index: 3;
+  transform-origin: right center;
+
+  /* Shift the closed cover left so it cannot cover the right panel's text. */
+  transform: translateX(-16.47%) rotateY(180deg);
+}
+
+.fold-brochure__face--left {
+  background-size: 457.995% 125%;
+  background-position: 20.8% 100%;
+}
+
+/* First click opens right; second click opens left. */
+.fold-brochure--step-1 .fold-brochure__panel--right,
+.fold-brochure--step-2 .fold-brochure__panel--right,
+.fold-brochure--step-2 .fold-brochure__panel--left {
+  transform: rotateY(0deg);
+}
+
+/* On one closing click: left closes first, then right follows. */
+.fold-brochure--closing .fold-brochure__panel--left {
+  transition-duration: 1300ms;
+}
+
+.fold-brochure--closing .fold-brochure__panel--right {
+  transition-duration: 1300ms;
+  transition-delay: 1100ms;
+}
+
+.fold-brochure__hint {
+  margin: 25px 0 0;
+  color: #53666c;
+  font: 600 11px/1.5 Arial, sans-serif;
+  letter-spacing: 0.14em;
+  text-align: center;
+  text-transform: uppercase;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .fold-brochure__panel,
+  .fold-brochure--closing .fold-brochure__panel {
+    transition-duration: 0.01ms;
+    transition-delay: 0ms;
+  }
+}
