@@ -1,4 +1,6 @@
 import React, { useState, useEffect, useRef } from 'react';
+import gsap from 'gsap';
+import { ScrollTrigger } from 'gsap/ScrollTrigger';
 import {
   Anchor,
   Users,
@@ -27,10 +29,13 @@ import {
   LifeBuoy,
   Zap,
   Waves,
-  FolderClosed,
-  BookOpen,
-  ArrowRight,
+  Globe,
+  MapPin,
+  Award,
+  Star,
 } from 'lucide-react';
+
+gsap.registerPlugin(ScrollTrigger);
 
 interface Capability {
   title: string;
@@ -346,42 +351,41 @@ export const TrifoldBrochure: React.FC = () => {
   const [flipState, setFlipState] = useState<'idle' | 'folding-in' | 'folding-out'>('idle');
 
   const stageWrapperRef = useRef<HTMLDivElement>(null);
-  const hasAutoFoldedRef = useRef<boolean>(false);
   const flipTimeout1Ref = useRef<ReturnType<typeof setTimeout> | null>(null);
   const flipTimeout2Ref = useRef<ReturnType<typeof setTimeout> | null>(null);
 
-  // Auto fold-out when user enters the Services section
+  // Auto fold-out when user scrolls down to the Services section
   useEffect(() => {
     const el = stageWrapperRef.current;
     if (!el) return;
 
-    const observer = new IntersectionObserver(
-      (entries) => {
-        const entry = entries[0];
-        if (entry.isIntersecting && !hasAutoFoldedRef.current) {
-          hasAutoFoldedRef.current = true;
-          // Natural 350ms delay so user catches the fold-out action as they arrive
-          setTimeout(() => {
-            setIsOpen(true);
-            setHasInteracted(true);
-          }, 350);
-        }
+    const trigger = ScrollTrigger.create({
+      trigger: el,
+      start: 'top 75%',
+      end: 'bottom 15%',
+      onEnter: () => {
+        setHasInteracted(true);
+        setIsOpen(true);
       },
-      { threshold: 0.25 }
-    );
+      onLeave: () => {
+        setIsOpen(false);
+      },
+      onEnterBack: () => {
+        setHasInteracted(true);
+        setIsOpen(true);
+      },
+      onLeaveBack: () => {
+        setIsOpen(false);
+      },
+    });
 
-    observer.observe(el);
     return () => {
-      observer.disconnect();
+      trigger.kill();
       if (flipTimeout1Ref.current) clearTimeout(flipTimeout1Ref.current);
       if (flipTimeout2Ref.current) clearTimeout(flipTimeout2Ref.current);
     };
   }, []);
 
-  const handleToggle = () => {
-    setHasInteracted(true);
-    setIsOpen((prev) => !prev);
-  };
 
   const handleOpen = () => {
     if (!isOpen) {
@@ -392,24 +396,24 @@ export const TrifoldBrochure: React.FC = () => {
 
   // Interactive fold-in / fold-out when selecting a service in Panel 2
   const handleServiceSelect = (idx: number) => {
-    if (idx === selectedIndex) return;
+    if (idx === selectedIndex || flipState !== 'idle') return;
 
     if (flipTimeout1Ref.current) clearTimeout(flipTimeout1Ref.current);
     if (flipTimeout2Ref.current) clearTimeout(flipTimeout2Ref.current);
 
-    // 1. Fold the 3rd page in onto the 2nd layer
+    // 1. Fold the 3rd page in onto the 2nd layer (0deg -> -180deg)
     setFlipState('folding-in');
 
-    // 2. When folded over the 2nd layer (260ms), swap data and unfold out from the 2nd layer
+    // 2. When folded over the 2nd layer (900ms matches panel3ServiceFoldIn + pause), swap data and unfold
     flipTimeout1Ref.current = setTimeout(() => {
       setSelectedIndex(idx);
       setFlipState('folding-out');
 
-      // 3. Return to resting flat state with zero pop
+      // 3. Return to resting flat state after panel3ServiceFoldOut completes (900ms + buffer)
       flipTimeout2Ref.current = setTimeout(() => {
         setFlipState('idle');
-      }, 380);
-    }, 260);
+      }, 920);
+    }, 900);
   };
 
   const currentService = SERVICES[selectedIndex] || SERVICES[0];
@@ -417,45 +421,6 @@ export const TrifoldBrochure: React.FC = () => {
 
   return (
     <div className={`brochure-showcase-stage ${isOpen ? 'is-brochure-open' : 'is-brochure-closed'}`}>
-      {/* =========================================================
-          HIGH-END MARITIME TOOLBAR
-      ========================================================== */}
-      <div className="brochure-toolbar">
-        <div className="brochure-toolbar__brand">
-          <div className="brochure-toolbar__compass-box">
-            <Compass size={14} className="brochure-toolbar__compass" />
-          </div>
-          <div className="brochure-toolbar__meta">
-            <span className="brochure-toolbar__title">TRIFOLD BROCHURE</span>
-            <span className="brochure-toolbar__sub">
-              {isOpen ? '8 CORE VESSEL SERVICES • FULL SPREAD' : 'VESSEL AGENCY SPECIFICATION • FOLDED'}
-            </span>
-          </div>
-        </div>
-
-        {/* Primary Toggle Action: Unfold Flat / Fold Closed */}
-        <div className="brochure-toolbar__actions">
-          <button
-            type="button"
-            className={`brochure-toolbar__toggle-btn ${isOpen ? '--is-open' : '--is-closed'}`}
-            onClick={handleToggle}
-            aria-expanded={isOpen}
-            aria-label={isOpen ? 'Fold brochure closed' : 'Unfold brochure flat'}
-          >
-            {isOpen ? (
-              <>
-                <FolderClosed size={14} className="btn-icon" />
-                <span>Fold Closed</span>
-              </>
-            ) : (
-              <>
-                <BookOpen size={14} className="btn-icon" />
-                <span>Open Brochure</span>
-              </>
-            )}
-          </button>
-        </div>
-      </div>
 
       {/* =========================================================
           MOBILE TAB BAR (< 1024px)
@@ -515,7 +480,8 @@ export const TrifoldBrochure: React.FC = () => {
           onClick={handleOpen}
         >
           {/* =========================================================
-              PANEL 1: BRAND / COVER (LEFT)
+              PANEL 1: BRAND / COVER (LEFT) — TWO-FACE PANEL
+              Front = Cover (closed), Inside = Company Overview (open)
           ========================================================== */}
           <div
             className={`brochure-panel-wrap brochure-panel-wrap--left ${
@@ -525,7 +491,12 @@ export const TrifoldBrochure: React.FC = () => {
             {/* Physical Folded Brochure Underlay (folded inner flap edge visible when closed) */}
             <div className="brochure-flap-underlay" aria-hidden="true" />
 
-            <section className="tri-panel tri-panel--cover" aria-label="Gorod Marine Brand Cover">
+            {/* === FRONT FACE: COVER (visible when closed) === */}
+            <section
+              className={`tri-panel tri-panel--cover panel-face panel-face--front ${isOpen ? 'panel-face--hidden' : 'panel-face--visible'}`}
+              aria-label="Gorod Marine Brand Cover"
+              aria-hidden={isOpen}
+            >
               {/* Paper Score Fold on Left Edge */}
               <div className="brochure-left-fold-line" aria-hidden="true" />
 
@@ -537,7 +508,7 @@ export const TrifoldBrochure: React.FC = () => {
               <div className="panel-cover__header">
                 <a href="/" className="panel-cover__logo-wrap" aria-label="Gorod Marine Home">
                   <img
-                    src="/images/gorod-marine-white.png"
+                    src="/images/gorod-marine-teal.png"
                     alt="Gorod Marine"
                     className="panel-cover__logo-img"
                   />
@@ -566,17 +537,91 @@ export const TrifoldBrochure: React.FC = () => {
 
               {/* Bottom Tagline / Spec */}
               <div className="panel-cover__bottom-tag">
-                <span>PORT AGENCY &bull; VESSEL SUPPORT &bull; BRED ON INTEGRITY</span>
+                <span>GOROD MARINE SERVICES REGISTER</span>
+                <span>24/7 PORT SHORE-SIDE ATTENDANCE</span>
+              </div>
+            </section>
+
+            {/* === INSIDE FACE: COMPANY OVERVIEW (visible when open) === */}
+            <section
+              className={`tri-panel tri-panel--inside panel-face panel-face--back ${isOpen ? 'panel-face--visible' : 'panel-face--hidden'}`}
+              aria-label="Gorod Marine Company Overview"
+              aria-hidden={!isOpen}
+            >
+              <div className="panel-paper-sheen" aria-hidden="true" />
+              <div className="crease-occlusion crease-occlusion--right" aria-hidden="true" />
+
+              {/* Inside Cover Header */}
+              <div className="inside-cover__header">
+                <div className="inside-cover__eyebrow">
+                  <span className="inside-cover__eyebrow-text">ABOUT US</span>
+                  <span className="inside-cover__eyebrow-line" />
+                </div>
+                <img
+                  src="/images/gorod-marine-teal.png"
+                  alt="Gorod Marine"
+                  className="inside-cover__logo"
+                />
               </div>
 
-              {/* When closed: Interactive Callout Button to open like a book */}
-              {!isOpen && (
-                <div className="cover-unfold-callout">
-                  <BookOpen size={15} className="callout-sparkle" />
-                  <span className="callout-text">CLICK TO OPEN BROCHURE</span>
-                  <ArrowRight size={15} className="callout-arrow" />
+              {/* Mission Statement */}
+              <div className="inside-cover__mission">
+                <h3 className="inside-cover__headline">
+                  Your vessel's<br />
+                  trusted partner<br />
+                  on shore.
+                </h3>
+                <p className="inside-cover__desc">
+                  Gorod Marine delivers comprehensive port agency and vessel 
+                  husbandry services across major ports, ensuring every call 
+                  is safe, compliant, and efficient.
+                </p>
+              </div>
+
+              {/* Key Stats Grid */}
+              <div className="inside-cover__stats">
+                <div className="inside-stat">
+                  <Globe size={16} strokeWidth={2} className="inside-stat__icon" />
+                  <span className="inside-stat__value">15+</span>
+                  <span className="inside-stat__label">Ports Covered</span>
                 </div>
-              )}
+                <div className="inside-stat">
+                  <Ship size={16} strokeWidth={2} className="inside-stat__icon" />
+                  <span className="inside-stat__value">500+</span>
+                  <span className="inside-stat__label">Vessel Calls / Year</span>
+                </div>
+                <div className="inside-stat">
+                  <Clock size={16} strokeWidth={2} className="inside-stat__icon" />
+                  <span className="inside-stat__value">24/7</span>
+                  <span className="inside-stat__label">Shore Attendance</span>
+                </div>
+                <div className="inside-stat">
+                  <Award size={16} strokeWidth={2} className="inside-stat__icon" />
+                  <span className="inside-stat__value">ISO</span>
+                  <span className="inside-stat__label">Certified Operations</span>
+                </div>
+              </div>
+
+              {/* Trust Badges */}
+              <div className="inside-cover__trust">
+                <div className="trust-badge">
+                  <Star size={11} strokeWidth={2.5} className="trust-badge__star" />
+                  <span>FONASBA Certified</span>
+                </div>
+                <div className="trust-badge">
+                  <ShieldCheck size={11} strokeWidth={2.5} className="trust-badge__star" />
+                  <span>ISPS Compliant</span>
+                </div>
+                <div className="trust-badge">
+                  <MapPin size={11} strokeWidth={2.5} className="trust-badge__star" />
+                  <span>Indian Ports Specialist</span>
+                </div>
+              </div>
+
+              {/* Bottom */}
+              <div className="inside-cover__footer">
+                <span>SELECT A SERVICE IN THE NEXT PANEL →</span>
+              </div>
             </section>
 
             {/* Fold Crease Score Line 1 */}
