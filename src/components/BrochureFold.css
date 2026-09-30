@@ -1,3 +1,6 @@
+/* =========================================================
+   INTERACTIVE THREE-FOLD BROCHURE WITH REAL CONTENT & SCROLL
+========================================================== */
 .fold-brochure-section {
   display: flex;
   flex-direction: column;
@@ -6,21 +9,23 @@
   padding: clamp(36px, 4vw, 58px) 24px 32px;
   box-sizing: border-box;
   background: #e8edf0;
+  position: relative;
+  overflow: visible;
 }
 
 .fold-brochure {
   position: relative;
   display: block;
   width: min(1282px, calc(100vw - 48px));
-  aspect-ratio: 1282 / 772;
+  min-height: 772px;
+  height: 772px;
   padding: 0;
   border: 0;
   background: transparent;
-  appearance: none;
-  cursor: pointer;
   perspective: 1800px;
   text-align: left;
   -webkit-tap-highlight-color: transparent;
+  box-sizing: border-box;
 }
 
 .fold-brochure:focus-visible {
@@ -37,6 +42,7 @@
   position: absolute;
   top: 0;
   height: 100%;
+  box-sizing: border-box;
 }
 
 .fold-brochure__panel {
@@ -47,11 +53,10 @@
 .fold-brochure__face {
   inset: 0;
   width: 100%;
-  background-image: var(--brochure-image);
-  background-repeat: no-repeat;
   backface-visibility: hidden;
   -webkit-backface-visibility: hidden;
   box-shadow: 0 8px 20px rgb(15 37 44 / 10%);
+  overflow: hidden;
 }
 
 .fold-brochure__face--back,
@@ -59,15 +64,15 @@
   transform: rotateY(180deg);
 }
 
-/* Only the OUTER edges are rounded: the inside edges form paper creases. */
+/* Only OUTER edges are rounded: inside edges form paper creases */
 .fold-brochure__face--left,
 .fold-brochure__face--back {
-  border-radius: 5px 0 0 5px;
+  border-radius: 6px 0 0 6px;
 }
 
 .fold-brochure__face--right,
 .fold-brochure__face--reverse {
-  border-radius: 0 5px 5px 0;
+  border-radius: 0 6px 6px 0;
 }
 
 .fold-brochure__face--left::after,
@@ -77,9 +82,10 @@
   position: absolute;
   inset: 0;
   pointer-events: none;
+  z-index: 5;
 }
 
-/* Subtle lighting along the folds, without changing the artwork. */
+/* Subtle lighting along the folds */
 .fold-brochure__face--left::after {
   background: linear-gradient(
     90deg,
@@ -96,8 +102,9 @@
   );
 }
 
-/* Plain paper color on the reverse of the right panel. */
-.fold-brochure__face--reverse {
+/* Plain paper color on the reverse of the folds */
+.fold-brochure__face--reverse,
+.fold-brochure__face--back {
   background: linear-gradient(
     90deg,
     #e8e9e3,
@@ -107,20 +114,165 @@
   );
 }
 
-/*
- * The measurements below crop the three original panels from the
- * uploaded 1919 × 965 screenshot. Do not change these measurements
- * if using that exact image.
- */
+/* =========================================================
+   PANEL 1 (LEFT): BRAND COVER
+========================================================== */
+.fold-brochure__panel--left {
+  left: 0;
+  width: 32.6833%;
+  z-index: 3;
+  transform-origin: right center;
+
+  /* Shift the closed cover left so it cannot cover the right panel's text */
+  transform: translateX(-16.47%) rotateY(180deg);
+}
+
+.panel-content-cover {
+  background-color: #05262e;
+  background-image: url('/images/panel1-background.jpg');
+  background-size: cover;
+  background-position: center center;
+  background-repeat: no-repeat;
+  color: #ffffff;
+  padding: 34px 28px 28px;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  height: 100%;
+}
+
+.panel-content-cover::before {
+  content: "";
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 48%;
+  background: linear-gradient(
+    to bottom,
+    rgba(3, 24, 30, 0.45) 0%,
+    rgba(3, 24, 30, 0.15) 60%,
+    transparent 100%
+  );
+  pointer-events: none;
+  z-index: 1;
+}
+
+.panel-cover__header {
+  position: relative;
+  z-index: 3;
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 16px;
+}
+
+.panel-cover__logo-wrap {
+  display: inline-block;
+  text-decoration: none;
+}
+
+.panel-cover__logo-img {
+  height: 38px;
+  width: auto;
+  max-width: 140px;
+  display: block;
+  object-fit: contain;
+  filter: drop-shadow(0 2px 8px rgba(0, 0, 0, 0.4));
+}
+
+.panel-cover__tag {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
+  text-align: right;
+  gap: 2px;
+}
+
+.panel-cover__tag-text {
+  font-family: var(--font-body);
+  font-size: 8.5px;
+  font-weight: 600;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+  color: rgba(255, 255, 255, 0.85);
+  line-height: 1.35;
+  text-shadow: 0 1px 4px rgba(0, 0, 0, 0.4);
+}
+
+.panel-cover__tag-line {
+  width: 24px;
+  height: 1.2px;
+  background: rgba(255, 255, 255, 0.5);
+  margin-top: 5px;
+}
+
+.panel-cover__center {
+  position: relative;
+  z-index: 3;
+  margin-top: 36px;
+  margin-bottom: auto;
+}
+
+.panel-cover__headline {
+  font-family: var(--font-display);
+  font-size: clamp(32px, 2.9vw, 40px);
+  font-weight: 800;
+  line-height: 1.05;
+  letter-spacing: -0.025em;
+  color: #ffffff;
+  margin: 0;
+  text-shadow: 0 2px 14px rgba(0, 0, 0, 0.4);
+}
+
+.panel-cover__subline {
+  margin-top: 16px;
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+
+.panel-cover__subline span {
+  font-family: var(--font-body);
+  font-size: 8.5px;
+  font-weight: 600;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+  color: rgba(255, 255, 255, 0.78);
+  line-height: 1.5;
+  text-shadow: 0 1px 6px rgba(0, 0, 0, 0.5);
+}
+
+.panel-cover__bottom-tag {
+  position: relative;
+  z-index: 3;
+  margin-top: auto;
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+
+.panel-cover__bottom-tag span {
+  font-family: var(--font-body);
+  font-size: 8.5px;
+  font-weight: 600;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  color: rgba(255, 255, 255, 0.92);
+  line-height: 1.45;
+  text-shadow: 0 2px 8px rgba(0, 0, 0, 0.7);
+}
+
+/* =========================================================
+   PANEL 2 (MIDDLE): INTERACTIVE SERVICES SELECTOR
+========================================================== */
 .fold-brochure__panel--middle {
   left: 32.6833%;
   width: 27.3011%;
   z-index: 1;
-  background-image: var(--brochure-image);
-  background-size: 548.286% 125%;
-  background-position: 46.59% 100%;
-  background-repeat: no-repeat;
+  background-color: #F7F7F4;
   box-shadow: 0 12px 26px rgb(15 37 44 / 14%);
+  overflow: hidden;
 }
 
 .fold-brochure__panel--middle::after {
@@ -133,45 +285,422 @@
   );
 }
 
+.panel-content-selector {
+  padding: 30px 18px 22px;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  height: 100%;
+  color: #0A1C22;
+  box-sizing: border-box;
+}
+
+.selector-header {
+  margin-bottom: 12px;
+}
+
+.selector-eyebrow {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.selector-eyebrow__text {
+  font-family: var(--font-body);
+  font-size: 9px;
+  font-weight: 700;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  color: #6E7C80;
+}
+
+.selector-eyebrow__line {
+  width: 26px;
+  height: 1px;
+  background: #CCD5D7;
+}
+
+.selector-title {
+  font-family: var(--font-display);
+  font-size: 24px;
+  font-weight: 800;
+  line-height: 1.15;
+  letter-spacing: -0.015em;
+  color: #0A1C22;
+  margin: 10px 0 5px;
+}
+
+.selector-subtitle {
+  font-family: var(--font-body);
+  font-size: 11.5px;
+  color: #728285;
+  margin: 0;
+}
+
+.selector-list {
+  display: flex;
+  flex-direction: column;
+  gap: 5px;
+  margin-top: 4px;
+}
+
+.selector-item {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  width: 100%;
+  padding: 9.5px 12px;
+  border-radius: 6px;
+  background: transparent;
+  border: 1px solid transparent;
+  cursor: pointer;
+  transition: all 0.2s cubic-bezier(0.16, 1, 0.3, 1);
+  text-align: left;
+  outline: none;
+}
+
+.selector-item__left {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.selector-item__icon {
+  flex-shrink: 0;
+  transition: color 0.2s ease;
+}
+
+.selector-item__title {
+  font-family: var(--font-body);
+  font-size: 13.5px;
+  font-weight: 600;
+  letter-spacing: -0.01em;
+  transition: color 0.2s ease;
+}
+
+.selector-item__right {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.selector-item__index {
+  font-family: var(--font-body);
+  font-size: 11px;
+  font-weight: 600;
+  letter-spacing: 0.05em;
+  transition: color 0.2s ease;
+}
+
+.selector-item__arrow {
+  flex-shrink: 0;
+  transition: transform 0.2s ease, color 0.2s ease;
+}
+
+/* Inactive */
+.selector-item:not(.--active) {
+  color: #10272F;
+}
+
+.selector-item:not(.--active) .selector-item__icon {
+  color: #10272F;
+}
+
+.selector-item:not(.--active) .selector-item__index,
+.selector-item:not(.--active) .selector-item__arrow {
+  color: #8C9C9F;
+}
+
+.selector-item:not(.--active):hover {
+  background: rgba(0, 0, 0, 0.05);
+  transform: translateX(2px);
+}
+
+/* Active */
+.selector-item.--active {
+  background: #073E45;
+  color: #ffffff;
+  box-shadow: 0 4px 14px rgba(7, 62, 69, 0.24);
+}
+
+.selector-item.--active .selector-item__icon,
+.selector-item.--active .selector-item__title,
+.selector-item.--active .selector-item__arrow {
+  color: #ffffff;
+}
+
+.selector-item.--active .selector-item__index {
+  color: rgba(255, 255, 255, 0.8);
+}
+
+.selector-footer {
+  margin-top: auto;
+  padding-top: 12px;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.selector-footer__text {
+  font-family: var(--font-body);
+  font-size: 8px;
+  font-weight: 600;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: #8C9C9F;
+}
+
+.selector-footer__line {
+  width: 20px;
+  height: 1px;
+  background: #CCD5D7;
+}
+
+/* =========================================================
+   PANEL 3 (RIGHT): DYNAMIC SERVICE DETAILS
+========================================================== */
 .fold-brochure__panel--right {
   left: 59.9844%;
   width: 40.0156%;
   z-index: 2;
   transform-origin: left center;
 
-  /* Positive rotation makes this flap fold BACKWARD. */
-  /* The smaller folded width lets it tuck behind the middle panel. */
+  /* Positive rotation makes this flap fold BACKWARD */
+  /* The smaller folded width lets it tuck behind the middle panel */
   transform: rotateY(180deg) scaleX(0.683);
 }
 
-.fold-brochure__face--right {
-  background-size: 374.074% 125%;
-  background-position: 76.88% 100%;
+.panel-content-details {
+  background-color: #ffffff;
+  color: #0A1C22;
+  display: flex;
+  flex-direction: column;
+  height: 100%;
 }
 
-.fold-brochure__panel--left {
+.details-hero {
+  position: relative;
+  width: 100%;
+  height: 220px;
+  overflow: hidden;
+  background-color: #062b32;
+  flex-shrink: 0;
+}
+
+.details-hero__img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  object-position: center;
+  display: block;
+  transition: opacity 0.3s ease;
+}
+
+.details-hero__overlay {
+  position: absolute;
+  top: 0;
   left: 0;
-  width: 32.6833%;
-  z-index: 3;
-  transform-origin: right center;
-
-  /* Shift the closed cover left so it cannot cover the right panel's text. */
-  transform: translateX(-16.47%) rotateY(180deg);
+  right: 0;
+  bottom: 0;
+  background: linear-gradient(
+    to bottom,
+    rgba(5, 25, 30, 0.8) 0%,
+    rgba(5, 25, 30, 0.1) 45%,
+    rgba(5, 25, 30, 0.65) 100%
+  );
+  pointer-events: none;
 }
 
-.fold-brochure__face--left {
-  background-size: 457.995% 125%;
-  background-position: 20.8% 100%;
+.details-hero__meta {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  padding: 18px 24px;
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  z-index: 2;
+  color: #ffffff;
 }
 
-/* First click opens right; second click opens left. */
+.details-hero__meta-left {
+  display: flex;
+  flex-direction: column;
+  gap: 3px;
+}
+
+.details-hero__index {
+  font-family: var(--font-body);
+  font-size: 9px;
+  font-weight: 600;
+  letter-spacing: 0.16em;
+  color: rgba(255, 255, 255, 0.85);
+  text-transform: uppercase;
+}
+
+.details-hero__category {
+  font-family: var(--font-body);
+  font-size: 11.5px;
+  font-weight: 700;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: #ffffff;
+}
+
+.details-hero__meta-right {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
+  text-align: right;
+  gap: 2px;
+}
+
+.details-hero__meta-right span {
+  font-family: var(--font-body);
+  font-size: 8.5px;
+  font-weight: 600;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: rgba(255, 255, 255, 0.92);
+  line-height: 1.35;
+}
+
+.details-body {
+  padding: 24px 28px 22px;
+  display: flex;
+  flex-direction: column;
+  flex: 1;
+}
+
+.details-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.details-badge__icon {
+  color: #063B42;
+  flex-shrink: 0;
+}
+
+.details-badge__text {
+  font-family: var(--font-body);
+  font-size: 10px;
+  font-weight: 700;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+  color: #6E7C80;
+}
+
+.details-headline {
+  font-family: var(--font-display);
+  font-size: 26px;
+  font-weight: 800;
+  line-height: 1.16;
+  letter-spacing: -0.018em;
+  color: #0A1C22;
+  margin: 10px 0 8px;
+}
+
+.details-description {
+  font-family: var(--font-body);
+  font-size: 12.5px;
+  line-height: 1.55;
+  color: #506165;
+  margin: 0 0 18px;
+}
+
+.details-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 14px 18px;
+  margin-bottom: 22px;
+}
+
+.capability-card {
+  display: flex;
+  flex-direction: column;
+}
+
+.capability-card__header {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.capability-card__icon {
+  color: #063B42;
+  flex-shrink: 0;
+}
+
+.capability-card__title {
+  font-family: var(--font-body);
+  font-size: 11.5px;
+  font-weight: 700;
+  letter-spacing: 0.03em;
+  text-transform: uppercase;
+  color: #0A1C22;
+}
+
+.capability-card__desc {
+  font-family: var(--font-body);
+  font-size: 10.5px;
+  line-height: 1.45;
+  color: #55666A;
+  margin: 4px 0 0;
+}
+
+.details-cta-btn {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+  width: 100%;
+  height: 48px;
+  border-radius: 6px;
+  background: #063B42;
+  color: #ffffff;
+  font-family: var(--font-body);
+  font-size: 11.5px;
+  font-weight: 700;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+  text-decoration: none;
+  transition: all 0.25s cubic-bezier(0.16, 1, 0.3, 1);
+  box-shadow: 0 4px 16px rgba(6, 59, 66, 0.22);
+  margin-top: auto;
+}
+
+.details-cta-arrow {
+  font-size: 14px;
+  transition: transform 0.2s ease;
+}
+
+.details-cta-btn:hover {
+  background: #00505a;
+  transform: translateY(-1px);
+  box-shadow: 0 6px 20px rgba(6, 59, 66, 0.32);
+}
+
+.details-cta-btn:hover .details-cta-arrow {
+  transform: translateX(4px);
+}
+
+/* =========================================================
+   STEP-BY-STEP FOLDING TRANSFORMS
+========================================================== */
+/* First click opens right; second click opens left */
 .fold-brochure--step-1 .fold-brochure__panel--right,
-.fold-brochure--step-2 .fold-brochure__panel--right,
-.fold-brochure--step-2 .fold-brochure__panel--left {
-  transform: rotateY(0deg);
+.fold-brochure--step-2 .fold-brochure__panel--right {
+  transform: rotateY(0deg) scaleX(1);
 }
 
-/* On one closing click: left closes first, then right follows. */
+.fold-brochure--step-2 .fold-brochure__panel--left {
+  transform: translateX(0) rotateY(0deg);
+}
+
+/* On closing: left closes first, then right follows */
 .fold-brochure--closing .fold-brochure__panel--left {
   transition-duration: 1300ms;
 }
@@ -181,6 +710,7 @@
   transition-delay: 1100ms;
 }
 
+/* Hint Button */
 .fold-brochure__hint {
   margin: 25px 0 0;
   color: #53666c;
@@ -188,6 +718,17 @@
   letter-spacing: 0.14em;
   text-align: center;
   text-transform: uppercase;
+  background: transparent;
+  border: none;
+  cursor: pointer;
+  padding: 6px 16px;
+  border-radius: 20px;
+  transition: all 0.2s ease;
+}
+
+.fold-brochure__hint:hover {
+  color: #073E45;
+  background: rgba(7, 62, 69, 0.06);
 }
 
 @media (prefers-reduced-motion: reduce) {
