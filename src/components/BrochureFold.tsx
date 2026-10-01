@@ -341,8 +341,8 @@ const SERVICES: ServiceItem[] = [
 ];
 
 const prompts = [
-  'Click to open the right fold',
-  'Click to open the left fold',
+  'Click to open the cover',
+  'Click to unfold the details',
   'Click to fold the brochure again',
 ];
 
@@ -350,11 +350,11 @@ export default function BrochureFold() {
   const [fold, setFold] = useState<0 | 1 | 2>(0);
   const [closing, setClosing] = useState(false);
   const [selectedIndex, setSelectedIndex] = useState(0);
-  const [flipState, setFlipState] = useState<'idle' | 'flipping-out' | 'flipping-in'>('idle');
+  const [foldState, setFoldState] = useState<'idle' | 'folding-in' | 'folding-out'>('idle');
   const sectionRef = useRef<HTMLElement>(null);
   const unfoldTimerRef = useRef<number | null>(null);
-  const flipTimer1Ref = useRef<number | null>(null);
-  const flipTimer2Ref = useRef<number | null>(null);
+  const foldTimer1Ref = useRef<number | null>(null);
+  const foldTimer2Ref = useRef<number | null>(null);
 
   const currentService = SERVICES[selectedIndex] || SERVICES[0];
   const CurrentIcon = currentService.icon;
@@ -418,32 +418,32 @@ export default function BrochureFold() {
 
     return () => {
       if (unfoldTimerRef.current) clearTimeout(unfoldTimerRef.current);
-      if (flipTimer1Ref.current) clearTimeout(flipTimer1Ref.current);
-      if (flipTimer2Ref.current) clearTimeout(flipTimer2Ref.current);
+      if (foldTimer1Ref.current) clearTimeout(foldTimer1Ref.current);
+      if (foldTimer2Ref.current) clearTimeout(foldTimer2Ref.current);
       trigger.kill();
     };
   }, []);
 
-  // Full close and open 3D flap animation when switching service categories
+  // Fold panel 3 closed onto panel 2, swap service data, then unfold back open
   const handleServiceSelect = (idx: number) => {
-    if (idx === selectedIndex || flipState !== 'idle') return;
+    if (idx === selectedIndex || foldState !== 'idle') return;
 
-    if (flipTimer1Ref.current) clearTimeout(flipTimer1Ref.current);
-    if (flipTimer2Ref.current) clearTimeout(flipTimer2Ref.current);
+    if (foldTimer1Ref.current) clearTimeout(foldTimer1Ref.current);
+    if (foldTimer2Ref.current) clearTimeout(foldTimer2Ref.current);
 
-    // 1. Flip card to Cover Face (0deg -> 180deg)
-    setFlipState('flipping-out');
+    // 1. Fold panel 3 closed onto panel 2 (0deg → -180deg, hinged on left edge)
+    setFoldState('folding-in');
 
-    // 2. Midpoint (850ms): 750ms flip + 100ms pause to show brand cover, then flip back to reveal new service
-    flipTimer1Ref.current = window.setTimeout(() => {
+    // 2. When fully folded (800ms), swap data and unfold back
+    foldTimer1Ref.current = window.setTimeout(() => {
       setSelectedIndex(idx);
-      setFlipState('flipping-in');
+      setFoldState('folding-out');
 
-      // 3. Settle back to flat after cardFlipToService completes (850ms + buffer)
-      flipTimer2Ref.current = window.setTimeout(() => {
-        setFlipState('idle');
-      }, 870);
-    }, 850);
+      // 3. Return to flat resting state after fold-out completes (900ms + buffer)
+      foldTimer2Ref.current = window.setTimeout(() => {
+        setFoldState('idle');
+      }, 920);
+    }, 820);
   };
 
   const handleClick = useCallback((e: React.MouseEvent) => {
@@ -667,119 +667,105 @@ export default function BrochureFold() {
         {/* =========================================================
             PANEL 3 (RIGHT): DYNAMIC SERVICE DETAILS
             - Hinge on left center
-            - Closed: Folds backward away from viewer
-            - Open: Unfolds to the right showing selected service details!
-        ========================================================== */}
-        {/* =========================================================
-            PANEL 3 (RIGHT): DYNAMIC SERVICE DETAILS WITH 3D COVER FLIP
-            - Positioned in 33.333% right slot
-            - Flips in 3D: Cover Face (when switching) <-> Service Details
+            - Folds closed onto panel 2 when switching services
         ========================================================== */}
         <div
-          className="fold-brochure__panel fold-brochure__panel--right"
+          className={`fold-brochure__panel fold-brochure__panel--right${
+            foldState !== 'idle' ? ` is-${foldState}` : ''
+          }`}
           aria-hidden={fold === 0}
         >
-          <div
-            className={`panel3-card ${
-              flipState === 'flipping-out'
-                ? 'is-flipping-to-cover'
-                : flipState === 'flipping-in'
-                ? 'is-flipping-to-service'
-                : ''
-            }`}
-          >
-            {/* FACE 1: Service Details Face (Default visible) */}
-            <div className="panel3-card__face panel3-card__face--service">
-              <div className="details-flip-wrapper">
-                {/* Hero image with meta */}
-                <div className="details-hero">
-                  <img
-                    src={currentService.image}
-                    alt={currentService.title}
-                    className="details-hero__img"
-                  />
-                  <div className="details-hero__overlay" />
-                  <div className="details-hero__meta">
-                    <div className="details-hero__meta-left">
-                      <span className="details-hero__index">{currentService.number} / 08</span>
-                      <span className="details-hero__category">{currentService.category}</span>
-                    </div>
-                    <div className="details-hero__meta-right">
-                      <span>{currentService.topPhraseLine1}</span>
-                      <span>{currentService.topPhraseLine2}</span>
-                    </div>
+          {/* FRONT FACE: Service Details (visible when flat/open) */}
+          <div className="fold-brochure__face fold-brochure__face--right panel-content-details">
+            <div className="details-flip-wrapper">
+              {/* Hero image with meta */}
+              <div className="details-hero">
+                <img
+                  src={currentService.image}
+                  alt={currentService.title}
+                  className="details-hero__img"
+                />
+                <div className="details-hero__overlay" />
+                <div className="details-hero__meta">
+                  <div className="details-hero__meta-left">
+                    <span className="details-hero__index">{currentService.number} / 08</span>
+                    <span className="details-hero__category">{currentService.category}</span>
+                  </div>
+                  <div className="details-hero__meta-right">
+                    <span>{currentService.topPhraseLine1}</span>
+                    <span>{currentService.topPhraseLine2}</span>
                   </div>
                 </div>
+              </div>
 
-                {/* Details Body */}
-                <div className="details-body">
-                  <div className="details-badge">
-                    <CurrentIcon size={17} strokeWidth={2} className="details-badge__icon" />
-                    <span className="details-badge__text">{currentService.category}</span>
-                  </div>
+              {/* Details Body */}
+              <div className="details-body">
+                <div className="details-badge">
+                  <CurrentIcon size={17} strokeWidth={2} className="details-badge__icon" />
+                  <span className="details-badge__text">{currentService.category}</span>
+                </div>
 
-                  <h3 className="details-headline">{currentService.headline}</h3>
+                <h3 className="details-headline">{currentService.headline}</h3>
 
-                  <p className="details-description">{currentService.description}</p>
+                <p className="details-description">{currentService.description}</p>
 
-                  {/* 2x2 Capabilities Grid */}
-                  <div className="details-grid">
-                    {currentService.capabilities.map((cap, i) => {
-                      const CapIcon = cap.icon;
-                      return (
-                        <div key={i} className="capability-card">
-                          <div className="capability-card__header">
-                            <CapIcon size={16} strokeWidth={2} className="capability-card__icon" />
-                            <span className="capability-card__title">{cap.title}</span>
-                          </div>
-                          <p className="capability-card__desc">{cap.desc}</p>
+                {/* 2x2 Capabilities Grid */}
+                <div className="details-grid">
+                  {currentService.capabilities.map((cap, i) => {
+                    const CapIcon = cap.icon;
+                    return (
+                      <div key={i} className="capability-card">
+                        <div className="capability-card__header">
+                          <CapIcon size={16} strokeWidth={2} className="capability-card__icon" />
+                          <span className="capability-card__title">{cap.title}</span>
                         </div>
-                      );
-                    })}
-                  </div>
-
-                  {/* Enquire CTA */}
-                  <a href="#contact" className="details-cta-btn">
-                    <span>ENQUIRE NOW</span>
-                    <span className="details-cta-arrow">→</span>
-                  </a>
+                        <p className="capability-card__desc">{cap.desc}</p>
+                      </div>
+                    );
+                  })}
                 </div>
+
+                {/* Enquire CTA */}
+                <a href="#contact" className="details-cta-btn">
+                  <span>ENQUIRE NOW</span>
+                  <span className="details-cta-arrow">→</span>
+                </a>
+              </div>
+            </div>
+          </div>
+
+          {/* BACK FACE: Cover design (visible when panel folds closed onto Panel 2) */}
+          <div className="fold-brochure__face fold-brochure__face--back-cover panel-content-cover" aria-hidden="true">
+            <div className="panel-cover__header">
+              <a href="/" className="panel-cover__logo-wrap" aria-label="Gorod Marine Home" tabIndex={-1}>
+                <img
+                  src="/images/gorod-marine-teal.png"
+                  alt="Gorod Marine"
+                  className="panel-cover__logo-img"
+                />
+              </a>
+              <div className="panel-cover__tag">
+                <span className="panel-cover__tag-text">VESSEL AGENCY</span>
+                <span className="panel-cover__tag-text">WITH PURPOSE.</span>
+                <span className="panel-cover__tag-line" />
               </div>
             </div>
 
-            {/* FACE 2: Brand Cover Face (Visible when switching services!) */}
-            <div className="panel3-card__face panel3-card__face--cover panel-content-cover">
-              <div className="panel-cover__header">
-                <a href="/" className="panel-cover__logo-wrap" aria-label="Gorod Marine Home">
-                  <img
-                    src="/images/gorod-marine-teal.png"
-                    alt="Gorod Marine"
-                    className="panel-cover__logo-img"
-                  />
-                </a>
-                <div className="panel-cover__tag">
-                  <span className="panel-cover__tag-text">VESSEL AGENCY</span>
-                  <span className="panel-cover__tag-text">WITH PURPOSE.</span>
-                  <span className="panel-cover__tag-line" />
-                </div>
+            <div className="panel-cover__center">
+              <h2 className="panel-cover__headline">
+                Trusted<br />
+                support<br />
+                in every port.
+              </h2>
+              <div className="panel-cover__subline">
+                <span>PEOPLE &nbsp;/&nbsp; EXPERTISE &nbsp;/&nbsp; SOLUTIONS</span>
+                <span>FOR A SMOOTHER TOMORROW.</span>
               </div>
+            </div>
 
-              <div className="panel-cover__center">
-                <h2 className="panel-cover__headline">
-                  Trusted<br />
-                  support<br />
-                  in every port.
-                </h2>
-                <div className="panel-cover__subline">
-                  <span>PEOPLE &nbsp;/&nbsp; EXPERTISE &nbsp;/&nbsp; SOLUTIONS</span>
-                  <span>FOR A SMOOTHER TOMORROW.</span>
-                </div>
-              </div>
-
-              <div className="panel-cover__bottom-tag">
-                <span>GOROD MARINE SERVICES REGISTER</span>
-                <span>24/7 PORT SHORE-SIDE ATTENDANCE</span>
-              </div>
+            <div className="panel-cover__bottom-tag">
+              <span>GOROD MARINE SERVICES REGISTER</span>
+              <span>24/7 PORT SHORE-SIDE ATTENDANCE</span>
             </div>
           </div>
         </div>
