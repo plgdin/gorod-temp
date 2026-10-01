@@ -959,25 +959,174 @@
   transition: transform 1050ms cubic-bezier(0.32, 0, 0.2, 1) 525ms;
 }
 
-/* Hint Button */
-.fold-brochure__hint {
-  margin: 25px 0 0;
-  color: #53666c;
-  font: 600 11px/1.5 Arial, sans-serif;
-  letter-spacing: 0.14em;
-  text-align: center;
-  text-transform: uppercase;
-  background: transparent;
-  border: none;
-  cursor: pointer;
-  padding: 6px 16px;
-  border-radius: 20px;
-  transition: all 0.2s ease;
+/* When controlled by ScrollTrigger scrub on desktop */
+.fold-brochure.is-scroll-scrubbed .fold-brochure__panel--left,
+.fold-brochure.is-scroll-scrubbed .fold-brochure__panel--right {
+  transition: none !important;
 }
 
-.fold-brochure__hint:hover {
-  color: #073E45;
-  background: rgba(7, 62, 69, 0.06);
+/* Ground Contact Shadow */
+.fold-brochure__shadow {
+  position: absolute;
+  bottom: -22px;
+  left: 50%;
+  transform: translateX(-50%) scaleX(0.35);
+  width: 95%;
+  height: 38px;
+  border-radius: 50%;
+  background: radial-gradient(
+    ellipse at center,
+    rgba(2, 14, 20, 0.75) 0%,
+    rgba(2, 14, 20, 0.35) 45%,
+    transparent 75%
+  );
+  filter: blur(14px);
+  pointer-events: none;
+  z-index: 0;
+  opacity: 0.45;
+  will-change: transform, opacity;
+}
+
+/* Dynamic Paper Sheen Sweep */
+.fold-brochure__sheen {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  z-index: 8;
+  opacity: 0;
+  background: linear-gradient(
+    115deg,
+    transparent 15%,
+    rgba(255, 255, 255, 0.28) 48%,
+    rgba(255, 255, 255, 0.08) 54%,
+    transparent 82%
+  );
+  mix-blend-mode: overlay;
+  will-change: transform, opacity;
+}
+
+/* Hint Indicator */
+.fold-brochure__hint {
+  margin: 22px 0 0;
+  color: #8da4aa;
+  font: 600 11px/1.5 var(--font-body, Arial, sans-serif);
+  letter-spacing: 0.16em;
+  text-align: center;
+  text-transform: uppercase;
+  background: rgba(7, 30, 37, 0.55);
+  border: 1px solid rgba(103, 171, 175, 0.2);
+  padding: 8px 20px;
+  border-radius: 20px;
+  backdrop-filter: blur(8px);
+  pointer-events: none;
+  transition: all 0.3s ease;
+}
+
+/* Mobile Tab Selector (hidden on desktop) */
+.fold-brochure__mobile-tabs {
+  display: none;
+}
+
+/* =========================================================
+   MOBILE & TABLET RESPONSIVE LAYOUT (< 1024px)
+   Replaces squeezed 3D trifold with touch-optimized card deck
+========================================================== */
+@media (max-width: 1023px) {
+  .fold-brochure-section {
+    padding: 24px 16px;
+  }
+
+  .fold-brochure__mobile-tabs {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 6px;
+    margin-bottom: 18px;
+    width: 100%;
+    max-width: 480px;
+    padding: 4px;
+    background: rgba(4, 22, 30, 0.88);
+    border: 1px solid rgba(103, 171, 175, 0.3);
+    border-radius: 999px;
+    backdrop-filter: blur(12px);
+    z-index: 15;
+  }
+
+  .mobile-tab-btn {
+    flex: 1;
+    padding: 9px 12px;
+    border-radius: 999px;
+    font-family: var(--font-body, sans-serif);
+    font-size: 11px;
+    font-weight: 700;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    color: rgba(255, 255, 255, 0.7);
+    background: transparent;
+    border: none;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    text-align: center;
+  }
+
+  .mobile-tab-btn.--active {
+    color: #ffffff;
+    background: #006873;
+    box-shadow: 0 4px 12px rgba(0, 104, 115, 0.45);
+  }
+
+  .fold-brochure {
+    width: 100%;
+    max-width: 520px;
+    min-height: unset;
+    height: auto;
+    perspective: none;
+    transform-style: flat;
+  }
+
+  .fold-brochure__panel {
+    position: relative !important;
+    left: 0 !important;
+    width: 100% !important;
+    height: auto !important;
+    min-height: 580px !important;
+    transform: none !important;
+    transition: none !important;
+    display: none !important;
+  }
+
+  .fold-brochure__panel--active-mobile {
+    display: block !important;
+    animation: mobileTabFadeIn 0.3s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+  }
+
+  .fold-brochure__face {
+    position: relative !important;
+    inset: auto !important;
+    height: 100% !important;
+    border-radius: 12px !important;
+    box-shadow: 0 12px 32px rgba(0, 0, 0, 0.4) !important;
+  }
+
+  .fold-brochure__face--back-cover,
+  .fold-brochure__face--back {
+    display: none !important;
+  }
+
+  .fold-brochure__shadow {
+    display: none !important;
+  }
+}
+
+@keyframes mobileTabFadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(6px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
 }
 
 @media (prefers-reduced-motion: reduce) {
