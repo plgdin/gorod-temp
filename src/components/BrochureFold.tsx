@@ -548,7 +548,7 @@ export default function BrochureFold() {
       // 3. Return to flat resting state after fold-out completes
       foldTimer2Ref.current = window.setTimeout(() => {
         setFoldState('idle');
-      }, 920);
+      }, 980);
     }, 820);
   };
 
