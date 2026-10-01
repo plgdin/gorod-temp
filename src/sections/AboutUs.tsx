@@ -44,7 +44,6 @@ export const AboutUs: React.FC = () => {
   const sectionRef = useRef<HTMLElement>(null);
   const imageContainerRef = useRef<HTMLDivElement>(null);
   const backdropAccentRef = useRef<HTMLDivElement>(null);
-  const contentRef = useRef<HTMLDivElement>(null);
   const [counts, setCounts] = useState<{ [key: number]: number }>({ 0: 0, 1: 0, 2: 0 });
   const [hasAnimated, setHasAnimated] = useState(false);
 
@@ -59,7 +58,7 @@ export const AboutUs: React.FC = () => {
       gsap.fromTo(
         imageContainer,
         {
-          x: 180,
+          x: 120,
           opacity: 0.35,
           scale: 0.94,
         },
@@ -81,7 +80,7 @@ export const AboutUs: React.FC = () => {
       if (backdropAccent) {
         gsap.fromTo(
           backdropAccent,
-          { x: 100, opacity: 0 },
+          { x: 80, opacity: 0 },
           {
             x: 0,
             opacity: 0.85,
@@ -163,7 +162,7 @@ export const AboutUs: React.FC = () => {
         </defs>
       </svg>
 
-      <div className="about-ref-container" ref={contentRef}>
+      <div className="about-ref-container">
         {/* Top Grid: Left Narrative + Right Shaped Vessel Image */}
         <div className="about-top-grid">
           {/* Left Narrative Column */}
@@ -207,7 +206,7 @@ export const AboutUs: React.FC = () => {
             </div>
           </div>
 
-          {/* Right Column: Shaped Image with Smooth Scroll Pull-In Animation */}
+          {/* Right Column: Shaped Image */}
           <div className="about-image-wrapper">
             <div
               ref={backdropAccentRef}
@@ -221,26 +220,6 @@ export const AboutUs: React.FC = () => {
                 className="about-vessel-photo"
               />
             </div>
-          </div>
-        </div>
-
-        {/* Bottom Banner: Our Vision Dossier */}
-        <div className="about-vision-banner about-anim-fade">
-          <div className="about-vision-left">
-            <span className="about-vision-tag">OUR VISION</span>
-            <h3 className="about-vision-heading">
-              The New Gateway<br />
-              to a <span className="about-vision-heading-italic">New India</span>
-            </h3>
-            <div className="about-vision-divider" aria-hidden="true" />
-          </div>
-
-          <div className="about-vision-vertical-rule" aria-hidden="true" />
-
-          <div className="about-vision-right">
-            <p className="about-vision-paragraph">
-              Our vision is to be an indispensable partner to companies worldwide and provide earth’s most customer-centric solutions to our clients. We achieve this by representing companies in Shipping Agency services, Import &amp; Export Services, Aviation Services, Multimodal Logistics, and support to NGOs and United Nation RELIEF.
-            </p>
           </div>
         </div>
       </div>
