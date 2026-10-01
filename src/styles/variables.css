@@ -6,20 +6,20 @@
   --snow-white: #ffffff;
   --les-grey: #c1c1c1;
 
-  /* Semantic Theme Tokens: Snow White Theme */
-  --bg-dark: #ffffff;
-  --bg-dark-card: #f8fafb;
+  /* Semantic Theme Tokens: Ocean Maritime Theme */
+  --bg-dark: #071820;
+  --bg-dark-card: #0a232e;
   --bg-cyan: #006873;
-  --bg-light: #ffffff;
+  --bg-light: #0d2834;
   --bg-slate: #006873;
-  --bg-footer: #f4f7f8;
-  --bg-menu: #ffffff;
+  --bg-footer: var(--deep-cyan);
+  --bg-menu: #071820;
 
-  --text-white: #191919;
-  --text-dark: #191919;
-  --text-muted: #55626a;
-  --text-accent: #006873;
-  --text-cyan: #006873;
+  --text-white: #ffffff;
+  --text-dark: #ffffff;
+  --text-muted: rgba(255, 255, 255, 0.72);
+  --text-accent: #67abaf;
+  --text-cyan: #67abaf;
 
   --accent-primary: #006873;
   --accent-light: #67abaf;

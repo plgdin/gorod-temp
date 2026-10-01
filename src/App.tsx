@@ -7,7 +7,6 @@ import { NavigationMenu } from './components/NavigationMenu';
 import { Hero } from './sections/Hero';
 import { AboutUs } from './sections/AboutUs';
 import { Services } from './sections/Services';
-import { ContactCTA } from './sections/ContactCTA';
 import { Footer } from './sections/Footer';
 import './styles/globals.css';
 
@@ -86,7 +85,6 @@ export function App() {
         <Hero onReady={handleHeroReady} />
         <AboutUs />
         <Services />
-        <ContactCTA />
       </main>
 
       <Footer />
