@@ -357,6 +357,14 @@ export default function BrochureFold() {
   const currentService = SERVICES[selectedIndex] || SERVICES[0];
   const CurrentIcon = currentService.icon;
 
+  // Preload service images into browser cache so reveals and flips never drop frames decoding
+  useEffect(() => {
+    SERVICES.forEach((s) => {
+      const img = new Image();
+      img.src = s.image;
+    });
+  }, []);
+
   // Handle closing transition timeout for fallback
   useEffect(() => {
     if (!closing) return;
@@ -393,38 +401,52 @@ export default function BrochureFold() {
       left.style.transition = 'none';
       right.style.transition = 'none';
 
-      // Set initial 3D folded brochure state
-      gsap.set(stage, { scale: 0.88, transformPerspective: 1800 });
+      // Dynamic fit function: fit stage to visible viewport height (e.g. 1440x900 laptops)
+      const fit = () => Math.min(1, (window.innerHeight - 150) / 772);
+
+      // Set initial 3D folded brochure state (scale handled by timeline fromTo with fit())
+      gsap.set(stage, { transformPerspective: 1800 });
       gsap.set(left, { rotateY: 180, transformOrigin: 'right center' });
       gsap.set(right, { rotateY: -180, transformOrigin: 'left center' });
       if (shadow) gsap.set(shadow, { scaleX: 0.35, opacity: 0.45 });
       if (sheenLeft) gsap.set(sheenLeft, { opacity: 0, xPercent: -100 });
       if (sheenRight) gsap.set(sheenRight, { opacity: 0, xPercent: -100 });
 
+      let currentHintText = '';
+
       const tl = gsap.timeline({
         scrollTrigger: {
           trigger: root,
           start: 'center center',
-          end: '+=1400',
+          end: '+=2100',
           pin: true,
-          scrub: 0.65,
+          scrub: 0.15,
           anticipatePin: 1,
+          invalidateOnRefresh: true,
           onUpdate: (self) => {
             if (hint) {
-              if (self.progress > 0.88) {
-                hint.textContent = 'Select a service in the middle panel to explore';
-              } else if (self.progress > 0.1) {
-                hint.textContent = 'Scroll to physically unfold the brochure';
-              } else {
-                hint.textContent = 'Scroll down to open brochure ↓';
+              const nextText =
+                self.progress > 0.62
+                  ? 'Select a service in the middle panel to explore'
+                  : self.progress > 0.08
+                  ? 'Scroll to physically unfold the brochure'
+                  : 'Scroll down to open brochure ↓';
+              if (nextText !== currentHintText) {
+                hint.textContent = nextText;
+                currentHintText = nextText;
               }
             }
           },
         },
       });
 
-      // 1. Stage scale up + contact shadow expansion
-      tl.to(stage, { scale: 1, ease: 'none', duration: 1 }, 0);
+      // 1. Stage scale up with dynamic viewport fit + contact shadow expansion
+      tl.fromTo(
+        stage,
+        { scale: () => fit() * 0.88 },
+        { scale: () => fit(), ease: 'none', duration: 1 },
+        0
+      );
       if (shadow) {
         tl.to(shadow, { scaleX: 1, opacity: 0.82, ease: 'none', duration: 1 }, 0);
       }
@@ -478,6 +500,9 @@ export default function BrochureFold() {
           0.72
         );
       }
+
+      // 4. Extended open hold: stays open while user reads and clicks services
+      tl.to({}, { duration: 0.5 });
     });
 
     // MOBILE / REDUCED MOTION: Clean fallback without pinning
@@ -807,6 +832,8 @@ export default function BrochureFold() {
                   src={currentService.image}
                   alt={currentService.title}
                   className="details-hero__img"
+                  loading="eager"
+                  decoding="async"
                 />
                 <div className="details-hero__overlay" />
                 <div className="details-hero__meta">

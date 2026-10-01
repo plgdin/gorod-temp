@@ -35,12 +35,12 @@ export function App() {
 
     lenis.on('scroll', ScrollTrigger.update);
 
-    let rafId: number;
-    function raf(time: number) {
-      lenis.raf(time);
-      rafId = requestAnimationFrame(raf);
-    }
-    rafId = requestAnimationFrame(raf);
+    const tick = (time: number) => lenis.raf(time * 1000);
+    gsap.ticker.add(tick);
+    gsap.ticker.lagSmoothing(0);
+
+    const handleWindowLoad = () => ScrollTrigger.refresh();
+    window.addEventListener('load', handleWindowLoad);
 
     const handleAnchorClick = (e: MouseEvent) => {
       const anchor = (e.target as HTMLElement).closest('a[href^="#"]');
@@ -61,7 +61,8 @@ export function App() {
     document.addEventListener('click', handleAnchorClick);
 
     return () => {
-      cancelAnimationFrame(rafId);
+      gsap.ticker.remove(tick);
+      window.removeEventListener('load', handleWindowLoad);
       document.removeEventListener('click', handleAnchorClick);
       delete (window as unknown as { __lenis?: Lenis }).__lenis;
       lenis.destroy();
