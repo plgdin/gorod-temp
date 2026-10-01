@@ -1,6 +1,8 @@
-import React, { useEffect, useState, useRef, useCallback } from 'react';
+import React, { useEffect, useLayoutEffect, useState, useRef, useCallback } from 'react';
 import gsap from 'gsap';
 import { ScrollTrigger } from 'gsap/ScrollTrigger';
+
+const useIsomorphicLayoutEffect = typeof window !== 'undefined' ? useLayoutEffect : useEffect;
 import {
   Anchor,
   Users,
@@ -28,6 +30,10 @@ import {
   LifeBuoy,
   Zap,
   Waves,
+  Globe,
+  MapPin,
+  Award,
+  Star,
 } from 'lucide-react';
 import './BrochureFold.css';
 
@@ -336,94 +342,230 @@ const SERVICES: ServiceItem[] = [
   },
 ];
 
-const prompts = [
-  'Click to open the right fold',
-  'Click to open the left fold',
-  'Click to fold the brochure again',
-];
+
 
 export default function BrochureFold() {
   const [fold, setFold] = useState<0 | 1 | 2>(0);
   const [closing, setClosing] = useState(false);
   const [selectedIndex, setSelectedIndex] = useState(0);
+  const [mobileTab, setMobileTab] = useState<'about' | 'services' | 'details'>('services');
+  const [foldState, setFoldState] = useState<'idle' | 'folding-in' | 'folding-out'>('idle');
   const sectionRef = useRef<HTMLElement>(null);
-  const unfoldTimerRef = useRef<number | null>(null);
+  const foldTimer1Ref = useRef<number | null>(null);
+  const foldTimer2Ref = useRef<number | null>(null);
 
   const currentService = SERVICES[selectedIndex] || SERVICES[0];
   const CurrentIcon = currentService.icon;
 
-  // Handle closing transition timeout
+  // Preload service images into browser cache so reveals and flips never drop frames decoding
+  useEffect(() => {
+    SERVICES.forEach((s) => {
+      const img = new Image();
+      img.src = s.image;
+    });
+  }, []);
+
+  // Handle closing transition timeout for fallback
   useEffect(() => {
     if (!closing) return;
-
     const reducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
-
     const timeout = window.setTimeout(
       () => setClosing(false),
-      reducedMotion ? 0 : 2450
+      reducedMotion ? 0 : 2800
     );
-
     return () => window.clearTimeout(timeout);
   }, [closing]);
 
-  // Automatic opening when scrolling down to the brochure, and closing when scrolling past
-  useEffect(() => {
-    const el = sectionRef.current;
-    if (!el) return;
+  // SCROLL-DRIVEN SCRUBBED UNFOLD (Desktop >= 1024px) & CLEAN RESPONSIVE FALLBACK
+  useIsomorphicLayoutEffect(() => {
+    const root = sectionRef.current;
+    if (!root) return;
 
-    const reducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+    const stage = root.querySelector<HTMLElement>('.fold-brochure');
+    const left = root.querySelector<HTMLElement>('.fold-brochure__panel--left');
+    const right = root.querySelector<HTMLElement>('.fold-brochure__panel--right');
+    const shadow = root.querySelector<HTMLElement>('.fold-brochure__shadow');
+    const sheenLeft = root.querySelector<HTMLElement>('.fold-brochure__sheen--left');
+    const sheenRight = root.querySelector<HTMLElement>('.fold-brochure__sheen--right');
+    const hint = root.querySelector<HTMLElement>('.fold-brochure__hint');
 
-    const trigger = ScrollTrigger.create({
-      trigger: el,
-      start: 'top 75%',
-      end: 'bottom 15%',
-      onEnter: () => {
-        // Scrolled down into brochure section -> automatically unfold
-        setClosing(false);
-        setFold(1);
-        if (unfoldTimerRef.current) clearTimeout(unfoldTimerRef.current);
-        unfoldTimerRef.current = window.setTimeout(() => {
-          setFold(2);
-        }, reducedMotion ? 0 : 800);
-      },
-      onLeave: () => {
-        // Scrolled down past the brochure section -> automatically close
-        if (unfoldTimerRef.current) clearTimeout(unfoldTimerRef.current);
-        setClosing(true);
-        setFold(0);
-      },
-      onEnterBack: () => {
-        // Scrolled back up into brochure section -> automatically unfold
-        setClosing(false);
-        setFold(1);
-        if (unfoldTimerRef.current) clearTimeout(unfoldTimerRef.current);
-        unfoldTimerRef.current = window.setTimeout(() => {
-          setFold(2);
-        }, reducedMotion ? 0 : 800);
-      },
-      onLeaveBack: () => {
-        // Scrolled back up above the brochure section -> automatically close
-        if (unfoldTimerRef.current) clearTimeout(unfoldTimerRef.current);
-        setClosing(true);
-        setFold(0);
-      },
+    if (!stage || !left || !right) return;
+
+    const mm = gsap.matchMedia();
+
+    // DESKTOP: Scrubbed Unfold Driven by Scroll with Pinning
+    mm.add('(min-width: 1024px) and (prefers-reduced-motion: no-preference)', () => {
+      stage.classList.add('is-scroll-scrubbed');
+
+      // Clear transition during scrub to prevent CSS lag/fighting
+      left.style.transition = 'none';
+      right.style.transition = 'none';
+
+      // Dynamic fit function: fit stage to visible viewport height (e.g. 1440x900 laptops)
+      const fit = () => Math.min(1, (window.innerHeight - 150) / 772);
+
+      // Set initial 3D folded brochure state (scale handled by timeline fromTo with fit())
+      gsap.set(stage, { transformPerspective: 1800 });
+      gsap.set(left, { rotateY: 180, transformOrigin: 'right center' });
+      gsap.set(right, { rotateY: -180, transformOrigin: 'left center' });
+      if (shadow) gsap.set(shadow, { scaleX: 0.35, opacity: 0.45 });
+      if (sheenLeft) gsap.set(sheenLeft, { opacity: 0, xPercent: -100 });
+      if (sheenRight) gsap.set(sheenRight, { opacity: 0, xPercent: -100 });
+
+      let currentHintText = '';
+
+      const tl = gsap.timeline({
+        scrollTrigger: {
+          trigger: root,
+          start: 'center center',
+          end: '+=2100',
+          pin: true,
+          scrub: 0.15,
+          anticipatePin: 1,
+          invalidateOnRefresh: true,
+          onUpdate: (self) => {
+            if (hint) {
+              const nextText =
+                self.progress > 0.62
+                  ? 'Select a service in the middle panel to explore'
+                  : self.progress > 0.08
+                  ? 'Scroll to physically unfold the brochure'
+                  : 'Scroll down to open brochure ↓';
+              if (nextText !== currentHintText) {
+                hint.textContent = nextText;
+                currentHintText = nextText;
+              }
+            }
+          },
+        },
+      });
+
+      // 1. Stage scale up with dynamic viewport fit + contact shadow expansion
+      tl.fromTo(
+        stage,
+        { scale: () => fit() * 0.88 },
+        { scale: () => fit(), ease: 'none', duration: 1 },
+        0
+      );
+      if (shadow) {
+        tl.to(shadow, { scaleX: 1, opacity: 0.82, ease: 'none', duration: 1 }, 0);
+      }
+
+      // 2. Left panel (cover) unfolds to the left: 180deg -> 0deg
+      tl.to(
+        left,
+        {
+          rotateY: 0,
+          ease: 'power2.inOut',
+          duration: 0.44,
+        },
+        0.08
+      );
+
+      // Light sheen sweep across left panel face
+      if (sheenLeft) {
+        tl.fromTo(
+          sheenLeft,
+          { opacity: 0, xPercent: -100 },
+          { opacity: 0.45, xPercent: 40, ease: 'power1.in', duration: 0.22 },
+          0.08
+        ).to(
+          sheenLeft,
+          { opacity: 0, xPercent: 120, ease: 'power1.out', duration: 0.22 },
+          0.30
+        );
+      }
+
+      // 3. Right panel (details) unfolds to the right: -180deg -> 0deg
+      tl.to(
+        right,
+        {
+          rotateY: 0,
+          ease: 'power2.inOut',
+          duration: 0.44,
+        },
+        0.50
+      );
+
+      // Light sheen sweep across right panel face
+      if (sheenRight) {
+        tl.fromTo(
+          sheenRight,
+          { opacity: 0, xPercent: -100 },
+          { opacity: 0.45, xPercent: 40, ease: 'power1.in', duration: 0.22 },
+          0.50
+        ).to(
+          sheenRight,
+          { opacity: 0, xPercent: 120, ease: 'power1.out', duration: 0.22 },
+          0.72
+        );
+      }
+
+      // 4. Extended open hold: stays open while user reads and clicks services
+      tl.to({}, { duration: 0.5 });
+    });
+
+    // MOBILE / REDUCED MOTION: Clean fallback without pinning
+    mm.add('(max-width: 1023px), (prefers-reduced-motion: reduce)', () => {
+      stage.classList.remove('is-scroll-scrubbed');
+      left.style.transition = '';
+      right.style.transition = '';
+      gsap.set([stage, left, right], { clearProps: 'all' });
+      if (shadow) gsap.set(shadow, { clearProps: 'all' });
+      if (sheenLeft) gsap.set(sheenLeft, { clearProps: 'all' });
+      if (sheenRight) gsap.set(sheenRight, { clearProps: 'all' });
     });
 
     return () => {
-      if (unfoldTimerRef.current) clearTimeout(unfoldTimerRef.current);
-      trigger.kill();
+      if (foldTimer1Ref.current) clearTimeout(foldTimer1Ref.current);
+      if (foldTimer2Ref.current) clearTimeout(foldTimer2Ref.current);
+      mm.revert();
     };
   }, []);
 
+  // Fold panel 3 closed onto panel 2, swap service data, then unfold back open
+  const handleServiceSelect = (idx: number) => {
+    // If mobile: switch tab directly to details
+    if (typeof window !== 'undefined' && window.innerWidth < 1024) {
+      setSelectedIndex(idx);
+      setMobileTab('details');
+      return;
+    }
+
+    if (idx === selectedIndex || foldState !== 'idle') return;
+
+    if (foldTimer1Ref.current) clearTimeout(foldTimer1Ref.current);
+    if (foldTimer2Ref.current) clearTimeout(foldTimer2Ref.current);
+
+    // 1. Fold panel 3 closed onto panel 2 (0deg → -180deg, hinged on left edge)
+    setFoldState('folding-in');
+
+    // 2. When fully folded (800ms), swap data and unfold back
+    foldTimer1Ref.current = window.setTimeout(() => {
+      setSelectedIndex(idx);
+      setFoldState('folding-out');
+
+      // 3. Return to flat resting state after fold-out completes
+      foldTimer2Ref.current = window.setTimeout(() => {
+        setFoldState('idle');
+      }, 920);
+    }, 820);
+  };
+
   const handleClick = useCallback((e: React.MouseEvent) => {
-    // If the click is on an interactive service category or action button, do not fold/unfold
     const target = e.target as HTMLElement;
     if (
       target.closest('.selector-item') ||
       target.closest('.details-cta-btn') ||
       target.closest('.panel-cover__logo-wrap') ||
+      target.closest('.mobile-tab-btn') ||
       target.closest('a')
     ) {
+      return;
+    }
+
+    // Only active if fallback manual step mode is engaged
+    if (typeof window !== 'undefined' && window.innerWidth >= 1024) {
       return;
     }
 
@@ -435,22 +577,53 @@ export default function BrochureFold() {
     }
   }, [fold]);
 
-  const instruction = closing ? 'Folding the brochure' : prompts[fold];
-
   return (
     <section
       ref={sectionRef}
       className="fold-brochure-section"
       aria-label="Interactive three-fold brochure"
     >
+      {/* Mobile Tab Selector (< 1024px) */}
+      <div className="fold-brochure__mobile-tabs" role="tablist" aria-label="Brochure sections">
+        <button
+          type="button"
+          role="tab"
+          aria-selected={mobileTab === 'about'}
+          className={`mobile-tab-btn ${mobileTab === 'about' ? '--active' : ''}`}
+          onClick={() => setMobileTab('about')}
+        >
+          01. About Us
+        </button>
+        <button
+          type="button"
+          role="tab"
+          aria-selected={mobileTab === 'services'}
+          className={`mobile-tab-btn ${mobileTab === 'services' ? '--active' : ''}`}
+          onClick={() => setMobileTab('services')}
+        >
+          02. Services
+        </button>
+        <button
+          type="button"
+          role="tab"
+          aria-selected={mobileTab === 'details'}
+          className={`mobile-tab-btn ${mobileTab === 'details' ? '--active' : ''}`}
+          onClick={() => setMobileTab('details')}
+        >
+          03. Details
+        </button>
+      </div>
+
       <div
         className={`fold-brochure fold-brochure--step-${fold}${
           closing ? ' fold-brochure--closing' : ''
         }`}
         onClick={handleClick}
         role="region"
-        aria-label={instruction}
+        aria-label="Interactive brochure"
       >
+        {/* Dynamic ground contact shadow */}
+        <div className="fold-brochure__shadow" aria-hidden="true" />
         {/* =========================================================
             PANEL 1 (LEFT): BRAND & COVER PANEL
             - Hinge on right center
@@ -458,11 +631,84 @@ export default function BrochureFold() {
             - Open: Swings out to the left
         ========================================================== */}
         <div
-          className="fold-brochure__panel fold-brochure__panel--left"
-          aria-hidden={fold < 2}
+          className={`fold-brochure__panel fold-brochure__panel--left ${
+            mobileTab === 'about' ? 'fold-brochure__panel--active-mobile' : ''
+          }`}
+          aria-hidden={false}
         >
-          {/* Front Face: Brand Cover */}
-          <div className="fold-brochure__face fold-brochure__face--left panel-content-cover">
+          {/* Inside Face (when unfolded to the left): Our Company Content */}
+          <div className="fold-brochure__face fold-brochure__face--left panel-content-inside">
+            <div className="fold-brochure__sheen fold-brochure__sheen--left" aria-hidden="true" />
+            <div className="inside-cover__header">
+              <div className="inside-cover__eyebrow">
+                <span className="inside-cover__eyebrow-text">ABOUT US</span>
+                <span className="inside-cover__eyebrow-line" />
+              </div>
+              <img
+                src="/images/gorod-marine-teal.png"
+                alt="Gorod Marine"
+                className="inside-cover__logo"
+              />
+            </div>
+
+            <div className="inside-cover__mission">
+              <h3 className="inside-cover__headline">
+                Your vessel's<br />
+                trusted partner<br />
+                on shore.
+              </h3>
+              <p className="inside-cover__desc">
+                Gorod Marine delivers comprehensive port agency and vessel 
+                husbandry services across major ports, ensuring every call 
+                is safe, compliant, and efficient.
+              </p>
+            </div>
+
+            <div className="inside-cover__stats">
+              <div className="inside-stat">
+                <Globe size={16} strokeWidth={2} className="inside-stat__icon" />
+                <span className="inside-stat__value">15+</span>
+                <span className="inside-stat__label">Ports Covered</span>
+              </div>
+              <div className="inside-stat">
+                <Ship size={16} strokeWidth={2} className="inside-stat__icon" />
+                <span className="inside-stat__value">500+</span>
+                <span className="inside-stat__label">Vessel Calls / Year</span>
+              </div>
+              <div className="inside-stat">
+                <Clock size={16} strokeWidth={2} className="inside-stat__icon" />
+                <span className="inside-stat__value">24/7</span>
+                <span className="inside-stat__label">Shore Attendance</span>
+              </div>
+              <div className="inside-stat">
+                <Award size={16} strokeWidth={2} className="inside-stat__icon" />
+                <span className="inside-stat__value">ISO</span>
+                <span className="inside-stat__label">Certified Operations</span>
+              </div>
+            </div>
+
+            <div className="inside-cover__trust">
+              <div className="trust-badge">
+                <Star size={11} strokeWidth={2.5} className="trust-badge__star" />
+                <span>FONASBA Certified</span>
+              </div>
+              <div className="trust-badge">
+                <ShieldCheck size={11} strokeWidth={2.5} className="trust-badge__star" />
+                <span>ISPS Compliant</span>
+              </div>
+              <div className="trust-badge">
+                <MapPin size={11} strokeWidth={2.5} className="trust-badge__star" />
+                <span>Indian Ports Specialist</span>
+              </div>
+            </div>
+
+            <div className="inside-cover__footer">
+              <span>SELECT A SERVICE IN THE NEXT PANEL →</span>
+            </div>
+          </div>
+
+          {/* Cover Face: Brand Cover (Image 1) — Visible when folded closed! */}
+          <div className="fold-brochure__face fold-brochure__face--back panel-content-cover">
             <div className="panel-cover__header">
               <a href="/" className="panel-cover__logo-wrap" aria-label="Gorod Marine Home">
                 <img
@@ -495,9 +741,6 @@ export default function BrochureFold() {
               <span>24/7 PORT SHORE-SIDE ATTENDANCE</span>
             </div>
           </div>
-
-          {/* Reverse Face: Back of left fold */}
-          <div className="fold-brochure__face fold-brochure__face--back" />
         </div>
 
         {/* =========================================================
@@ -505,8 +748,10 @@ export default function BrochureFold() {
             - All 8 categories are fully functional interactive buttons!
         ========================================================== */}
         <div
-          className="fold-brochure__panel fold-brochure__panel--middle"
-          aria-hidden="false"
+          className={`fold-brochure__panel fold-brochure__panel--middle ${
+            mobileTab === 'services' ? 'fold-brochure__panel--active-mobile' : ''
+          }`}
+          aria-hidden={false}
         >
           <div className="panel-content-selector">
             <div className="selector-header">
@@ -534,7 +779,7 @@ export default function BrochureFold() {
                     className={`selector-item ${isActive ? '--active' : ''}`}
                     onClick={(e) => {
                       e.stopPropagation();
-                      setSelectedIndex(idx);
+                      handleServiceSelect(idx);
                     }}
                     aria-pressed={isActive}
                   >
@@ -569,84 +814,117 @@ export default function BrochureFold() {
         {/* =========================================================
             PANEL 3 (RIGHT): DYNAMIC SERVICE DETAILS
             - Hinge on left center
-            - Closed: Folds backward away from viewer
-            - Open: Unfolds to the right showing selected service details!
+            - Folds closed onto panel 2 when switching services
         ========================================================== */}
         <div
-          className="fold-brochure__panel fold-brochure__panel--right"
-          aria-hidden={fold === 0}
+          className={`fold-brochure__panel fold-brochure__panel--right${
+            foldState !== 'idle' ? ` is-${foldState}` : ''
+          } ${mobileTab === 'details' ? 'fold-brochure__panel--active-mobile' : ''}`}
+          aria-hidden={false}
         >
-          {/* Front Face: Dynamic Service Details */}
+          {/* FRONT FACE: Service Details (visible when flat/open) */}
           <div className="fold-brochure__face fold-brochure__face--right panel-content-details">
-            {/* Hero image with meta */}
-            <div className="details-hero">
-              <img
-                src={currentService.image}
-                alt={currentService.title}
-                className="details-hero__img"
-              />
-              <div className="details-hero__overlay" />
-              <div className="details-hero__meta">
-                <div className="details-hero__meta-left">
-                  <span className="details-hero__index">{currentService.number} / 08</span>
-                  <span className="details-hero__category">{currentService.category}</span>
-                </div>
-                <div className="details-hero__meta-right">
-                  <span>{currentService.topPhraseLine1}</span>
-                  <span>{currentService.topPhraseLine2}</span>
+            <div className="fold-brochure__sheen fold-brochure__sheen--right" aria-hidden="true" />
+            <div className="details-flip-wrapper">
+              {/* Hero image with meta */}
+              <div className="details-hero">
+                <img
+                  src={currentService.image}
+                  alt={currentService.title}
+                  className="details-hero__img"
+                  loading="eager"
+                  decoding="async"
+                />
+                <div className="details-hero__overlay" />
+                <div className="details-hero__meta">
+                  <div className="details-hero__meta-left">
+                    <span className="details-hero__index">{currentService.number} / 08</span>
+                    <span className="details-hero__category">{currentService.category}</span>
+                  </div>
+                  <div className="details-hero__meta-right">
+                    <span>{currentService.topPhraseLine1}</span>
+                    <span>{currentService.topPhraseLine2}</span>
+                  </div>
                 </div>
               </div>
-            </div>
 
-            {/* Details Body */}
-            <div className="details-body">
-              <div className="details-badge">
-                <CurrentIcon size={17} strokeWidth={2} className="details-badge__icon" />
-                <span className="details-badge__text">{currentService.category}</span>
-              </div>
+              {/* Details Body */}
+              <div className="details-body">
+                <div className="details-badge">
+                  <CurrentIcon size={17} strokeWidth={2} className="details-badge__icon" />
+                  <span className="details-badge__text">{currentService.category}</span>
+                </div>
 
-              <h3 className="details-headline">{currentService.headline}</h3>
+                <h3 className="details-headline">{currentService.headline}</h3>
 
-              <p className="details-description">{currentService.description}</p>
+                <p className="details-description">{currentService.description}</p>
 
-              {/* 2x2 Capabilities Grid */}
-              <div className="details-grid">
-                {currentService.capabilities.map((cap, i) => {
-                  const CapIcon = cap.icon;
-                  return (
-                    <div key={i} className="capability-card">
-                      <div className="capability-card__header">
-                        <CapIcon size={16} strokeWidth={2} className="capability-card__icon" />
-                        <span className="capability-card__title">{cap.title}</span>
+                {/* 2x2 Capabilities Grid */}
+                <div className="details-grid">
+                  {currentService.capabilities.map((cap, i) => {
+                    const CapIcon = cap.icon;
+                    return (
+                      <div key={i} className="capability-card">
+                        <div className="capability-card__header">
+                          <CapIcon size={16} strokeWidth={2} className="capability-card__icon" />
+                          <span className="capability-card__title">{cap.title}</span>
+                        </div>
+                        <p className="capability-card__desc">{cap.desc}</p>
                       </div>
-                      <p className="capability-card__desc">{cap.desc}</p>
-                    </div>
-                  );
-                })}
-              </div>
+                    );
+                  })}
+                </div>
 
-              {/* Enquire CTA */}
-              <a href="#contact" className="details-cta-btn">
-                <span>ENQUIRE NOW</span>
-                <span className="details-cta-arrow">→</span>
-              </a>
+                {/* Enquire CTA */}
+                <a href="#contact" className="details-cta-btn">
+                  <span>ENQUIRE NOW</span>
+                  <span className="details-cta-arrow">→</span>
+                </a>
+              </div>
             </div>
           </div>
 
-          {/* Reverse Face: Back of right fold */}
-          <div className="fold-brochure__face fold-brochure__face--reverse" />
+          {/* BACK FACE: Cover design (visible when panel folds closed onto Panel 2) */}
+          <div className="fold-brochure__face fold-brochure__face--back-cover panel-content-cover" aria-hidden="true">
+            <div className="panel-cover__header">
+              <a href="/" className="panel-cover__logo-wrap" aria-label="Gorod Marine Home" tabIndex={-1}>
+                <img
+                  src="/images/gorod-marine-teal.png"
+                  alt="Gorod Marine"
+                  className="panel-cover__logo-img"
+                />
+              </a>
+              <div className="panel-cover__tag">
+                <span className="panel-cover__tag-text">VESSEL AGENCY</span>
+                <span className="panel-cover__tag-text">WITH PURPOSE.</span>
+                <span className="panel-cover__tag-line" />
+              </div>
+            </div>
+
+            <div className="panel-cover__center">
+              <h2 className="panel-cover__headline">
+                Trusted<br />
+                support<br />
+                in every port.
+              </h2>
+              <div className="panel-cover__subline">
+                <span>PEOPLE &nbsp;/&nbsp; EXPERTISE &nbsp;/&nbsp; SOLUTIONS</span>
+                <span>FOR A SMOOTHER TOMORROW.</span>
+              </div>
+            </div>
+
+            <div className="panel-cover__bottom-tag">
+              <span>GOROD MARINE SERVICES REGISTER</span>
+              <span>24/7 PORT SHORE-SIDE ATTENDANCE</span>
+            </div>
+          </div>
         </div>
       </div>
 
-      {/* Interactive prompt below the brochure */}
-      <button
-        type="button"
-        className="fold-brochure__hint"
-        onClick={handleClick}
-        aria-live="polite"
-      >
-        {instruction}
-      </button>
+      {/* Scroll indicator & status hint */}
+      <div className="fold-brochure__hint" aria-live="polite">
+        Scroll down to open brochure ↓
+      </div>
     </section>
   );
 }

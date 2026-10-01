@@ -1,12 +1,11 @@
 import React, { useEffect, useRef, useState } from 'react';
 import { gsap } from 'gsap';
+import { ScrollTrigger } from 'gsap/ScrollTrigger';
 import { Preloader } from '../components/Preloader';
 
-interface HeroProps {
-  onReady?: () => void;
-}
+gsap.registerPlugin(ScrollTrigger);
 
-interface VesselItem {
+export interface VesselItem {
   id: string;
   name: string;
   word: string;
@@ -14,7 +13,7 @@ interface VesselItem {
   alt: string;
 }
 
-const VESSELS: VesselItem[] = [
+export const VESSELS: VesselItem[] = [
   {
     id: 'carrier',
     name: 'Carrier',
@@ -45,7 +44,12 @@ const VESSELS: VesselItem[] = [
   },
 ];
 
-export const Hero: React.FC<HeroProps> = ({ onReady }) => {
+export interface HeroProps {
+  onReady?: () => void;
+  onVesselChange?: (vessel: VesselItem) => void;
+}
+
+export const Hero: React.FC<HeroProps> = ({ onReady, onVesselChange }) => {
   const mainScreenRef = useRef<HTMLElement>(null);
   const vesselRefs = useRef<(HTMLDivElement | null)[]>([]);
   const wordRefs = useRef<(HTMLSpanElement | null)[]>([]);
@@ -59,6 +63,12 @@ export const Hero: React.FC<HeroProps> = ({ onReady }) => {
   const [isPreloaderDone, setIsPreloaderDone] = useState(false);
   const onReadyRef = useRef(onReady);
   onReadyRef.current = onReady;
+  const onVesselChangeRef = useRef(onVesselChange);
+  onVesselChangeRef.current = onVesselChange;
+
+  useEffect(() => {
+    onVesselChangeRef.current?.(VESSELS[0]);
+  }, []);
 
   useEffect(() => {
     const vessels = vesselRefs.current.filter(Boolean) as HTMLDivElement[];
@@ -183,7 +193,10 @@ export const Hero: React.FC<HeroProps> = ({ onReady }) => {
             `${label}+=0.25`
           );
 
-          loopTl.call(() => setActiveIdx(nextIdx), [], `${label}+=0.25`);
+          loopTl.call(() => {
+            setActiveIdx(nextIdx);
+            onVesselChangeRef.current?.(VESSELS[nextIdx]);
+          }, [], `${label}+=0.25`);
 
           // 5. Reset current word for next round
           loopTl.set(
@@ -309,6 +322,15 @@ export const Hero: React.FC<HeroProps> = ({ onReady }) => {
           },
           1.4
         );
+
+      // Pause Hero carousel when scrolled out of view, resume when back in view
+      ScrollTrigger.create({
+        trigger: mainScreen,
+        start: 'top top',
+        end: 'bottom top',
+        onLeave: () => loopTlRef.current?.pause(),
+        onEnterBack: () => loopTlRef.current?.play(),
+      });
 
       // Fast-forward on quick scroll/touch
       const handleUserScroll = () => {
