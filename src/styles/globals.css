@@ -25,11 +25,6 @@ body {
   line-height: 1.4;
   overflow-x: hidden;
   background-color: #071820;
-  background-image: url('/images/background.png');
-  background-size: cover;
-  background-position: center;
-  background-repeat: no-repeat;
-  background-attachment: fixed;
   color: #ffffff;
 }
 
@@ -155,23 +150,23 @@ button {
   display: flex;
   align-items: center;
   justify-content: space-between;
-  height: 90px;
-  background: transparent;
-  backdrop-filter: none;
-  -webkit-backdrop-filter: none;
+  height: 86px;
+  background: rgba(3, 16, 26, 0.42);
+  backdrop-filter: blur(20px) saturate(180%);
+  -webkit-backdrop-filter: blur(20px) saturate(180%);
   padding: 0 clamp(24px, 4.5vw, 64px);
-  border-bottom: 1px solid rgba(255, 255, 255, 0.08);
-  box-shadow: none;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.12);
+  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.35), inset 0 1px 0 rgba(255, 255, 255, 0.15);
   transition: background 0.4s ease, backdrop-filter 0.4s ease, -webkit-backdrop-filter 0.4s ease, border-color 0.4s ease, box-shadow 0.4s ease, height 0.3s ease;
 }
 
 .header.--scrolled .header__top {
-  height: 90px;
-  background: rgba(5, 20, 28, 0.88);
-  backdrop-filter: blur(20px) saturate(180%);
-  -webkit-backdrop-filter: blur(20px) saturate(180%);
-  border-bottom: 1px solid rgba(255, 255, 255, 0.1);
-  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.35);
+  height: 82px;
+  background: rgba(3, 16, 26, 0.85);
+  backdrop-filter: blur(24px) saturate(190%);
+  -webkit-backdrop-filter: blur(24px) saturate(190%);
+  border-bottom: 1px solid rgba(255, 255, 255, 0.15);
+  box-shadow: 0 12px 36px rgba(0, 0, 0, 0.45), inset 0 1px 0 rgba(255, 255, 255, 0.18);
 }
 
 .header__logo .logo {
@@ -285,33 +280,42 @@ button {
   transform: translate(-50%, -50%);
   display: flex;
   align-items: center;
-  gap: clamp(24px, 3vw, 56px);
+  gap: clamp(18px, 2.5vw, 40px);
+  padding: 8px 26px;
+  background: rgba(255, 255, 255, 0.06);
+  border: 1px solid rgba(255, 255, 255, 0.15);
+  border-radius: 9999px;
+  backdrop-filter: blur(16px);
+  -webkit-backdrop-filter: blur(16px);
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.35), inset 0 1px 1px rgba(255, 255, 255, 0.2);
 }
 
 .header__nav-item {
   position: relative;
   font-family: var(--font-body);
-  font-size: 13.5px;
+  font-size: 13px;
   font-weight: 600;
   letter-spacing: 0.12em;
   text-transform: uppercase;
   color: rgba(255, 255, 255, 0.95);
   text-decoration: none;
   background-color: transparent;
-  transition: color 0.25s ease, opacity 0.25s ease;
+  transition: color 0.25s ease, opacity 0.25s ease, text-shadow 0.25s ease;
   white-space: nowrap;
-  text-shadow: 0 2px 8px rgba(0, 0, 0, 0.6);
-  padding-bottom: 6px;
+  text-shadow: 0 2px 6px rgba(0, 0, 0, 0.95), 0 4px 14px rgba(0, 0, 0, 0.8), 0 0 20px rgba(0, 0, 0, 0.6);
+  padding-bottom: 4px;
 }
 
 .header__nav-item:hover {
   color: #ffffff;
   opacity: 1;
+  text-shadow: 0 2px 8px rgba(0, 0, 0, 1), 0 0 16px rgba(103, 171, 175, 0.7);
 }
 
 .header__nav-item.--active {
   font-weight: 700;
   color: #ffffff;
+  text-shadow: 0 2px 8px rgba(0, 0, 0, 1), 0 0 20px rgba(103, 171, 175, 0.85);
 }
 
 .header.--scrolled .header__nav-item.--active {
@@ -542,6 +546,40 @@ button {
 }
 
 /* ======================================================
+   GLOBAL CONTINUOUS OCEAN BACKGROUND (100% Native Resolution, 0 Seams)
+====================================================== */
+.global-ocean-bg {
+  position: fixed;
+  inset: 0;
+  width: 100vw;
+  height: 100vh;
+  z-index: 0;
+  pointer-events: none;
+  overflow: hidden;
+}
+
+.global-ocean-bg__video {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  object-position: center;
+  filter: brightness(0.64) contrast(1.22) saturate(1.35) hue-rotate(-22deg);
+}
+
+.global-ocean-bg__tint {
+  position: absolute;
+  inset: 0;
+  background: radial-gradient(
+    ellipse at 50% 45%,
+    rgba(2, 22, 48, 0.40) 0%,
+    rgba(1, 9, 20, 0.72) 100%
+  );
+  pointer-events: none;
+}
+
+/* ======================================================
    HERO / MAIN SCREEN
 ====================================================== */
 .main-screen {
@@ -551,7 +589,7 @@ button {
   min-height: 700px;
   width: 100%;
   padding: 105px clamp(24px, 4.5vw, 64px) 36px;
-  background-color: #071820;
+  background-color: transparent;
   overflow: hidden;
   display: flex;
   flex-direction: column;
@@ -634,6 +672,11 @@ button {
   white-space: nowrap;
   font-family: 'DrukWideMedium', sans-serif;
   font-weight: 700;
+  text-shadow:
+    0 4px 12px rgba(0, 0, 0, 0.95),
+    0 10px 30px rgba(0, 0, 0, 0.95),
+    0 20px 50px rgba(0, 0, 0, 0.9),
+    0 0 60px rgba(0, 0, 0, 0.7);
 }
 
 /* 3D Tagline Flipper for Multi-Vessels */
@@ -672,34 +715,14 @@ button {
   backface-visibility: hidden;
   transform-origin: 50% 50% -12px;
   color: var(--light-cyan);
-  text-shadow: 0 2px 12px rgba(0, 0, 0, 0.35);
+  text-shadow:
+    0 4px 12px rgba(0, 0, 0, 0.95),
+    0 10px 32px rgba(0, 0, 0, 0.95),
+    0 20px 55px rgba(0, 0, 0, 0.95),
+    0 0 35px rgba(103, 171, 175, 0.55);
 }
 
-.main-screen::before {
-  content: '';
-  position: absolute;
-  inset: 0;
-  background: radial-gradient(
-    ellipse at 50% 45%,
-    rgba(2, 22, 48, 0.40) 0%,
-    rgba(1, 9, 20, 0.72) 100%
-  );
-  z-index: 1;
-  pointer-events: none;
-}
 
-.main-screen__bg-video {
-  position: absolute;
-  top: 0;
-  left: 0;
-  width: 100%;
-  height: 100%;
-  object-fit: cover;
-  object-position: center;
-  z-index: 0;
-  pointer-events: none;
-  filter: brightness(0.64) contrast(1.22) saturate(1.35) hue-rotate(-22deg);
-}
 
 /* Sub-row: Maritime agency text on left, Explore button on right */
 .main-screen__sub-row {
@@ -2043,19 +2066,18 @@ button {
 #services,
 .section-services {
   scroll-margin-top: 100px;
-  padding: 110px clamp(20px, 4.5vw, 75px) 110px;
-  background-color: #071820;
-  background-image: url('/images/background.png');
-  background-size: cover;
-  background-position: center;
-  background-repeat: no-repeat;
-  border-top: none;
   position: relative;
-  z-index: 10;
+  z-index: 1;
+  padding: 110px clamp(20px, 4.5vw, 75px) 110px;
+  background-color: transparent;
+  background-image: none;
+  border-top: none;
   color: #ffffff;
 }
 
 .section-services__inner {
+  position: relative;
+  z-index: 2;
   max-width: 1400px;
   margin: 0 auto;
 }
@@ -4323,11 +4345,9 @@ button {
 /* --- FOOTER SECTION: SHORELINE FINALE --- */
 .footer {
   position: relative;
-  overflow: hidden;
-  background-image: url('/images/footer-shore.png');
-  background-size: cover;
-  background-position: center bottom;
-  background-repeat: no-repeat;
+  z-index: 1;
+  background-color: transparent;
+  background-image: none;
   border-top: none;
   min-height: 100vh;
   padding: clamp(70px, 7vw, 110px) 0 clamp(80px, 10vw, 160px);

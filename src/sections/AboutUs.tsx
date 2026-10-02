@@ -143,20 +143,7 @@ export const AboutUs: React.FC = () => {
 
   return (
     <section id="about" ref={sectionRef} className="about-section-ref">
-      {/* Background Water Video */}
-      <video
-        autoPlay
-        loop
-        muted
-        playsInline
-        preload="auto"
-        className="about-section__bg-video"
-      >
-        <source src="/images/water-flow.mp4" type="video/mp4" />
-      </video>
-
-      {/* Subtle Depth Tint (slightly lighter than Hero section) */}
-      <div className="about-section__depth-tint" />
+      {/* Hidden SVG Definition for Custom Shaped Image Clip Path */}
 
       {/* Hidden SVG Definition for Custom Shaped Image Clip Path */}
       <svg width="0" height="0" style={{ position: 'absolute', pointerEvents: 'none' }} aria-hidden="true">
