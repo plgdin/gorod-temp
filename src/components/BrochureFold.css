@@ -22,7 +22,7 @@
   padding: 0;
   border: 0;
   background: transparent;
-  perspective: 1800px;
+  perspective: 2400px; /* softer swing: panel edges overshoot the stage less near the nav */
   transform-style: preserve-3d;
   text-align: left;
   -webkit-tap-highlight-color: transparent;

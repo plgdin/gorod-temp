@@ -401,11 +401,27 @@ export default function BrochureFold() {
       left.style.transition = 'none';
       right.style.transition = 'none';
 
-      // Dynamic fit function: fit stage to visible viewport height (e.g. 1440x900 laptops)
-      const fit = () => Math.min(1, (window.innerHeight - 150) / 772);
+      // Layout constants: keep the brochure clear of the fixed nav while pinned
+      const STAGE_H = 772;
+      const NAV_GAP = 28; // breathing room between nav bottom and brochure top
+      const HINT_SPACE = 64; // hint pill + bottom margin
+      const navH = () =>
+        document.querySelector<HTMLElement>('.header__top')?.offsetHeight ?? 90;
 
-      // Set initial 3D folded brochure state (scale handled by timeline fromTo with fit())
-      gsap.set(stage, { transformPerspective: 1800 });
+      // Fit the stage into the space BELOW the nav and ABOVE the hint pill
+      const fit = () =>
+        Math.min(1, (window.innerHeight - navH() - NAV_GAP - HINT_SPACE) / STAGE_H);
+
+      // Pin so the scaled stage's top edge sits exactly NAV_GAP below the nav
+      const pinStart = () => {
+        const padTop = parseFloat(getComputedStyle(root).paddingTop) || 0;
+        const off = navH() + NAV_GAP + (STAGE_H / 2) * fit() - padTop - STAGE_H / 2;
+        return off >= 0 ? `top top+=${off}` : `top top-=${-off}`;
+      };
+
+      // Set initial 3D folded brochure state (scale handled by timeline fromTo with fit()).
+      // No transformPerspective here: .fold-brochure already has CSS perspective,
+      // and stacking both exaggerates the swing of the panels.
       gsap.set(left, { rotateY: 180, transformOrigin: 'right center' });
       gsap.set(right, { rotateY: -180, transformOrigin: 'left center' });
       if (shadow) gsap.set(shadow, { scaleX: 0.35, opacity: 0.45 });
@@ -417,12 +433,17 @@ export default function BrochureFold() {
       const tl = gsap.timeline({
         scrollTrigger: {
           trigger: root,
-          start: 'center center',
+          start: pinStart,
           end: '+=2100',
           pin: true,
           scrub: 0.15,
           anticipatePin: 1,
           invalidateOnRefresh: true,
+          // The stage shrinks visually but keeps its layout box, so lift the hint
+          // up to sit right under the visible brochure instead of off-screen.
+          onRefresh: () => {
+            if (hint) gsap.set(hint, { y: -(STAGE_H / 2) * (1 - fit()) });
+          },
           onUpdate: (self) => {
             if (hint) {
               const nextText =
@@ -511,6 +532,7 @@ export default function BrochureFold() {
       left.style.transition = '';
       right.style.transition = '';
       gsap.set([stage, left, right], { clearProps: 'all' });
+      if (hint) gsap.set(hint, { clearProps: 'transform' });
       if (shadow) gsap.set(shadow, { clearProps: 'all' });
       if (sheenLeft) gsap.set(sheenLeft, { clearProps: 'all' });
       if (sheenRight) gsap.set(sheenRight, { clearProps: 'all' });
