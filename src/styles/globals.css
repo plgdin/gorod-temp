@@ -546,6 +546,7 @@ button {
 ====================================================== */
 .main-screen {
   position: relative;
+  z-index: 1;
   height: 100vh;
   min-height: 700px;
   width: 100%;

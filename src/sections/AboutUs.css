@@ -5,8 +5,10 @@
 
 .about-section-ref {
   position: relative;
-  background-color: #071820;
-  padding: 100px clamp(24px, 5vw, 80px) 90px;
+  z-index: 2;
+  margin-top: -80px;
+  background-color: transparent;
+  padding: 180px clamp(24px, 5vw, 80px) 90px;
   overflow: hidden;
   box-sizing: border-box;
   color: #ffffff;
@@ -23,19 +25,23 @@
   object-position: center;
   z-index: 0;
   pointer-events: none;
-  filter: brightness(0.72) contrast(1.18) saturate(1.28) hue-rotate(-18deg);
+  filter: brightness(0.64) contrast(1.22) saturate(1.35) hue-rotate(-22deg);
+  -webkit-mask-image: linear-gradient(to bottom, transparent 0%, #000 80px);
+  mask-image: linear-gradient(to bottom, transparent 0%, #000 80px);
 }
 
 .about-section__depth-tint {
   position: absolute;
   inset: 0;
   background: radial-gradient(
-    ellipse at 50% 50%,
-    rgba(2, 22, 46, 0.32) 0%,
-    rgba(1, 9, 20, 0.62) 100%
+    ellipse at 50% 45%,
+    rgba(2, 22, 48, 0.40) 0%,
+    rgba(1, 9, 20, 0.72) 100%
   );
   z-index: 1;
   pointer-events: none;
+  -webkit-mask-image: linear-gradient(to bottom, transparent 0%, #000 80px);
+  mask-image: linear-gradient(to bottom, transparent 0%, #000 80px);
 }
 
 .about-ref-container {
