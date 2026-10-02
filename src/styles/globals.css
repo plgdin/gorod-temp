@@ -674,6 +674,19 @@ button {
   text-shadow: 0 2px 12px rgba(0, 0, 0, 0.35);
 }
 
+.main-screen::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: radial-gradient(
+    ellipse at 50% 45%,
+    rgba(2, 22, 48, 0.40) 0%,
+    rgba(1, 9, 20, 0.72) 100%
+  );
+  z-index: 1;
+  pointer-events: none;
+}
+
 .main-screen__bg-video {
   position: absolute;
   top: 0;
@@ -684,6 +697,7 @@ button {
   object-position: center;
   z-index: 0;
   pointer-events: none;
+  filter: brightness(0.64) contrast(1.22) saturate(1.35) hue-rotate(-22deg);
 }
 
 /* Sub-row: Maritime agency text on left, Explore button on right */
