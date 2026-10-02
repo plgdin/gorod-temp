@@ -355,12 +355,20 @@ export const Hero: React.FC<HeroProps> = ({ onReady, onVesselChange }) => {
       className="main-screen"
       style={{
         backgroundColor: '#071820',
-        backgroundImage: `url('/images/_MConverter.eu_IMG_5526.webp')`,
-        backgroundSize: 'cover',
-        backgroundPosition: 'center',
-        backgroundRepeat: 'no-repeat',
       }}
     >
+      {/* Smooth Hardware-Accelerated Flowing Water Video */}
+      <video
+        autoPlay
+        loop
+        muted
+        playsInline
+        preload="auto"
+        className="main-screen__bg-video"
+      >
+        <source src="/images/water-flow.mp4" type="video/mp4" />
+      </video>
+
       {/* Central Navigation Marker & Plotting Dots */}
       <Preloader isDone={isPreloaderDone} />
 

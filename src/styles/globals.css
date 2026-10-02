@@ -648,7 +648,7 @@ button {
 .main-screen__flipper-spacer {
   display: inline-block;
   white-space: nowrap;
-  font-family: 'DrukWideMedium', sans-serif;
+  font-family: 'HeliosExt', 'DrukWideMedium', sans-serif;
   font-weight: 700;
   visibility: hidden;
   opacity: 0;
@@ -663,7 +663,7 @@ button {
   left: 0;
   display: inline-block;
   white-space: nowrap;
-  font-family: 'DrukWideMedium', sans-serif;
+  font-family: 'HeliosExt', 'DrukWideMedium', sans-serif;
   font-weight: 700;
   line-height: 1.05;
   will-change: transform, opacity;
@@ -671,6 +671,19 @@ button {
   backface-visibility: hidden;
   transform-origin: 50% 50% -12px;
   color: var(--light-cyan);
+  text-shadow: 0 2px 12px rgba(0, 0, 0, 0.35);
+}
+
+.main-screen__bg-video {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  object-position: center;
+  z-index: 0;
+  pointer-events: none;
 }
 
 /* Sub-row: Maritime agency text on left, Explore button on right */
