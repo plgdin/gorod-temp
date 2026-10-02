@@ -8,6 +8,7 @@ import { Hero } from './sections/Hero';
 import { AboutUs } from './sections/AboutUs';
 import { Services } from './sections/Services';
 import { Footer } from './sections/Footer';
+import { SeamlessVideo } from './components/SeamlessVideo';
 import './styles/globals.css';
 
 gsap.registerPlugin(ScrollTrigger);
@@ -71,6 +72,15 @@ export function App() {
 
   return (
     <>
+      {/* 1 Single Continuous Video Background for the entire website (100% Native Resolution, 0 Seams) */}
+      <div className="global-ocean-bg" aria-hidden="true">
+        <SeamlessVideo
+          src="/images/water-flow.mp4"
+          className="global-ocean-bg__video"
+        />
+        <div className="global-ocean-bg__tint" />
+      </div>
+
       <Header
         menuOpen={menuOpen}
         onToggleMenu={() => setMenuOpen((prev) => !prev)}

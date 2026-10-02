@@ -144,6 +144,8 @@ export const AboutUs: React.FC = () => {
   return (
     <section id="about" ref={sectionRef} className="about-section-ref">
       {/* Hidden SVG Definition for Custom Shaped Image Clip Path */}
+
+      {/* Hidden SVG Definition for Custom Shaped Image Clip Path */}
       <svg width="0" height="0" style={{ position: 'absolute', pointerEvents: 'none' }} aria-hidden="true">
         <defs>
           <clipPath id="aboutVesselClipPath" clipPathUnits="objectBoundingBox">

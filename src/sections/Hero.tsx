@@ -353,13 +353,6 @@ export const Hero: React.FC<HeroProps> = ({ onReady, onVesselChange }) => {
       id="main-screen"
       ref={mainScreenRef}
       className="main-screen"
-      style={{
-        backgroundColor: '#071820',
-        backgroundImage: `url('/images/background.png')`,
-        backgroundSize: 'cover',
-        backgroundPosition: 'center',
-        backgroundRepeat: 'no-repeat',
-      }}
     >
       {/* Central Navigation Marker & Plotting Dots */}
       <Preloader isDone={isPreloaderDone} />
