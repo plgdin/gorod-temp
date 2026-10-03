@@ -26,6 +26,4 @@ dist-ssr
 # Scratch and large media
 scratch/
 *.zip
-*.mp4
 public/images/_MConverter*
-public/images/water-flow*
