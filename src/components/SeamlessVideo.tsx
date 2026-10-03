@@ -153,6 +153,7 @@ export const SeamlessVideo: React.FC<SeamlessVideoProps> = ({
         src={activeSrc}
         className={className}
         muted
+        loop
         playsInline
         preload="auto"
         poster={poster}
@@ -179,6 +180,7 @@ export const SeamlessVideo: React.FC<SeamlessVideoProps> = ({
         src={activeSrc}
         className={className}
         muted
+        loop
         playsInline
         preload="auto"
         style={{
