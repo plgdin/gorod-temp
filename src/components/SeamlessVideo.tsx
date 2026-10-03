@@ -15,9 +15,13 @@ export const SeamlessVideo: React.FC<SeamlessVideoProps> = ({
   className,
   style,
 }) => {
-  const videoRef = useRef<HTMLVideoElement>(null);
   const [activeSrc, setActiveSrc] = useState<string>(src);
+  const [activeSlot, setActiveSlot] = useState<'A' | 'B'>('A');
   const [isLoaded, setIsLoaded] = useState<boolean>(false);
+
+  const videoARef = useRef<HTMLVideoElement>(null);
+  const videoBRef = useRef<HTMLVideoElement>(null);
+  const isTransitioningRef = useRef<boolean>(false);
 
   // Responsive video source selection
   useEffect(() => {
@@ -32,51 +36,104 @@ export const SeamlessVideo: React.FC<SeamlessVideoProps> = ({
     return () => window.removeEventListener('resize', pickSource);
   }, [src, mobileSrc]);
 
-  // Handle autoplay policies and visibility change to conserve GPU
+  // Handle autoplay initialization & tab visibility
   useEffect(() => {
-    const video = videoRef.current;
-    if (!video) return;
+    const vA = videoARef.current;
+    const vB = videoBRef.current;
+    if (!vA || !vB) return;
 
-    video.defaultMuted = true;
-    video.muted = true;
+    vA.defaultMuted = true;
+    vA.muted = true;
+    vB.defaultMuted = true;
+    vB.muted = true;
 
-    const tryPlay = () => {
-      if (video.paused) {
-        const playPromise = video.play();
-        if (playPromise !== undefined) {
-          playPromise
-            .then(() => setIsLoaded(true))
-            .catch(() => {});
-        }
+    const startPlay = async () => {
+      try {
+        await vA.play();
+        setIsLoaded(true);
+      } catch {
+        // Autoplay policy fallback
       }
     };
-
-    tryPlay();
+    startPlay();
 
     const handleGesture = () => {
-      tryPlay();
+      if (vA.paused && vB.paused) {
+        startPlay();
+      }
     };
     window.addEventListener('click', handleGesture, { once: true, passive: true });
     window.addEventListener('touchstart', handleGesture, { once: true, passive: true });
     window.addEventListener('scroll', handleGesture, { once: true, passive: true });
 
-    const handleVisibilityChange = () => {
+    const handleVisibility = () => {
       if (document.hidden) {
-        video.pause();
+        vA.pause();
+        vB.pause();
       } else {
-        tryPlay();
+        if (activeSlot === 'A') {
+          vA.play().catch(() => {});
+        } else {
+          vB.play().catch(() => {});
+        }
       }
     };
-
-    document.addEventListener('visibilitychange', handleVisibilityChange);
+    document.addEventListener('visibilitychange', handleVisibility);
 
     return () => {
       window.removeEventListener('click', handleGesture);
       window.removeEventListener('touchstart', handleGesture);
       window.removeEventListener('scroll', handleGesture);
-      document.removeEventListener('visibilitychange', handleVisibilityChange);
+      document.removeEventListener('visibilitychange', handleVisibility);
     };
   }, [activeSrc]);
+
+  // Seamless crossfade loop controller via requestAnimationFrame
+  useEffect(() => {
+    let animFrame: number;
+
+    const checkLoop = () => {
+      const vA = videoARef.current;
+      const vB = videoBRef.current;
+      if (!vA || !vB) {
+        animFrame = requestAnimationFrame(checkLoop);
+        return;
+      }
+
+      const currentVideo = activeSlot === 'A' ? vA : vB;
+      const nextVideo = activeSlot === 'A' ? vB : vA;
+
+      // Trigger crossfade 1.2s before the video reaches its end
+      if (
+        !isTransitioningRef.current &&
+        currentVideo.duration &&
+        currentVideo.duration > 2 &&
+        currentVideo.currentTime >= currentVideo.duration - 1.2
+      ) {
+        isTransitioningRef.current = true;
+        const nextSlot = activeSlot === 'A' ? 'B' : 'A';
+
+        nextVideo.currentTime = 0;
+        nextVideo.play().then(() => {
+          setActiveSlot(nextSlot);
+
+          // Once next video has crossfaded into view (1.0s), pause previous video and reset flag
+          setTimeout(() => {
+            currentVideo.pause();
+            currentVideo.currentTime = 0;
+            isTransitioningRef.current = false;
+          }, 1100);
+        }).catch(() => {
+          isTransitioningRef.current = false;
+        });
+      }
+
+      animFrame = requestAnimationFrame(checkLoop);
+    };
+
+    animFrame = requestAnimationFrame(checkLoop);
+    return () => cancelAnimationFrame(animFrame);
+  }, [activeSlot]);
 
   return (
     <div
@@ -90,23 +147,16 @@ export const SeamlessVideo: React.FC<SeamlessVideoProps> = ({
         ...style,
       }}
     >
+      {/* Video A */}
       <video
-        ref={videoRef}
+        ref={videoARef}
         src={activeSrc}
         className={className}
-        autoPlay
-        loop
         muted
         playsInline
         preload="auto"
         poster={poster}
-        onLoadedData={() => {
-          setIsLoaded(true);
-          videoRef.current?.play().catch(() => {});
-        }}
-        onCanPlay={() => {
-          videoRef.current?.play().catch(() => {});
-        }}
+        onLoadedData={() => setIsLoaded(true)}
         style={{
           position: 'absolute',
           inset: 0,
@@ -115,15 +165,41 @@ export const SeamlessVideo: React.FC<SeamlessVideoProps> = ({
           objectFit: 'cover',
           objectPosition: 'center',
           pointerEvents: 'none',
-          opacity: isLoaded ? 1 : 0.9,
-          transition: 'opacity 0.6s ease-out',
-          willChange: 'transform',
+          opacity: isLoaded ? (activeSlot === 'A' ? 1 : 0) : 0,
+          transition: 'opacity 1.0s cubic-bezier(0.4, 0, 0.2, 1)',
+          willChange: 'opacity, transform',
           transform: 'translateZ(0)',
+          zIndex: activeSlot === 'A' ? 2 : 1,
+        }}
+      />
+
+      {/* Video B (Buffered Dual Player for 100% Zero-Cut Seamless Loop) */}
+      <video
+        ref={videoBRef}
+        src={activeSrc}
+        className={className}
+        muted
+        playsInline
+        preload="auto"
+        style={{
+          position: 'absolute',
+          inset: 0,
+          width: '100%',
+          height: '100%',
+          objectFit: 'cover',
+          objectPosition: 'center',
+          pointerEvents: 'none',
+          opacity: isLoaded ? (activeSlot === 'B' ? 1 : 0) : 0,
+          transition: 'opacity 1.0s cubic-bezier(0.4, 0, 0.2, 1)',
+          willChange: 'opacity, transform',
+          transform: 'translateZ(0)',
+          zIndex: activeSlot === 'B' ? 2 : 1,
         }}
       />
     </div>
   );
 };
+
 
 
 
