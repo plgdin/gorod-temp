@@ -251,7 +251,13 @@ export const Hero: React.FC<HeroProps> = ({ onReady, onVesselChange }) => {
         }
       };
 
-      // Entrance sequence
+      // Entrance sequence (snappier on mobile devices)
+      const isMobile = typeof window !== 'undefined' && window.innerWidth < 768;
+      const compassDuration = isMobile ? 0.7 : 1.2;
+      const preloaderFadeStart = isMobile ? 0.4 : 0.8;
+      const preloaderFadeDuration = isMobile ? 0.4 : 0.6;
+      const shipSailDuration = isMobile ? 1.3 : 2.0;
+
       const entranceTl = gsap.timeline({
         onComplete: () => {
           onReadyRef.current?.();
@@ -266,7 +272,7 @@ export const Hero: React.FC<HeroProps> = ({ onReady, onVesselChange }) => {
           {
             rotateZ: 45,
             scale: 1.05,
-            duration: 1.2,
+            duration: compassDuration,
             ease: 'sine.inOut',
           },
           0
@@ -277,11 +283,11 @@ export const Hero: React.FC<HeroProps> = ({ onReady, onVesselChange }) => {
           {
             opacity: 0,
             scale: 0.85,
-            duration: 0.6,
+            duration: preloaderFadeDuration,
             ease: 'power2.inOut',
             onComplete: () => setIsPreloaderDone(true),
           },
-          0.8
+          preloaderFadeStart
         )
         // 3. First vessel (Carrier) smoothly sails in from left into center (moving right, forward)
         .fromTo(
@@ -293,11 +299,11 @@ export const Hero: React.FC<HeroProps> = ({ onReady, onVesselChange }) => {
           {
             x: 0,
             opacity: 1,
-            duration: 2.0,
+            duration: shipSailDuration,
             ease: 'power3.out',
             immediateRender: false,
           },
-          0.2
+          isMobile ? 0.1 : 0.2
         )
         // 4. Hero titles emerge to frame the vessel
         .to(

@@ -553,6 +553,7 @@ button {
   z-index: 0;
   pointer-events: none;
   overflow: hidden;
+  contain: strict;
 }
 
 .global-ocean-bg__video {
@@ -563,6 +564,15 @@ button {
   object-fit: cover;
   object-position: center;
   filter: brightness(0.64) contrast(1.22) saturate(1.35) hue-rotate(-22deg);
+  will-change: transform;
+  transform: translateZ(0);
+}
+
+@media (max-width: 768px) {
+  .global-ocean-bg__video {
+    /* Lightweight filter on mobile devices to prevent GPU thermal throttling */
+    filter: brightness(0.68) contrast(1.18);
+  }
 }
 
 .global-ocean-bg__tint {
@@ -1727,6 +1737,10 @@ button {
   line-height: 0;
   pointer-events: none;
   opacity: 0;
+}
+
+.main-screen__preloader.--done {
+  display: none !important;
 }
 
 .main-screen__preloader-center {

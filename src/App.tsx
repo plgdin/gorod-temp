@@ -76,6 +76,8 @@ export function App() {
       <div className="global-ocean-bg" aria-hidden="true">
         <SeamlessVideo
           src="/images/water-flow.mp4"
+          mobileSrc="/images/water-flow-mobile.mp4"
+          poster="/images/water-flow-poster.jpg"
           className="global-ocean-bg__video"
         />
         <div className="global-ocean-bg__tint" />

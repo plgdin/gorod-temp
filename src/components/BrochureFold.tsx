@@ -345,24 +345,38 @@ const SERVICES: ServiceItem[] = [
 
 
 export default function BrochureFold() {
-  const [fold, setFold] = useState<0 | 1 | 2>(0);
+  const [isOpen, setIsOpen] = useState(false);
   const [closing, setClosing] = useState(false);
   const [selectedIndex, setSelectedIndex] = useState(0);
   const [mobileTab, setMobileTab] = useState<'about' | 'services' | 'details'>('services');
   const [foldState, setFoldState] = useState<'idle' | 'folding-in' | 'folding-out'>('idle');
   const sectionRef = useRef<HTMLElement>(null);
+  const unfoldTlRef = useRef<gsap.core.Timeline | null>(null);
   const foldTimer1Ref = useRef<number | null>(null);
   const foldTimer2Ref = useRef<number | null>(null);
 
   const currentService = SERVICES[selectedIndex] || SERVICES[0];
   const CurrentIcon = currentService.icon;
 
-  // Preload service images into browser cache so reveals and flips never drop frames decoding
+  // Defer service image preloading to idle time so it doesn't block initial page load
   useEffect(() => {
-    SERVICES.forEach((s) => {
-      const img = new Image();
-      img.src = s.image;
-    });
+    const preload = () => {
+      SERVICES.forEach((s) => {
+        const img = new Image();
+        img.src = s.image;
+      });
+    };
+    if (typeof window !== 'undefined' && 'requestIdleCallback' in window) {
+      const win = window as unknown as {
+        requestIdleCallback: (cb: () => void, opts: { timeout: number }) => number;
+        cancelIdleCallback: (id: number) => void;
+      };
+      const id = win.requestIdleCallback(preload, { timeout: 3500 });
+      return () => win.cancelIdleCallback(id);
+    } else {
+      const t = setTimeout(preload, 1800);
+      return () => clearTimeout(t);
+    }
   }, []);
 
   // Handle closing transition timeout for fallback
@@ -376,7 +390,7 @@ export default function BrochureFold() {
     return () => window.clearTimeout(timeout);
   }, [closing]);
 
-  // SCROLL-DRIVEN SCRUBBED UNFOLD (Desktop >= 1024px) & CLEAN RESPONSIVE FALLBACK
+  // AUTONOMOUS UNFOLD TIMELINE (Auto-plays on scroll into view & on click)
   useIsomorphicLayoutEffect(() => {
     const root = sectionRef.current;
     if (!root) return;
@@ -393,62 +407,51 @@ export default function BrochureFold() {
 
     const mm = gsap.matchMedia();
 
-    // DESKTOP: Scrubbed Unfold Driven by Scroll with Pinning
+    // DESKTOP: Autonomous smooth unfolding animation with ScrollTrigger and Click support
     mm.add('(min-width: 1024px) and (prefers-reduced-motion: no-preference)', () => {
-      stage.classList.add('is-scroll-scrubbed');
-
-      // Clear transition during scrub to prevent CSS lag/fighting
       left.style.transition = 'none';
       right.style.transition = 'none';
 
-      // Dynamic fit function: fit stage to visible viewport height (e.g. 1440x900 laptops)
+      // Dynamic fit function: fit stage to visible viewport height
       const fit = () => Math.min(1, (window.innerHeight - 150) / 772);
 
-      // Set initial 3D folded brochure state (scale handled by timeline fromTo with fit())
-      gsap.set(stage, { transformPerspective: 1800 });
-      gsap.set(left, { rotateY: 180, transformOrigin: 'right center' });
-      gsap.set(right, { rotateY: -180, transformOrigin: 'left center' });
-      if (shadow) gsap.set(shadow, { scaleX: 0.35, opacity: 0.45 });
-      if (sheenLeft) gsap.set(sheenLeft, { opacity: 0, xPercent: -100 });
-      if (sheenRight) gsap.set(sheenRight, { opacity: 0, xPercent: -100 });
-
-      let currentHintText = '';
+      // Initial state: folded closed
+      gsap.set(stage, { transformPerspective: 1800, scale: fit() * 0.92, force3D: true });
+      gsap.set(left, { rotateY: 180, transformOrigin: 'right center', force3D: true });
+      gsap.set(right, { rotateY: -180, transformOrigin: 'left center', force3D: true });
+      if (shadow) gsap.set(shadow, { scaleX: 0.35, opacity: 0.45, force3D: true });
+      if (sheenLeft) gsap.set(sheenLeft, { opacity: 0, xPercent: -100, force3D: true });
+      if (sheenRight) gsap.set(sheenRight, { opacity: 0, xPercent: -100, force3D: true });
 
       const tl = gsap.timeline({
-        scrollTrigger: {
-          trigger: root,
-          start: 'center center',
-          end: '+=2100',
-          pin: true,
-          scrub: 0.15,
-          anticipatePin: 1,
-          invalidateOnRefresh: true,
-          onUpdate: (self) => {
-            if (hint) {
-              const nextText =
-                self.progress > 0.62
-                  ? 'Select a service in the middle panel to explore'
-                  : self.progress > 0.08
-                  ? 'Scroll to physically unfold the brochure'
-                  : 'Scroll down to open brochure ↓';
-              if (nextText !== currentHintText) {
-                hint.textContent = nextText;
-                currentHintText = nextText;
-              }
-            }
-          },
+        paused: true,
+        onStart: () => {
+          setIsOpen(true);
+          stage.classList.add('is-brochure-open');
+          stage.classList.remove('is-brochure-closed');
+          if (hint) hint.textContent = '✦ Select a service in the middle panel to explore';
+        },
+        onComplete: () => {
+          setIsOpen(true);
+        },
+        onReverseComplete: () => {
+          setIsOpen(false);
+          stage.classList.remove('is-brochure-open');
+          stage.classList.add('is-brochure-closed');
+          if (hint) hint.textContent = '✦ Click cover or scroll down to open brochure ↓';
         },
       });
 
+      unfoldTlRef.current = tl;
+
       // 1. Stage scale up with dynamic viewport fit + contact shadow expansion
-      tl.fromTo(
+      tl.to(
         stage,
-        { scale: () => fit() * 0.88 },
-        { scale: () => fit(), ease: 'none', duration: 1 },
+        { scale: () => fit(), duration: 0.85, ease: 'power2.out' },
         0
       );
       if (shadow) {
-        tl.to(shadow, { scaleX: 1, opacity: 0.82, ease: 'none', duration: 1 }, 0);
+        tl.to(shadow, { scaleX: 1, opacity: 0.82, duration: 0.85, ease: 'power2.out' }, 0);
       }
 
       // 2. Left panel (cover) unfolds to the left: 180deg -> 0deg
@@ -456,10 +459,11 @@ export default function BrochureFold() {
         left,
         {
           rotateY: 0,
-          ease: 'power2.inOut',
-          duration: 0.44,
+          duration: 0.85,
+          ease: 'power3.inOut',
+          force3D: true,
         },
-        0.08
+        0.06
       );
 
       // Light sheen sweep across left panel face
@@ -467,12 +471,12 @@ export default function BrochureFold() {
         tl.fromTo(
           sheenLeft,
           { opacity: 0, xPercent: -100 },
-          { opacity: 0.45, xPercent: 40, ease: 'power1.in', duration: 0.22 },
-          0.08
+          { opacity: 0.45, xPercent: 50, duration: 0.4, ease: 'power1.in' },
+          0.06
         ).to(
           sheenLeft,
-          { opacity: 0, xPercent: 120, ease: 'power1.out', duration: 0.22 },
-          0.30
+          { opacity: 0, xPercent: 120, duration: 0.4, ease: 'power1.out' },
+          0.46
         );
       }
 
@@ -481,10 +485,11 @@ export default function BrochureFold() {
         right,
         {
           rotateY: 0,
-          ease: 'power2.inOut',
-          duration: 0.44,
+          duration: 0.85,
+          ease: 'power3.inOut',
+          force3D: true,
         },
-        0.50
+        0.42
       );
 
       // Light sheen sweep across right panel face
@@ -492,17 +497,33 @@ export default function BrochureFold() {
         tl.fromTo(
           sheenRight,
           { opacity: 0, xPercent: -100 },
-          { opacity: 0.45, xPercent: 40, ease: 'power1.in', duration: 0.22 },
-          0.50
+          { opacity: 0.45, xPercent: 50, duration: 0.4, ease: 'power1.in' },
+          0.42
         ).to(
           sheenRight,
-          { opacity: 0, xPercent: 120, ease: 'power1.out', duration: 0.22 },
-          0.72
+          { opacity: 0, xPercent: 120, duration: 0.4, ease: 'power1.out' },
+          0.82
         );
       }
 
-      // 4. Extended open hold: stays open while user reads and clicks services
-      tl.to({}, { duration: 0.5 });
+      // Auto-trigger unfold on scrolling into view
+      const st = ScrollTrigger.create({
+        trigger: root,
+        start: 'top 75%',
+        end: 'bottom 15%',
+        onEnter: () => tl.play(),
+        onLeaveBack: () => tl.reverse(),
+      });
+
+      // If already in viewport on mount or direct anchor navigation
+      if (ScrollTrigger.isInViewport(root, 0.25)) {
+        tl.play();
+      }
+
+      return () => {
+        st.kill();
+        tl.kill();
+      };
     });
 
     // MOBILE / REDUCED MOTION: Clean fallback without pinning
@@ -522,6 +543,23 @@ export default function BrochureFold() {
       mm.revert();
     };
   }, []);
+
+  const handleOpenBrochure = useCallback(() => {
+    if (!isOpen) {
+      unfoldTlRef.current?.play();
+      setIsOpen(true);
+    }
+  }, [isOpen]);
+
+  const handleToggleBrochure = useCallback(() => {
+    if (!isOpen) {
+      unfoldTlRef.current?.play();
+      setIsOpen(true);
+    } else {
+      unfoldTlRef.current?.reverse();
+      setIsOpen(false);
+    }
+  }, [isOpen]);
 
   // Fold panel 3 closed onto panel 2, swap service data, then unfold back open
   const handleServiceSelect = (idx: number) => {
@@ -564,18 +602,18 @@ export default function BrochureFold() {
       return;
     }
 
-    // Only active if fallback manual step mode is engaged
     if (typeof window !== 'undefined' && window.innerWidth >= 1024) {
+      if (!isOpen) {
+        handleOpenBrochure();
+      }
       return;
     }
 
-    if (fold === 2) {
-      setClosing(true);
-      setFold(0);
-    } else {
-      setFold((prev) => ((prev + 1) % 3) as 0 | 1 | 2);
+    // On mobile (< 1024px): tap cover to go to services
+    if (mobileTab === 'about') {
+      setMobileTab('services');
     }
-  }, [fold]);
+  }, [isOpen, mobileTab, handleOpenBrochure]);
 
   return (
     <section
@@ -615,7 +653,7 @@ export default function BrochureFold() {
       </div>
 
       <div
-        className={`fold-brochure fold-brochure--step-${fold}${
+        className={`fold-brochure ${isOpen ? 'is-brochure-open' : 'is-brochure-closed'}${
           closing ? ' fold-brochure--closing' : ''
         }`}
         onClick={handleClick}
@@ -733,6 +771,19 @@ export default function BrochureFold() {
               <div className="panel-cover__subline">
                 <span>PEOPLE &nbsp;/&nbsp; EXPERTISE &nbsp;/&nbsp; SOLUTIONS</span>
                 <span>FOR A SMOOTHER TOMORROW.</span>
+              </div>
+              <div className="panel-cover__open-prompt">
+                <button
+                  type="button"
+                  className="panel-cover__open-pill"
+                  onClick={(e) => {
+                    e.stopPropagation();
+                    handleOpenBrochure();
+                  }}
+                  aria-label="Click to open brochure"
+                >
+                  ✦ CLICK TO OPEN BROCHURE
+                </button>
               </div>
             </div>
 
@@ -921,10 +972,17 @@ export default function BrochureFold() {
         </div>
       </div>
 
-      {/* Scroll indicator & status hint */}
-      <div className="fold-brochure__hint" aria-live="polite">
-        Scroll down to open brochure ↓
-      </div>
+      {/* Interactive indicator & status hint */}
+      <button
+        type="button"
+        className="fold-brochure__hint"
+        onClick={handleToggleBrochure}
+        aria-label="Toggle brochure open or closed"
+      >
+        {isOpen
+          ? '✦ Select a service in the middle panel to explore'
+          : '✦ Click cover or scroll to unfold brochure ↓'}
+      </button>
     </section>
   );
 }
