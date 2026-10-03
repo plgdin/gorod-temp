@@ -77,8 +77,6 @@ export function App() {
         <SeamlessVideo
           src="/images/water-flow.mp4"
           mobileSrc="/images/water-flow-mobile.mp4"
-          webpSrc="/images/water-flow.webp"
-          webpMobileSrc="/images/water-flow-mobile.webp"
           poster="/images/water-flow-poster.jpg"
           className="global-ocean-bg__video"
         />

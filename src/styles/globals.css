@@ -563,15 +563,14 @@ button {
   height: 100%;
   object-fit: cover;
   object-position: center;
-  filter: brightness(0.64) contrast(1.22) saturate(1.35) hue-rotate(-22deg);
+  filter: brightness(0.70) contrast(1.15) saturate(1.25) hue-rotate(-18deg);
   will-change: transform;
   transform: translateZ(0);
 }
 
 @media (max-width: 768px) {
   .global-ocean-bg__video {
-    /* Lightweight filter on mobile devices to prevent GPU thermal throttling */
-    filter: brightness(0.68) contrast(1.18);
+    filter: brightness(0.72) contrast(1.12);
   }
 }
 
