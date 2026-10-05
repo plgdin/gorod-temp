@@ -873,7 +873,7 @@ export default function BrochureFold() {
               {/* Details Body */}
               <div className="details-body">
                 <div className="details-badge">
-                  <CurrentIcon size={17} strokeWidth={2} className="details-badge__icon" />
+                  <CurrentIcon size={20} strokeWidth={2} className="details-badge__icon" />
                   <span className="details-badge__text">{currentService.category}</span>
                 </div>
 
@@ -888,7 +888,7 @@ export default function BrochureFold() {
                     return (
                       <div key={i} className="capability-card">
                         <div className="capability-card__header">
-                          <CapIcon size={16} strokeWidth={2} className="capability-card__icon" />
+                          <CapIcon size={18} strokeWidth={2} className="capability-card__icon" />
                           <span className="capability-card__title">{cap.title}</span>
                         </div>
                         <p className="capability-card__desc">{cap.desc}</p>
