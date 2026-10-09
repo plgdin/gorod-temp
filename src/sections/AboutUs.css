@@ -5,16 +5,31 @@
 
 .about-section-ref {
   position: relative;
-  background-color: #071820;
-  background-image: url('/images/background.png');
-  background-size: cover;
-  background-position: center;
-  background-repeat: no-repeat;
-  padding: 100px clamp(24px, 5vw, 80px) 90px;
+  /* Frosted glass transparent background */
+  background: rgba(7, 24, 32, 0.52);
+  backdrop-filter: blur(24px) saturate(150%);
+  -webkit-backdrop-filter: blur(24px) saturate(150%);
+
+  /* Border covering all sides with curved edges */
+  border: 1px solid rgba(103, 171, 175, 0.32);
+  border-radius: clamp(20px, 2.5vw, 32px);
+
+  /* Leaving space on all sides */
+  width: calc(100% - clamp(24px, 4.5vw, 64px));
+  max-width: 1420px;
+  margin: clamp(40px, 5vw, 72px) auto;
+
+  /* Inner breathing space */
+  padding: clamp(52px, 6vw, 88px) clamp(24px, 4.5vw, 64px);
   overflow: hidden;
   box-sizing: border-box;
   color: #ffffff;
-  border-top: none;
+
+  /* Ambient glass shadow and specular inner reflection */
+  box-shadow:
+    0 24px 60px -15px rgba(0, 0, 0, 0.55),
+    inset 0 1px 1px rgba(255, 255, 255, 0.18),
+    inset 0 0 28px rgba(0, 104, 115, 0.08);
 }
 
 .about-ref-container {
@@ -311,7 +326,10 @@
 
 @media (max-width: 768px) {
   .about-section-ref {
-    padding: 70px 20px 60px;
+    width: calc(100% - 24px);
+    margin: 36px auto;
+    padding: 48px 20px 48px;
+    border-radius: 20px;
   }
 
   .about-stats-row {
