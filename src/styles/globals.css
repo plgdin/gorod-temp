@@ -555,7 +555,7 @@ button {
   min-height: 700px;
   width: 100%;
   padding: 105px clamp(24px, 4.5vw, 64px) 36px;
-  background-color: #071820;
+  background: transparent;
   overflow: hidden;
   display: flex;
   flex-direction: column;
