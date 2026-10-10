@@ -242,51 +242,9 @@
   line-height: 1.2;
 }
 
-.inside-cover__trust {
-  display: flex;
-  flex-wrap: wrap;
-  gap: 6px;
-  margin-top: 10px;
-}
 
-.trust-badge {
-  display: inline-flex;
-  align-items: center;
-  gap: 5px;
-  padding: 5px 10px;
-  border-radius: 999px;
-  background: rgba(0, 104, 115, 0.07);
-  border: 1px solid rgba(0, 104, 115, 0.12);
-}
 
-.trust-badge__star {
-  color: #006873;
-  flex-shrink: 0;
-}
 
-.trust-badge span {
-  font-family: var(--font-body);
-  font-size: 10px;
-  font-weight: 700;
-  letter-spacing: 0.06em;
-  text-transform: uppercase;
-  color: #073E45;
-  white-space: nowrap;
-}
-
-.inside-cover__footer {
-  margin-top: auto;
-  padding-top: 10px;
-}
-
-.inside-cover__footer span {
-  font-family: var(--font-body);
-  font-size: 9.5px;
-  font-weight: 600;
-  letter-spacing: 0.15em;
-  text-transform: uppercase;
-  color: #8A999C;
-}
 
 /* =========================================================
    PANEL 1 (LEFT): BRAND COVER
@@ -432,6 +390,8 @@
   flex-direction: column;
   gap: 2px;
 }
+
+
 
 .panel-cover__bottom-tag span {
   font-family: var(--font-body);
@@ -670,58 +630,8 @@
 }
 
 /* =========================================================
-   PANEL 3 SERVICE FOLD: Close on top of Panel 2, swap, reopen
-   Panel folds from 0deg → -180deg (hinged on left edge)
+   PANEL 3 SERVICE CONTENT FADE TRANSITION
 ========================================================== */
-.fold-brochure__panel--right.is-folding-in {
-  animation: panel3FoldOntoMiddle 0.8s cubic-bezier(0.32, 0, 0.2, 1) forwards;
-  pointer-events: none;
-  z-index: 4; /* Render above panel 2 during fold */
-}
-
-.fold-brochure__panel--right.is-folding-out {
-  animation: panel3UnfoldFromMiddle 0.95s cubic-bezier(0.28, 0.85, 0.38, 1) forwards;
-  z-index: 4;
-}
-
-@keyframes panel3FoldOntoMiddle {
-  0% {
-    transform: rotateY(0deg);
-    filter: brightness(1);
-    box-shadow: 0 8px 20px rgb(15 37 44 / 10%);
-  }
-  50% {
-    filter: brightness(0.93);
-  }
-  100% {
-    transform: rotateY(-180deg);
-    filter: brightness(0.88);
-    box-shadow: -10px 14px 32px rgba(15, 37, 44, 0.24);
-  }
-}
-
-@keyframes panel3UnfoldFromMiddle {
-  0% {
-    transform: rotateY(-180deg);
-    box-shadow: -10px 14px 32px rgba(15, 37, 44, 0.24);
-    filter: brightness(0.88);
-  }
-  50% {
-    filter: brightness(0.96);
-  }
-  85% {
-    transform: rotateY(1.4deg);
-    filter: brightness(1.01);
-  }
-  100% {
-    transform: rotateY(0deg);
-    filter: brightness(1);
-    box-shadow: 0 8px 20px rgb(15 37 44 / 10%);
-  }
-}
-
-
-
 .panel-content-details {
   background-color: #ffffff;
   color: #0A1C22;
@@ -734,6 +644,16 @@
   flex-direction: column;
   height: 100%;
   width: 100%;
+  opacity: 1;
+  transform: translateY(0);
+  transition: opacity 0.2s cubic-bezier(0.2, 0.8, 0.25, 1), transform 0.2s cubic-bezier(0.2, 0.8, 0.25, 1);
+  will-change: opacity, transform;
+}
+
+.details-flip-wrapper.--fading {
+  opacity: 0;
+  transform: translateY(6px);
+  pointer-events: none;
 }
 
 .details-hero {
@@ -938,6 +858,82 @@
   flex-shrink: 0;
 }
 
+.details-actions-row {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  width: 100%;
+  margin-top: auto;
+  flex-shrink: 0;
+}
+
+.details-actions-row .details-cta-btn {
+  flex: 1;
+  height: 48px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  border-radius: 6px;
+  background: #063B42;
+  color: #ffffff;
+  font-family: var(--font-body);
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  text-decoration: none;
+  transition: all 0.25s cubic-bezier(0.16, 1, 0.3, 1);
+  box-shadow: 0 4px 16px rgba(6, 59, 66, 0.26);
+  margin-top: 0;
+}
+
+.details-actions-row .details-cta-btn:hover {
+  background: #00505a;
+  transform: translateY(-2px);
+  box-shadow: 0 6px 20px rgba(6, 59, 66, 0.36);
+}
+
+.details-actions-row .details-cta-arrow {
+  font-size: 13px;
+  transition: transform 0.2s ease;
+}
+
+.details-actions-row .details-cta-btn:hover .details-cta-arrow {
+  transform: translateX(4px);
+}
+
+.details-download-btn {
+  flex: 1;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  height: 48px;
+  padding: 0 10px;
+  border-radius: 6px;
+  background: rgba(6, 59, 66, 0.08);
+  border: 1px solid rgba(6, 59, 66, 0.24);
+  color: #063B42;
+  font-family: var(--font-body);
+  font-size: 10.5px;
+  font-weight: 700;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  text-decoration: none;
+  transition: all 0.25s cubic-bezier(0.16, 1, 0.3, 1);
+  box-sizing: border-box;
+  white-space: nowrap;
+}
+
+.details-download-btn:hover {
+  background: #063B42;
+  border-color: #063B42;
+  color: #ffffff;
+  transform: translateY(-2px);
+  box-shadow: 0 6px 20px rgba(6, 59, 66, 0.25);
+}
+
 .details-cta-arrow {
   font-size: 14px;
   transition: transform 0.2s ease;
@@ -1026,21 +1022,7 @@
   will-change: transform, opacity;
 }
 
-/* Hint Indicator */
-.fold-brochure__hint {
-  margin: 22px 0 0;
-  color: #8da4aa;
-  font: 600 11px/1.5 var(--font-body, Arial, sans-serif);
-  letter-spacing: 0.16em;
-  text-align: center;
-  text-transform: uppercase;
-  background: rgba(7, 30, 37, 0.88);
-  border: 1px solid rgba(103, 171, 175, 0.2);
-  padding: 8px 20px;
-  border-radius: 20px;
-  pointer-events: none;
-  transition: all 0.3s ease;
-}
+
 
 /* Mobile Tab Selector (hidden on desktop) */
 .fold-brochure__mobile-tabs {

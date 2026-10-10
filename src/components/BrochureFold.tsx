@@ -31,9 +31,8 @@ import {
   Zap,
   Waves,
   Globe,
-  MapPin,
   Award,
-  Star,
+  Download,
 } from 'lucide-react';
 import './BrochureFold.css';
 
@@ -349,10 +348,9 @@ export default function BrochureFold() {
   const [closing, setClosing] = useState(false);
   const [selectedIndex, setSelectedIndex] = useState(0);
   const [mobileTab, setMobileTab] = useState<'about' | 'services' | 'details'>('services');
-  const [foldState, setFoldState] = useState<'idle' | 'folding-in' | 'folding-out'>('idle');
+  const [isFading, setIsFading] = useState(false);
   const sectionRef = useRef<HTMLElement>(null);
-  const foldTimer1Ref = useRef<number | null>(null);
-  const foldTimer2Ref = useRef<number | null>(null);
+  const fadeTimerRef = useRef<number | null>(null);
 
   const currentService = SERVICES[selectedIndex] || SERVICES[0];
   const CurrentIcon = currentService.icon;
@@ -387,143 +385,100 @@ export default function BrochureFold() {
     const shadow = root.querySelector<HTMLElement>('.fold-brochure__shadow');
     const sheenLeft = root.querySelector<HTMLElement>('.fold-brochure__sheen--left');
     const sheenRight = root.querySelector<HTMLElement>('.fold-brochure__sheen--right');
-    const hint = root.querySelector<HTMLElement>('.fold-brochure__hint');
 
     if (!stage || !left || !right) return;
 
     const mm = gsap.matchMedia();
 
-    // DESKTOP: Scrubbed Unfold Driven by Scroll with Pinning
+    // DESKTOP: Complete Unfold Triggered on Scroll (No Pinning, No Scrubbing)
     mm.add('(min-width: 1024px) and (prefers-reduced-motion: no-preference)', () => {
-      stage.classList.add('is-scroll-scrubbed');
-
-      // Clear transition during scrub to prevent CSS lag/fighting
+      // Prevent CSS transition conflicts while GSAP manages panel rotations
       left.style.transition = 'none';
       right.style.transition = 'none';
 
-      // Layout constants: keep the brochure clear of the fixed nav while pinned
-      const STAGE_H = 772;
-      const NAV_GAP = 28; // breathing room between nav bottom and brochure top
-      const HINT_SPACE = 64; // hint pill + bottom margin
-      const navH = () =>
-        document.querySelector<HTMLElement>('.header__top')?.offsetHeight ?? 90;
-
-      // Fit the stage into the space BELOW the nav and ABOVE the hint pill
-      const fit = () =>
-        Math.min(1, (window.innerHeight - navH() - NAV_GAP - HINT_SPACE) / STAGE_H);
-
-      // Pin so the scaled stage's top edge sits exactly NAV_GAP below the nav
-      const pinStart = () => {
-        const padTop = parseFloat(getComputedStyle(root).paddingTop) || 0;
-        const off = navH() + NAV_GAP + (STAGE_H / 2) * fit() - padTop - STAGE_H / 2;
-        return off >= 0 ? `top top+=${off}` : `top top-=${-off}`;
-      };
-
-      // Set initial 3D folded brochure state (scale handled by timeline fromTo with fit()).
-      // No transformPerspective here: .fold-brochure already has CSS perspective,
-      // and stacking both exaggerates the swing of the panels.
+      // Set initial 3D folded brochure state
       gsap.set(left, { rotateY: 180, transformOrigin: 'right center' });
       gsap.set(right, { rotateY: -180, transformOrigin: 'left center' });
       if (shadow) gsap.set(shadow, { scaleX: 0.35, opacity: 0.45 });
       if (sheenLeft) gsap.set(sheenLeft, { opacity: 0, xPercent: -100 });
       if (sheenRight) gsap.set(sheenRight, { opacity: 0, xPercent: -100 });
 
-      let currentHintText = '';
-
       const tl = gsap.timeline({
         scrollTrigger: {
           trigger: root,
-          start: pinStart,
-          end: '+=2100',
-          pin: true,
-          scrub: 0.15,
-          anticipatePin: 1,
+          start: 'top 75%',
+          toggleActions: 'play none none reverse',
           invalidateOnRefresh: true,
-          // The stage shrinks visually but keeps its layout box, so lift the hint
-          // up to sit right under the visible brochure instead of off-screen.
-          onRefresh: () => {
-            if (hint) gsap.set(hint, { y: -(STAGE_H / 2) * (1 - fit()) });
-          },
-          onUpdate: (self) => {
-            if (hint) {
-              const nextText =
-                self.progress > 0.62
-                  ? 'Select a service in the middle panel to explore'
-                  : self.progress > 0.08
-                  ? 'Scroll to physically unfold the brochure'
-                  : 'Scroll down to open brochure ↓';
-              if (nextText !== currentHintText) {
-                hint.textContent = nextText;
-                currentHintText = nextText;
-              }
-            }
-          },
         },
       });
 
-      // 1. Stage scale up with dynamic viewport fit + contact shadow expansion
-      tl.fromTo(
-        stage,
-        { scale: () => fit() * 0.88 },
-        { scale: () => fit(), ease: 'none', duration: 1 },
-        0
-      );
+      // 1. Ground contact shadow bloom
       if (shadow) {
-        tl.to(shadow, { scaleX: 1, opacity: 0.82, ease: 'none', duration: 1 }, 0);
+        tl.to(
+          shadow,
+          { scaleX: 1, opacity: 0.82, duration: 0.95, ease: 'power2.out' },
+          0
+        );
       }
 
-      // 2. Left panel (cover) unfolds to the left: 180deg -> 0deg
+      // 2. Left panel (cover) unfolds completely: 180deg -> 0deg
       tl.to(
         left,
         {
           rotateY: 0,
           ease: 'power2.inOut',
-          duration: 0.44,
+          duration: 0.85,
         },
-        0.08
+        0.05
       );
 
-      // Light sheen sweep across left panel face
+      // Light sheen sweep across left panel
       if (sheenLeft) {
         tl.fromTo(
           sheenLeft,
           { opacity: 0, xPercent: -100 },
-          { opacity: 0.45, xPercent: 40, ease: 'power1.in', duration: 0.22 },
-          0.08
+          { opacity: 0.45, xPercent: 40, ease: 'power1.in', duration: 0.4 },
+          0.05
         ).to(
           sheenLeft,
-          { opacity: 0, xPercent: 120, ease: 'power1.out', duration: 0.22 },
-          0.30
+          { opacity: 0, xPercent: 120, ease: 'power1.out', duration: 0.4 },
+          0.45
         );
       }
 
-      // 3. Right panel (details) unfolds to the right: -180deg -> 0deg
+      // 3. Right panel (details) unfolds completely: -180deg -> 0deg
       tl.to(
         right,
         {
           rotateY: 0,
           ease: 'power2.inOut',
-          duration: 0.44,
+          duration: 0.85,
         },
-        0.50
+        0.35
       );
 
-      // Light sheen sweep across right panel face
+      // Light sheen sweep across right panel
       if (sheenRight) {
         tl.fromTo(
           sheenRight,
           { opacity: 0, xPercent: -100 },
-          { opacity: 0.45, xPercent: 40, ease: 'power1.in', duration: 0.22 },
-          0.50
+          { opacity: 0.45, xPercent: 40, ease: 'power1.in', duration: 0.4 },
+          0.35
         ).to(
           sheenRight,
-          { opacity: 0, xPercent: 120, ease: 'power1.out', duration: 0.22 },
-          0.72
+          { opacity: 0, xPercent: 120, ease: 'power1.out', duration: 0.4 },
+          0.75
         );
       }
 
-      // 4. Extended open hold: stays open while user reads and clicks services
-      tl.to({}, { duration: 0.5 });
+      // Restore transition for service flips after unfold completes
+      tl.eventCallback('onComplete', () => {
+        right.style.transition = '';
+      });
+      tl.eventCallback('onReverseComplete', () => {
+        right.style.transition = '';
+        left.style.transition = '';
+      });
     });
 
     // MOBILE / REDUCED MOTION: Clean fallback without pinning
@@ -532,20 +487,18 @@ export default function BrochureFold() {
       left.style.transition = '';
       right.style.transition = '';
       gsap.set([stage, left, right], { clearProps: 'all' });
-      if (hint) gsap.set(hint, { clearProps: 'transform' });
       if (shadow) gsap.set(shadow, { clearProps: 'all' });
       if (sheenLeft) gsap.set(sheenLeft, { clearProps: 'all' });
       if (sheenRight) gsap.set(sheenRight, { clearProps: 'all' });
     });
 
     return () => {
-      if (foldTimer1Ref.current) clearTimeout(foldTimer1Ref.current);
-      if (foldTimer2Ref.current) clearTimeout(foldTimer2Ref.current);
+      if (fadeTimerRef.current) clearTimeout(fadeTimerRef.current);
       mm.revert();
     };
   }, []);
 
-  // Fold panel 3 closed onto panel 2, swap service data, then unfold back open
+  // Smooth fade-out then fade-in when switching services
   const handleServiceSelect = (idx: number) => {
     // If mobile: switch tab directly to details
     if (typeof window !== 'undefined' && window.innerWidth < 1024) {
@@ -554,24 +507,15 @@ export default function BrochureFold() {
       return;
     }
 
-    if (idx === selectedIndex || foldState !== 'idle') return;
+    if (idx === selectedIndex || isFading) return;
 
-    if (foldTimer1Ref.current) clearTimeout(foldTimer1Ref.current);
-    if (foldTimer2Ref.current) clearTimeout(foldTimer2Ref.current);
+    if (fadeTimerRef.current) clearTimeout(fadeTimerRef.current);
+    setIsFading(true);
 
-    // 1. Fold panel 3 closed onto panel 2 (0deg → -180deg, hinged on left edge)
-    setFoldState('folding-in');
-
-    // 2. When fully folded (800ms), swap data and unfold back
-    foldTimer1Ref.current = window.setTimeout(() => {
+    fadeTimerRef.current = window.setTimeout(() => {
       setSelectedIndex(idx);
-      setFoldState('folding-out');
-
-      // 3. Return to flat resting state after fold-out completes
-      foldTimer2Ref.current = window.setTimeout(() => {
-        setFoldState('idle');
-      }, 980);
-    }, 820);
+      setIsFading(false);
+    }, 200);
   };
 
   const handleClick = useCallback((e: React.MouseEvent) => {
@@ -708,25 +652,6 @@ export default function BrochureFold() {
                 <span className="inside-stat__label">Certified Operations</span>
               </div>
             </div>
-
-            <div className="inside-cover__trust">
-              <div className="trust-badge">
-                <Star size={11} strokeWidth={2.5} className="trust-badge__star" />
-                <span>FONASBA Certified</span>
-              </div>
-              <div className="trust-badge">
-                <ShieldCheck size={11} strokeWidth={2.5} className="trust-badge__star" />
-                <span>ISPS Compliant</span>
-              </div>
-              <div className="trust-badge">
-                <MapPin size={11} strokeWidth={2.5} className="trust-badge__star" />
-                <span>Indian Ports Specialist</span>
-              </div>
-            </div>
-
-            <div className="inside-cover__footer">
-              <span>SELECT A SERVICE IN THE NEXT PANEL →</span>
-            </div>
           </div>
 
           {/* Cover Face: Brand Cover (Image 1) — Visible when folded closed! */}
@@ -839,15 +764,15 @@ export default function BrochureFold() {
             - Folds closed onto panel 2 when switching services
         ========================================================== */}
         <div
-          className={`fold-brochure__panel fold-brochure__panel--right${
-            foldState !== 'idle' ? ` is-${foldState}` : ''
-          } ${mobileTab === 'details' ? 'fold-brochure__panel--active-mobile' : ''}`}
+          className={`fold-brochure__panel fold-brochure__panel--right ${
+            mobileTab === 'details' ? 'fold-brochure__panel--active-mobile' : ''
+          }`}
           aria-hidden={false}
         >
           {/* FRONT FACE: Service Details (visible when flat/open) */}
           <div className="fold-brochure__face fold-brochure__face--right panel-content-details">
             <div className="fold-brochure__sheen fold-brochure__sheen--right" aria-hidden="true" />
-            <div className="details-flip-wrapper">
+            <div className={`details-flip-wrapper ${isFading ? '--fading' : ''}`}>
               {/* Hero image with meta */}
               <div className="details-hero">
                 <img
@@ -897,11 +822,22 @@ export default function BrochureFold() {
                   })}
                 </div>
 
-                {/* Enquire CTA */}
-                <a href="#contact" className="details-cta-btn">
-                  <span>ENQUIRE NOW</span>
-                  <span className="details-cta-arrow">→</span>
-                </a>
+                {/* Actions: Enquire CTA and Download Brochure */}
+                <div className="details-actions-row">
+                  <a href="#contact" className="details-cta-btn">
+                    <span>ENQUIRE NOW</span>
+                    <span className="details-cta-arrow">→</span>
+                  </a>
+                  <a
+                    href="/Gorod_Marine_Services_Brochure.pdf"
+                    download="Gorod_Marine_Services_Brochure.pdf"
+                    className="details-download-btn"
+                    title="Download Official Brochure PDF"
+                  >
+                    <Download size={14} strokeWidth={2.2} />
+                    <span>DOWNLOAD BROCHURE</span>
+                  </a>
+                </div>
               </div>
             </div>
           </div>
@@ -941,11 +877,6 @@ export default function BrochureFold() {
             </div>
           </div>
         </div>
-      </div>
-
-      {/* Scroll indicator & status hint */}
-      <div className="fold-brochure__hint" aria-live="polite">
-        Scroll down to open brochure ↓
       </div>
     </section>
   );
