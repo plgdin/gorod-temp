@@ -14,7 +14,7 @@ export const Header: React.FC<HeaderProps> = ({
   isReady = false,
 }) => {
   const [scrollDown, setScrollDown] = useState(false);
-  const [lastScrollY, setLastScrollY] = useState(0);
+  const lastScrollYRef = React.useRef(0);
   const [startPosition, setStartPosition] = useState(true);
   const [isScrolled, setIsScrolled] = useState(false);
 
@@ -32,23 +32,29 @@ export const Header: React.FC<HeaderProps> = ({
       const currentScrollY = window.scrollY;
       const heroEl = document.getElementById('main-screen');
       const heroHeight = heroEl ? heroEl.offsetHeight : window.innerHeight;
-      // Only switch to scrolled state when user scrolls out of the hero section
       const isPastHero = currentScrollY > heroHeight - 100;
 
       setIsScrolled(isPastHero);
 
-      if (isPastHero && currentScrollY > 100 && currentScrollY > lastScrollY && !menuOpen) {
-        setScrollDown(true);
+      const delta = currentScrollY - lastScrollYRef.current;
+
+      if (currentScrollY > 80) {
+        if (delta > 5 && !menuOpen) {
+          setScrollDown(true);
+        } else if (delta < -5) {
+          setScrollDown(false);
+        }
       } else {
         setScrollDown(false);
       }
-      setLastScrollY(currentScrollY);
+
+      lastScrollYRef.current = currentScrollY;
     };
 
     handleScroll();
     window.addEventListener('scroll', handleScroll, { passive: true });
     return () => window.removeEventListener('scroll', handleScroll);
-  }, [lastScrollY, menuOpen]);
+  }, [menuOpen]);
 
   const [activeSection, setActiveSection] = useState<string | null>(null);
 
@@ -145,7 +151,7 @@ export const Header: React.FC<HeaderProps> = ({
             className="header__enquire-btn"
             onClick={(e) => handleSmoothScroll(e, 'contact')}
           >
-            <span>Enquire Now</span>
+            <span>Nominate Now</span>
             <span className="header__enquire-arrow">→</span>
           </a>
 

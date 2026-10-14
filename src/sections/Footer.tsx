@@ -1,5 +1,7 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import { Mail, Phone, MapPin, Calendar, CheckCircle2, ArrowRight } from 'lucide-react';
+import { gsap } from 'gsap';
+import { ScrollTrigger } from 'gsap/ScrollTrigger';
 import { CustomDropdown } from '../components/ui/CustomDropdown';
 
 const portOptions = [
@@ -20,6 +22,9 @@ const serviceOptions = [
 ];
 
 export const Footer: React.FC = () => {
+  const footerRef = useRef<HTMLElement>(null);
+  const shipWrapRef = useRef<HTMLDivElement>(null);
+
   const [formState, setFormState] = useState({
     name: '',
     email: '',
@@ -30,23 +35,61 @@ export const Footer: React.FC = () => {
   });
   const [submitted, setSubmitted] = useState(false);
 
+  useEffect(() => {
+    if (!footerRef.current || !shipWrapRef.current) return;
+
+    gsap.registerPlugin(ScrollTrigger);
+
+    const ctx = gsap.context(() => {
+      // As we scroll towards and reach the footer, ship shrinks down into trailing water
+      gsap.fromTo(
+        shipWrapRef.current,
+        {
+          scale: 2.2,
+          y: -100,
+          opacity: 0.8,
+        },
+        {
+          scale: 1,
+          y: 0,
+          opacity: 1,
+          ease: 'power2.out',
+          scrollTrigger: {
+            trigger: footerRef.current,
+            start: 'top 85%',
+            end: 'bottom 95%',
+            scrub: 1.2,
+          },
+        }
+      );
+    }, footerRef);
+
+    return () => ctx.revert();
+  }, []);
+
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
     setSubmitted(true);
   };
 
   return (
-    <footer id="contact" className="footer">
+    <footer id="contact" className="footer" ref={footerRef}>
+      {/* Docked Vessel in Trailing Water */}
+      <div className="footer__docked-ship-layer" aria-hidden="true">
+        <div className="footer__docked-ship-wrap" ref={shipWrapRef}>
+          <img
+            src="/images/Gorod_bulker.png"
+            alt="Gorod Bulker Docked"
+            className="footer__docked-ship-img"
+          />
+        </div>
+      </div>
+
       <div className="fw-container footer__container">
         <div className="footer__main-grid">
           {/* Left Column: Brand, CTA, Links & Contact Details */}
           <div className="footer__left-pane">
             <div className="footer__brand-block">
-              <img
-                src="/images/gorod-marine-white.png"
-                alt="Gorod Marine"
-                className="footer__logo-img"
-              />
               <div className="footer__cta-badge">MARITIME REPRESENTATION &amp; PORT OPERATIONS</div>
               <h2 className="footer__cta-headline">
                 Our Representation.<br />

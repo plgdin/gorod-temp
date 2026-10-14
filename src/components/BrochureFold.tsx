@@ -33,7 +33,6 @@ import {
   Globe,
   MapPin,
   Award,
-  Star,
 } from 'lucide-react';
 import './BrochureFold.css';
 
@@ -393,83 +392,55 @@ export default function BrochureFold() {
 
     const mm = gsap.matchMedia();
 
-    // DESKTOP: Scrubbed Unfold Driven by Scroll with Pinning
+    // DESKTOP: Auto Unfold as soon as user scrolls to the section
     mm.add('(min-width: 1024px) and (prefers-reduced-motion: no-preference)', () => {
       stage.classList.add('is-scroll-scrubbed');
 
-      // Clear transition during scrub to prevent CSS lag/fighting
+      // Clear transition during intro to prevent CSS lag/fighting
       left.style.transition = 'none';
       right.style.transition = 'none';
 
-      // Layout constants: keep the brochure clear of the fixed nav while pinned
-      const STAGE_H = 772;
-      const NAV_GAP = 28; // breathing room between nav bottom and brochure top
-      const HINT_SPACE = 64; // hint pill + bottom margin
-      const navH = () =>
-        document.querySelector<HTMLElement>('.header__top')?.offsetHeight ?? 90;
-
-      // Fit the stage into the space BELOW the nav and ABOVE the hint pill
+      const STAGE_H = 800;
       const fit = () =>
-        Math.min(1, (window.innerHeight - navH() - NAV_GAP - HINT_SPACE) / STAGE_H);
+        Math.min(1, Math.max(0.72, (window.innerHeight - 120) / STAGE_H));
 
-      // Pin so the scaled stage's top edge sits exactly NAV_GAP below the nav
-      const pinStart = () => {
-        const padTop = parseFloat(getComputedStyle(root).paddingTop) || 0;
-        const off = navH() + NAV_GAP + (STAGE_H / 2) * fit() - padTop - STAGE_H / 2;
-        return off >= 0 ? `top top+=${off}` : `top top-=${-off}`;
-      };
-
-      // Set initial 3D folded brochure state (scale handled by timeline fromTo with fit()).
-      // No transformPerspective here: .fold-brochure already has CSS perspective,
-      // and stacking both exaggerates the swing of the panels.
+      // Set initial 3D folded brochure state
       gsap.set(left, { rotateY: 180, transformOrigin: 'right center' });
       gsap.set(right, { rotateY: -180, transformOrigin: 'left center' });
       if (shadow) gsap.set(shadow, { scaleX: 0.35, opacity: 0.45 });
       if (sheenLeft) gsap.set(sheenLeft, { opacity: 0, xPercent: -100 });
       if (sheenRight) gsap.set(sheenRight, { opacity: 0, xPercent: -100 });
-
-      let currentHintText = '';
+      if (hint) gsap.set(hint, { y: -(STAGE_H / 2) * (1 - fit()) });
 
       const tl = gsap.timeline({
         scrollTrigger: {
           trigger: root,
-          start: pinStart,
-          end: '+=2100',
-          pin: true,
-          scrub: 0.15,
-          anticipatePin: 1,
+          start: 'top 75%',
+          once: true,
           invalidateOnRefresh: true,
-          // The stage shrinks visually but keeps its layout box, so lift the hint
-          // up to sit right under the visible brochure instead of off-screen.
           onRefresh: () => {
             if (hint) gsap.set(hint, { y: -(STAGE_H / 2) * (1 - fit()) });
           },
-          onUpdate: (self) => {
-            if (hint) {
-              const nextText =
-                self.progress > 0.62
-                  ? 'Select a service in the middle panel to explore'
-                  : self.progress > 0.08
-                  ? 'Scroll to physically unfold the brochure'
-                  : 'Scroll down to open brochure ↓';
-              if (nextText !== currentHintText) {
-                hint.textContent = nextText;
-                currentHintText = nextText;
-              }
-            }
-          },
+        },
+        onComplete: () => {
+          stage.classList.remove('is-scroll-scrubbed');
+          left.style.transition = '';
+          right.style.transition = '';
+          if (hint) {
+            hint.textContent = 'Select a service in the middle panel to explore';
+          }
         },
       });
 
       // 1. Stage scale up with dynamic viewport fit + contact shadow expansion
       tl.fromTo(
         stage,
-        { scale: () => fit() * 0.88 },
-        { scale: () => fit(), ease: 'none', duration: 1 },
+        { scale: () => fit() * 0.94 },
+        { scale: () => fit(), ease: 'power2.out', duration: 1.1 },
         0
       );
       if (shadow) {
-        tl.to(shadow, { scaleX: 1, opacity: 0.82, ease: 'none', duration: 1 }, 0);
+        tl.to(shadow, { scaleX: 1, opacity: 0.82, ease: 'power2.out', duration: 1.1 }, 0);
       }
 
       // 2. Left panel (cover) unfolds to the left: 180deg -> 0deg
@@ -478,9 +449,9 @@ export default function BrochureFold() {
         {
           rotateY: 0,
           ease: 'power2.inOut',
-          duration: 0.44,
+          duration: 0.95,
         },
-        0.08
+        0.05
       );
 
       // Light sheen sweep across left panel face
@@ -488,12 +459,12 @@ export default function BrochureFold() {
         tl.fromTo(
           sheenLeft,
           { opacity: 0, xPercent: -100 },
-          { opacity: 0.45, xPercent: 40, ease: 'power1.in', duration: 0.22 },
-          0.08
+          { opacity: 0.45, xPercent: 40, ease: 'power1.in', duration: 0.45 },
+          0.05
         ).to(
           sheenLeft,
-          { opacity: 0, xPercent: 120, ease: 'power1.out', duration: 0.22 },
-          0.30
+          { opacity: 0, xPercent: 120, ease: 'power1.out', duration: 0.45 },
+          0.50
         );
       }
 
@@ -503,9 +474,9 @@ export default function BrochureFold() {
         {
           rotateY: 0,
           ease: 'power2.inOut',
-          duration: 0.44,
+          duration: 0.95,
         },
-        0.50
+        0.35
       );
 
       // Light sheen sweep across right panel face
@@ -513,17 +484,14 @@ export default function BrochureFold() {
         tl.fromTo(
           sheenRight,
           { opacity: 0, xPercent: -100 },
-          { opacity: 0.45, xPercent: 40, ease: 'power1.in', duration: 0.22 },
-          0.50
+          { opacity: 0.45, xPercent: 40, ease: 'power1.in', duration: 0.45 },
+          0.35
         ).to(
           sheenRight,
-          { opacity: 0, xPercent: 120, ease: 'power1.out', duration: 0.22 },
-          0.72
+          { opacity: 0, xPercent: 120, ease: 'power1.out', duration: 0.45 },
+          0.80
         );
       }
-
-      // 4. Extended open hold: stays open while user reads and clicks services
-      tl.to({}, { duration: 0.5 });
     });
 
     // MOBILE / REDUCED MOTION: Clean fallback without pinning
@@ -661,66 +629,76 @@ export default function BrochureFold() {
           {/* Inside Face (when unfolded to the left): Our Company Content */}
           <div className="fold-brochure__face fold-brochure__face--left panel-content-inside">
             <div className="fold-brochure__sheen fold-brochure__sheen--left" aria-hidden="true" />
-            <div className="inside-cover__header">
-              <div className="inside-cover__eyebrow">
-                <span className="inside-cover__eyebrow-text">ABOUT US</span>
-                <span className="inside-cover__eyebrow-line" />
-              </div>
+            <div className="inside-cover__top-brand">
               <img
                 src="/images/gorod-marine-teal.png"
                 alt="Gorod Marine"
                 className="inside-cover__logo"
               />
             </div>
+            <div className="inside-cover__eyebrow">
+              <span className="inside-cover__eyebrow-text">ABOUT US</span>
+              <span className="inside-cover__eyebrow-line" />
+            </div>
 
             <div className="inside-cover__mission">
               <h3 className="inside-cover__headline">
                 Your vessel's<br />
-                trusted partner<br />
+                <span className="inside-cover__headline-accent">trusted partner</span><br />
                 on shore.
               </h3>
               <p className="inside-cover__desc">
-                Gorod Marine delivers comprehensive port agency and vessel 
-                husbandry services across major ports, ensuring every call 
-                is safe, compliant, and efficient.
+                Gorod Marine delivers comprehensive port agency and vessel husbandry services across major ports, ensuring every call is safe, compliant, and efficient.
               </p>
             </div>
 
             <div className="inside-cover__stats">
               <div className="inside-stat">
-                <Globe size={16} strokeWidth={2} className="inside-stat__icon" />
-                <span className="inside-stat__value">15+</span>
-                <span className="inside-stat__label">Ports Covered</span>
+                <Globe size={26} strokeWidth={2} className="inside-stat__icon" />
+                <div className="inside-stat__info">
+                  <span className="inside-stat__value">15+</span>
+                  <span className="inside-stat__label">Ports Covered</span>
+                </div>
               </div>
               <div className="inside-stat">
-                <Ship size={16} strokeWidth={2} className="inside-stat__icon" />
-                <span className="inside-stat__value">500+</span>
-                <span className="inside-stat__label">Vessel Calls / Year</span>
+                <Anchor size={26} strokeWidth={2} className="inside-stat__icon" />
+                <div className="inside-stat__info">
+                  <span className="inside-stat__value">500+</span>
+                  <span className="inside-stat__label">Vessel Calls / Year</span>
+                </div>
               </div>
               <div className="inside-stat">
-                <Clock size={16} strokeWidth={2} className="inside-stat__icon" />
-                <span className="inside-stat__value">24/7</span>
-                <span className="inside-stat__label">Shore Attendance</span>
+                <Clock size={26} strokeWidth={2} className="inside-stat__icon" />
+                <div className="inside-stat__info">
+                  <span className="inside-stat__value">24/7</span>
+                  <span className="inside-stat__label">Shore Attendance</span>
+                </div>
               </div>
               <div className="inside-stat">
-                <Award size={16} strokeWidth={2} className="inside-stat__icon" />
-                <span className="inside-stat__value">ISO</span>
-                <span className="inside-stat__label">Certified Operations</span>
+                <ShieldCheck size={26} strokeWidth={2} className="inside-stat__icon" />
+                <div className="inside-stat__info">
+                  <span className="inside-stat__value">ISO</span>
+                  <span className="inside-stat__label">Certified Operations</span>
+                </div>
               </div>
             </div>
 
             <div className="inside-cover__trust">
-              <div className="trust-badge">
-                <Star size={11} strokeWidth={2.5} className="trust-badge__star" />
-                <span>FONASBA Certified</span>
+              <div className="inside-cover__trust-row">
+                <div className="trust-badge">
+                  <Award size={14} strokeWidth={2.2} className="trust-badge__star" />
+                  <span>FONASBA Certified</span>
+                </div>
+                <div className="trust-badge">
+                  <ShieldCheck size={14} strokeWidth={2.2} className="trust-badge__star" />
+                  <span>ISPS Compliant</span>
+                </div>
               </div>
-              <div className="trust-badge">
-                <ShieldCheck size={11} strokeWidth={2.5} className="trust-badge__star" />
-                <span>ISPS Compliant</span>
-              </div>
-              <div className="trust-badge">
-                <MapPin size={11} strokeWidth={2.5} className="trust-badge__star" />
-                <span>Indian Ports Specialist</span>
+              <div className="inside-cover__trust-row">
+                <div className="trust-badge">
+                  <MapPin size={14} strokeWidth={2.2} className="trust-badge__star" />
+                  <span>Indian Ports Specialist</span>
+                </div>
               </div>
             </div>
 
@@ -807,7 +785,7 @@ export default function BrochureFold() {
                   >
                     <div className="selector-item__left">
                       <ItemIcon
-                        size={18}
+                        size={21}
                         strokeWidth={2}
                         className="selector-item__icon"
                       />
@@ -816,7 +794,7 @@ export default function BrochureFold() {
                     <div className="selector-item__right">
                       <span className="selector-item__index">{item.number}</span>
                       <ChevronRight
-                        size={15}
+                        size={17}
                         strokeWidth={2.2}
                         className="selector-item__arrow"
                       />
@@ -873,7 +851,7 @@ export default function BrochureFold() {
               {/* Details Body */}
               <div className="details-body">
                 <div className="details-badge">
-                  <CurrentIcon size={20} strokeWidth={2} className="details-badge__icon" />
+                  <CurrentIcon size={22} strokeWidth={2} className="details-badge__icon" />
                   <span className="details-badge__text">{currentService.category}</span>
                 </div>
 
@@ -888,7 +866,7 @@ export default function BrochureFold() {
                     return (
                       <div key={i} className="capability-card">
                         <div className="capability-card__header">
-                          <CapIcon size={18} strokeWidth={2} className="capability-card__icon" />
+                          <CapIcon size={20} strokeWidth={2} className="capability-card__icon" />
                           <span className="capability-card__title">{cap.title}</span>
                         </div>
                         <p className="capability-card__desc">{cap.desc}</p>
@@ -897,9 +875,9 @@ export default function BrochureFold() {
                   })}
                 </div>
 
-                {/* Enquire CTA */}
+                {/* Nominate CTA */}
                 <a href="#contact" className="details-cta-btn">
-                  <span>ENQUIRE NOW</span>
+                  <span>NOMINATE NOW</span>
                   <span className="details-cta-arrow">→</span>
                 </a>
               </div>
@@ -945,7 +923,7 @@ export default function BrochureFold() {
 
       {/* Scroll indicator & status hint */}
       <div className="fold-brochure__hint" aria-live="polite">
-        Scroll down to open brochure ↓
+        Select a service in the middle panel to explore
       </div>
     </section>
   );

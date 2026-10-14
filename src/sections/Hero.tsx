@@ -22,6 +22,13 @@ export const VESSELS: VesselItem[] = [
     alt: 'Gorod Container Carrier Vessel',
   },
   {
+    id: 'bulker',
+    name: 'Bulker',
+    word: 'BULKERS',
+    imageSrc: '/images/Gorod_bulker.png',
+    alt: 'Gorod Bulk Carrier Vessel',
+  },
+  {
     id: 'tanker',
     name: 'Tanker',
     word: 'TANKERS',

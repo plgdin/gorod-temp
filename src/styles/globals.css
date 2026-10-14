@@ -170,13 +170,15 @@ button {
 
 .header.--scrolled .header__top {
   height: 90px;
-  background: rgba(5, 20, 28, 0.88);
-  backdrop-filter: blur(20px) saturate(180%);
-  -webkit-backdrop-filter: blur(20px) saturate(180%);
-  border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+  background: rgba(255, 255, 255, 0.08);
+  backdrop-filter: blur(8px);
+  -webkit-backdrop-filter: blur(8px);
+  border-bottom: 1px solid rgba(255, 255, 255, 0.25);
   border-bottom-left-radius: 24px;
   border-bottom-right-radius: 24px;
-  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.35);
+  box-shadow:
+    0 20px 50px rgba(0, 0, 0, 0.35),
+    inset 0 1px 1px rgba(255, 255, 255, 0.2);
 }
 
 .header__logo .logo {
@@ -3348,7 +3350,8 @@ button {
 .footer__left-pane {
   display: flex;
   flex-direction: column;
-  gap: 28px;
+  gap: 24px;
+  margin-top: -16px;
 }
 
 .footer__brand-block {
@@ -3357,23 +3360,46 @@ button {
   max-width: 440px;
 }
 
-.footer__logo-img {
-  height: 70px;
-  width: auto;
-  max-width: 290px;
-  margin: 0 auto 22px;
-  display: block;
-  object-fit: contain;
-  align-self: center;
-  position: relative;
-  left: -45px;
-  filter: drop-shadow(0 4px 14px rgba(0, 0, 0, 0.95)) drop-shadow(0 0 24px rgba(103, 171, 175, 0.55));
-  transition: transform 0.3s ease, filter 0.3s ease;
+/* Docked Ship in Footer Trailing Water */
+.footer__docked-ship-layer {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  pointer-events: none;
+  z-index: 1;
+  overflow: hidden;
 }
 
-.footer__logo-img:hover {
-  transform: translateY(-2px);
-  filter: drop-shadow(0 6px 18px rgba(0, 0, 0, 1)) drop-shadow(0 0 32px rgba(103, 171, 175, 0.8));
+.footer__docked-ship-wrap {
+  position: absolute;
+  left: clamp(24px, 5.5vw, 120px);
+  bottom: clamp(160px, 24vh, 260px);
+  width: clamp(280px, 26vw, 440px);
+  transform-origin: center center;
+  will-change: transform, opacity;
+}
+
+.footer__docked-ship-img {
+  width: 100%;
+  height: auto;
+  display: block;
+  object-fit: contain;
+  filter: drop-shadow(0 14px 22px rgba(0, 16, 32, 0.75)) drop-shadow(0 4px 8px rgba(0, 0, 0, 0.6));
+  animation: shipDockBob 5s ease-in-out infinite alternate;
+}
+
+@keyframes shipDockBob {
+  0% {
+    transform: translateY(0px) rotate(0deg);
+  }
+  50% {
+    transform: translateY(-3px) rotate(0.4deg);
+  }
+  100% {
+    transform: translateY(2px) rotate(-0.3deg);
+  }
 }
 
 .footer__cta-badge {

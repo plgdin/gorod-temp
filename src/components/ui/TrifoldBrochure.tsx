@@ -492,7 +492,7 @@ export const TrifoldBrochure: React.FC = () => {
 
             {/* Action CTA Button */}
             <a href="#contact" className="details-cta-btn">
-              <span>ENQUIRE NOW</span>
+              <span>NOMINATE NOW</span>
               <span className="details-cta-arrow">→</span>
             </a>
           </div>
