@@ -744,8 +744,40 @@
     filter: brightness(1);
     box-shadow: 0 8px 20px rgb(15 37 44 / 10%);
   }
+}/* =========================================================
+   PANEL 3 (RIGHT): FADE IN / FADE OUT TRANSITION
+   When switching services, content fades out then back in
+========================================================== */
+.fold-brochure__panel--right > .fold-brochure__face--right {
+  transition: opacity 0.4s cubic-bezier(0.4, 0, 0.2, 1),
+              transform 0.4s cubic-bezier(0.4, 0, 0.2, 1);
 }
 
+.fold-brochure__panel--right[data-fade="fading-out"] > .fold-brochure__face--right {
+  opacity: 0;
+  transform: translateY(12px) scale(0.98);
+  pointer-events: none;
+}
+
+.fold-brochure__panel--right[data-fade="fading-in"] > .fold-brochure__face--right {
+  animation: panelFadeIn 0.45s cubic-bezier(0.0, 0, 0.2, 1) forwards;
+}
+
+.fold-brochure__panel--right[data-fade="visible"] > .fold-brochure__face--right {
+  opacity: 1;
+  transform: none;
+}
+
+@keyframes panelFadeIn {
+  0% {
+    opacity: 0;
+    transform: translateY(-12px) scale(0.98);
+  }
+  100% {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+  }
+}
 
 
 .panel-content-details {

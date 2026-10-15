@@ -349,9 +349,11 @@ export default function BrochureFold() {
   const [selectedIndex, setSelectedIndex] = useState(0);
   const [mobileTab, setMobileTab] = useState<'about' | 'services' | 'details'>('services');
   const [foldState, setFoldState] = useState<'idle' | 'folding-in' | 'folding-out'>('idle');
+  const [fadeState, setFadeState] = useState<'visible' | 'fading-out' | 'fading-in'>('visible');
   const sectionRef = useRef<HTMLElement>(null);
   const foldTimer1Ref = useRef<number | null>(null);
   const foldTimer2Ref = useRef<number | null>(null);
+  const fadeTimerRef = useRef<number | null>(null);
 
   const currentService = SERVICES[selectedIndex] || SERVICES[0];
   const CurrentIcon = currentService.icon;
@@ -509,11 +511,12 @@ export default function BrochureFold() {
     return () => {
       if (foldTimer1Ref.current) clearTimeout(foldTimer1Ref.current);
       if (foldTimer2Ref.current) clearTimeout(foldTimer2Ref.current);
+      if (fadeTimerRef.current) clearTimeout(fadeTimerRef.current);
       mm.revert();
     };
   }, []);
 
-  // Fold panel 3 closed onto panel 2, swap service data, then unfold back open
+  // Fade out panel 3 content, swap service data, then fade back in
   const handleServiceSelect = (idx: number) => {
     // If mobile: switch tab directly to details
     if (typeof window !== 'undefined' && window.innerWidth < 1024) {
@@ -522,24 +525,23 @@ export default function BrochureFold() {
       return;
     }
 
-    if (idx === selectedIndex || foldState !== 'idle') return;
+    if (idx === selectedIndex || fadeState !== 'visible') return;
 
-    if (foldTimer1Ref.current) clearTimeout(foldTimer1Ref.current);
-    if (foldTimer2Ref.current) clearTimeout(foldTimer2Ref.current);
+    if (fadeTimerRef.current) clearTimeout(fadeTimerRef.current);
 
-    // 1. Fold panel 3 closed onto panel 2 (0deg → -180deg, hinged on left edge)
-    setFoldState('folding-in');
+    // 1. Fade out the right panel content
+    setFadeState('fading-out');
 
-    // 2. When fully folded (800ms), swap data and unfold back
-    foldTimer1Ref.current = window.setTimeout(() => {
+    // 2. After fade-out completes (400ms), swap data and fade back in
+    fadeTimerRef.current = window.setTimeout(() => {
       setSelectedIndex(idx);
-      setFoldState('folding-out');
+      setFadeState('fading-in');
 
-      // 3. Return to flat resting state after fold-out completes
-      foldTimer2Ref.current = window.setTimeout(() => {
-        setFoldState('idle');
-      }, 980);
-    }, 820);
+      // 3. Return to visible after fade-in completes
+      fadeTimerRef.current = window.setTimeout(() => {
+        setFadeState('visible');
+      }, 450);
+    }, 420);
   };
 
   const handleClick = useCallback((e: React.MouseEvent) => {
@@ -820,6 +822,7 @@ export default function BrochureFold() {
           className={`fold-brochure__panel fold-brochure__panel--right${
             foldState !== 'idle' ? ` is-${foldState}` : ''
           } ${mobileTab === 'details' ? 'fold-brochure__panel--active-mobile' : ''}`}
+          data-fade={fadeState}
           aria-hidden={false}
         >
           {/* FRONT FACE: Service Details (visible when flat/open) */}
