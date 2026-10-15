@@ -70,6 +70,7 @@ export function App() {
 
   return (
     <>
+      <div className="fixed-ocean-bg" aria-hidden="true" />
       <Header
         menuOpen={menuOpen}
         onToggleMenu={() => setMenuOpen((prev) => !prev)}
