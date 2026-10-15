@@ -348,7 +348,7 @@ export default function BrochureFold() {
   const [closing, setClosing] = useState(false);
   const [selectedIndex, setSelectedIndex] = useState(0);
   const [mobileTab, setMobileTab] = useState<'about' | 'services' | 'details'>('services');
-  const [foldState, setFoldState] = useState<'idle' | 'folding-in' | 'folding-out'>('idle');
+  const [foldState] = useState<'idle' | 'folding-in' | 'folding-out'>('idle');
   const [fadeState, setFadeState] = useState<'visible' | 'fading-out' | 'fading-in'>('visible');
   const sectionRef = useRef<HTMLElement>(null);
   const foldTimer1Ref = useRef<number | null>(null);

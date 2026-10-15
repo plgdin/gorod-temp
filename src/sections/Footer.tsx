@@ -1,16 +1,17 @@
-import React, { useState, useEffect, useRef } from 'react';
+import React, { useState } from 'react';
 import { Mail, Phone, MapPin, Calendar, CheckCircle2, ArrowRight, Anchor } from 'lucide-react';
-import { gsap } from 'gsap';
-import { ScrollTrigger } from 'gsap/ScrollTrigger';
 import { CustomDropdown } from '../components/ui/CustomDropdown';
 
 const portOptions = [
-  { value: 'Odesa', label: 'Odesa' },
-  { value: 'Chornomorsk', label: 'Chornomorsk' },
-  { value: 'Pivdennyi', label: 'Pivdennyi' },
-  { value: 'Izmail', label: 'Izmail' },
-  { value: 'Reni', label: 'Reni' },
-  { value: 'Other', label: 'Other' },
+  { value: 'Mumbai / JNPT', label: 'Mumbai / JNPT' },
+  { value: 'Cochin', label: 'Cochin' },
+  { value: 'Vizhinjam / Trivandrum', label: 'Vizhinjam / Trivandrum' },
+  { value: 'Chennai', label: 'Chennai' },
+  { value: 'Visakhapatnam', label: 'Visakhapatnam' },
+  { value: 'Mundra', label: 'Mundra' },
+  { value: 'Kandla', label: 'Kandla' },
+  { value: 'Kolkata / Haldia', label: 'Kolkata / Haldia' },
+  { value: 'Other Indian Port', label: 'Other Indian Port' },
 ];
 
 const serviceOptions = [
@@ -21,81 +22,54 @@ const serviceOptions = [
   { value: 'PDA Coordination', label: 'PDA Coordination' },
 ];
 
-/* Port locations for the map (lat/lng on Black Sea & Danube) */
-const PORT_LOCATIONS = [
-  { name: 'Odesa', lat: 46.4825, lng: 30.7233, primary: true },
-  { name: 'Chornomorsk', lat: 46.3003, lng: 30.6575, primary: true },
-  { name: 'Pivdennyi', lat: 46.6167, lng: 31.0167, primary: true },
-  { name: 'Izmail', lat: 45.3500, lng: 28.8333, primary: false },
-  { name: 'Reni', lat: 45.4500, lng: 28.2667, primary: false },
-  { name: 'Mykolaiv', lat: 46.9659, lng: 31.9974, primary: false },
-  { name: 'Kherson', lat: 46.6354, lng: 32.6169, primary: false },
-  { name: 'Constanța', lat: 44.1598, lng: 28.6348, primary: false },
-  { name: 'Varna', lat: 43.2141, lng: 27.9147, primary: false },
-  { name: 'Istanbul', lat: 41.0082, lng: 28.9784, primary: false },
-  { name: 'Batumi', lat: 41.6168, lng: 41.6367, primary: false },
-  { name: 'Novorossiysk', lat: 44.7234, lng: 37.7687, primary: false },
-  { name: 'Mariupol', lat: 47.0956, lng: 37.5500, primary: false },
-  { name: 'Burgas', lat: 42.5048, lng: 27.4626, primary: false },
-];
-
-/* Convert lat/lng to SVG viewBox position (simple Mercator-like projection) */
-function toSVG(lat: number, lng: number) {
-  const minLng = 25;
-  const maxLng = 43;
-  const minLat = 40;
-  const maxLat = 48;
-  const x = ((lng - minLng) / (maxLng - minLng)) * 560 + 20;
-  const y = ((maxLat - lat) / (maxLat - minLat)) * 280 + 20;
-  return { x, y };
+interface PortLocation {
+  name: string;
+  x: number;
+  y: number;
+  primary: boolean;
+  anchor: 'start' | 'end' | 'middle';
+  dx: number;
+  dy: number;
 }
 
+/* Major commercial and deep-sea ports across the Indian coastline */
+const PORT_LOCATIONS: PortLocation[] = [
+  { name: 'Mundra', x: 110, y: 74, primary: true, anchor: 'end', dx: -8, dy: -4 },
+  { name: 'Kandla', x: 119, y: 66, primary: false, anchor: 'start', dx: 8, dy: -6 },
+  { name: 'Mumbai / JNPT', x: 179, y: 125, primary: true, anchor: 'end', dx: -8, dy: 3 },
+  { name: 'Mormugao', x: 198, y: 176, primary: false, anchor: 'end', dx: -8, dy: 3 },
+  { name: 'New Mangalore', x: 220, y: 213, primary: false, anchor: 'end', dx: -8, dy: 3 },
+  { name: 'Cochin', x: 250, y: 256, primary: true, anchor: 'end', dx: -8, dy: 0 },
+  { name: 'Vizhinjam (HQ)', x: 265, y: 280, primary: true, anchor: 'end', dx: -8, dy: 9 },
+  { name: 'Tuticorin', x: 293, y: 274, primary: false, anchor: 'start', dx: 8, dy: 6 },
+  { name: 'Chennai', x: 339, y: 210, primary: true, anchor: 'start', dx: 8, dy: -2 },
+  { name: 'Ennore', x: 340, y: 198, primary: false, anchor: 'start', dx: 8, dy: -4 },
+  { name: 'Krishnapatnam', x: 345, y: 169, primary: false, anchor: 'start', dx: 8, dy: 0 },
+  { name: 'Visakhapatnam', x: 404, y: 142, primary: true, anchor: 'start', dx: 8, dy: 0 },
+  { name: 'Paradip', x: 477, y: 104, primary: false, anchor: 'start', dx: 8, dy: -4 },
+  { name: 'Kolkata / Haldia', x: 507, y: 79, primary: true, anchor: 'start', dx: 8, dy: -4 },
+];
+
+/* SVG vectors for Indian peninsula landmass and coastline */
+const INDIA_LAND_PATH = "M 84,0 L 527,0 L 526.8,81.9 L 507.4,78.9 L 485.8,86.3 L 477.1,104.0 L 446.9,111.4 L 427.4,129.1 L 403.7,142.3 L 379.9,154.1 L 371.3,164.4 L 345.4,168.8 L 336.7,193.9 L 338.9,210.1 L 328.1,227.8 L 328.1,244.0 L 313.0,251.4 L 317.3,266.1 L 293.5,273.5 L 278.4,283.8 L 265.4,279.4 L 261.1,273.5 L 256.8,266.1 L 250.3,255.8 L 241.7,238.1 L 230.9,227.8 L 222.2,214.5 L 220.1,207.2 L 207.1,185.1 L 198.5,176.2 L 187.7,152.6 L 183.4,133.5 L 179.0,124.6 L 176.9,108.4 L 174.7,86.3 L 174.7,77.5 L 163.9,83.4 L 155.3,93.7 L 133.7,95.2 L 114.2,84.8 L 109.9,74.5 L 118.6,65.7 L 101.3,67.2 L 88.3,59.8 L 94.8,52.4 L 84.0,42.1 Z";
+const INDIA_COAST_STROKE = "M 84.0,42.1 L 94.8,52.4 L 88.3,59.8 L 101.3,67.2 L 118.6,65.7 L 109.9,74.5 L 114.2,84.8 L 133.7,95.2 L 155.3,93.7 L 163.9,83.4 L 174.7,77.5 L 174.7,86.3 L 176.9,108.4 L 179.0,124.6 L 183.4,133.5 L 187.7,152.6 L 198.5,176.2 L 207.1,185.1 L 220.1,207.2 L 222.2,214.5 L 230.9,227.8 L 241.7,238.1 L 250.3,255.8 L 256.8,266.1 L 261.1,273.5 L 265.4,279.4 L 278.4,283.8 L 293.5,273.5 L 317.3,266.1 L 313.0,251.4 L 328.1,244.0 L 328.1,227.8 L 338.9,210.1 L 336.7,193.9 L 345.4,168.8 L 371.3,164.4 L 379.9,154.1 L 403.7,142.3 L 427.4,129.1 L 446.9,111.4 L 477.1,104.0 L 485.8,86.3 L 507.4,78.9 L 526.8,81.9";
+const SRI_LANKA_PATH = "M 332.4,260.2 L 349.7,266.1 L 369.1,276.4 L 371.3,295.6 L 358.3,311.8 L 345.4,316.2 L 334.6,313.3 L 328.1,300.0 L 328.1,277.9 Z";
+
+/* Primary coastal shipping route connecting key hubs */
+const SHIPPING_LANE_PATH = "M 110,74 L 179,125 L 250,256 L 265,280 L 293,274 L 339,210 L 404,142 L 477,104 L 507,79";
+
 export const Footer: React.FC = () => {
-  const footerRef = useRef<HTMLElement>(null);
-  const shipWrapRef = useRef<HTMLDivElement>(null);
   const [hoveredPort, setHoveredPort] = useState<string | null>(null);
 
   const [formState, setFormState] = useState({
     name: '',
     email: '',
     vessel: '',
-    port: 'Odesa',
+    port: 'Mumbai / JNPT',
     service: '',
     eta: '',
   });
   const [submitted, setSubmitted] = useState(false);
-
-  useEffect(() => {
-    if (!footerRef.current || !shipWrapRef.current) return;
-
-    gsap.registerPlugin(ScrollTrigger);
-
-    const ctx = gsap.context(() => {
-      // As we scroll towards and reach the footer, ship shrinks down into trailing water
-      gsap.fromTo(
-        shipWrapRef.current,
-        {
-          scale: 2.2,
-          y: -100,
-          opacity: 0.8,
-        },
-        {
-          scale: 1,
-          y: 0,
-          opacity: 1,
-          ease: 'power2.out',
-          scrollTrigger: {
-            trigger: footerRef.current,
-            start: 'top 85%',
-            end: 'bottom 95%',
-            scrub: 1.2,
-          },
-        }
-      );
-    }, footerRef);
-
-    return () => ctx.revert();
-  }, []);
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
@@ -103,19 +77,14 @@ export const Footer: React.FC = () => {
   };
 
   return (
-    <footer id="contact" className="footer" ref={footerRef}>
-      {/* Docked Vessel in Trailing Water */}
-      <div className="footer__docked-ship-layer" aria-hidden="true">
-        <div className="footer__docked-ship-wrap" ref={shipWrapRef}>
-          <img
-            src="/images/Gorod_bulker.png"
-            alt="Gorod Bulker Docked"
-            className="footer__docked-ship-img"
-          />
-        </div>
-      </div>
-
+    <footer id="contact" className="footer">
       <div className="fw-container footer__container">
+        {/* Section 03 Eyebrow */}
+        <div className="footer__eyebrow">
+          <span className="eyebrow-line" />
+          <span>03 / CONTACT</span>
+        </div>
+
         {/* Logo + Tagline Header */}
         <div className="footer__logo-header">
           <img
@@ -158,8 +127,8 @@ export const Footer: React.FC = () => {
                 <div className="footer__nav-group">
                   <h4 className="footer__nav-title">Operations</h4>
                   <ul className="footer__links">
-                    <li><span>Odesa &bull; Chornomorsk</span></li>
-                    <li><span>Pivdennyi &bull; Danube Ports</span></li>
+                    <li><span>Mumbai &bull; Cochin</span></li>
+                    <li><span>Vizhinjam &bull; Chennai</span></li>
                     <li><span>24/7 Dispatch Desk</span></li>
                   </ul>
                 </div>
@@ -190,151 +159,15 @@ export const Footer: React.FC = () => {
                   </a>
                 </div>
               </div>
-            </div>
 
-            {/* Interactive Map — Service Ports */}
-            <div className="footer__map-card">
-              <div className="footer__map-header">
-                <Anchor size={16} className="footer__map-header-icon" />
-                <h4 className="footer__map-title">Service Port Network</h4>
-                <span className="footer__map-badge">{PORT_LOCATIONS.length} Ports</span>
-              </div>
-              <div className="footer__map-svg-wrap">
-                <svg
-                  viewBox="0 0 600 320"
-                  className="footer__map-svg"
-                  xmlns="http://www.w3.org/2000/svg"
-                >
-                  {/* Water fill */}
-                  <rect x="0" y="0" width="600" height="320" rx="12" fill="rgba(7, 24, 32, 0.6)" />
-                  
-                  {/* Stylized Black Sea coastline */}
-                  <path
-                    d="M 0,100 C 40,95 80,85 120,90 C 160,95 180,75 220,70 C 260,65 280,80 310,60 C 340,40 370,35 400,50 C 430,65 450,50 480,55 C 510,60 540,45 570,50 C 590,53 600,55 600,55 L 600,0 L 0,0 Z"
-                    fill="rgba(103, 171, 175, 0.08)"
-                    stroke="rgba(103, 171, 175, 0.2)"
-                    strokeWidth="1"
-                  />
-                  {/* Northern coastline (Ukraine) */}
-                  <path
-                    d="M 0,110 C 50,105 100,98 160,100 C 200,102 230,88 280,85 C 320,82 350,75 390,90 C 430,105 460,95 500,100 L 500,98 C 460,93 430,103 390,88 C 350,73 320,80 280,83 C 230,86 200,100 160,98 C 100,96 50,103 0,108 Z"
-                    fill="rgba(103, 171, 175, 0.12)"
-                    stroke="rgba(103, 171, 175, 0.25)"
-                    strokeWidth="0.5"
-                  />
-                  {/* Turkey/Southern coastline */}
-                  <path
-                    d="M 0,220 C 60,225 120,240 180,235 C 240,230 280,245 340,250 C 400,255 440,240 500,245 C 540,248 570,255 600,260 L 600,320 L 0,320 Z"
-                    fill="rgba(103, 171, 175, 0.08)"
-                    stroke="rgba(103, 171, 175, 0.2)"
-                    strokeWidth="1"
-                  />
-
-                  {/* Grid lines */}
-                  {[80, 160, 240, 320, 400, 480].map((x) => (
-                    <line key={`vl-${x}`} x1={x} y1="0" x2={x} y2="320" stroke="rgba(103,171,175,0.06)" strokeWidth="0.5" />
-                  ))}
-                  {[64, 128, 192, 256].map((y) => (
-                    <line key={`hl-${y}`} x1="0" y1={y} x2="600" y2={y} stroke="rgba(103,171,175,0.06)" strokeWidth="0.5" />
-                  ))}
-
-                  {/* Shipping lanes (dotted lines connecting primary ports) */}
-                  {(() => {
-                    const primaries = PORT_LOCATIONS.filter(p => p.primary);
-                    const lines = [];
-                    for (let i = 0; i < primaries.length; i++) {
-                      for (let j = i + 1; j < primaries.length; j++) {
-                        const a = toSVG(primaries[i].lat, primaries[i].lng);
-                        const b = toSVG(primaries[j].lat, primaries[j].lng);
-                        lines.push(
-                          <line
-                            key={`lane-${i}-${j}`}
-                            x1={a.x} y1={a.y}
-                            x2={b.x} y2={b.y}
-                            stroke="rgba(103, 171, 175, 0.15)"
-                            strokeWidth="1"
-                            strokeDasharray="4 3"
-                          />
-                        );
-                      }
-                    }
-                    return lines;
-                  })()}
-
-                  {/* Port pins */}
-                  {PORT_LOCATIONS.map((port) => {
-                    const { x, y } = toSVG(port.lat, port.lng);
-                    const isHovered = hoveredPort === port.name;
-                    const r = port.primary ? 6 : 4;
-                    return (
-                      <g
-                        key={port.name}
-                        onMouseEnter={() => setHoveredPort(port.name)}
-                        onMouseLeave={() => setHoveredPort(null)}
-                        style={{ cursor: 'pointer' }}
-                      >
-                        {/* Pulse ring for primary ports */}
-                        {port.primary && (
-                          <circle
-                            cx={x} cy={y} r={r + 6}
-                            fill="none"
-                            stroke="rgba(103, 171, 175, 0.4)"
-                            strokeWidth="1"
-                            className="footer__map-pulse"
-                          />
-                        )}
-                        {/* Glow */}
-                        <circle
-                          cx={x} cy={y}
-                          r={isHovered ? r + 4 : r + 2}
-                          fill={port.primary ? 'rgba(103, 171, 175, 0.2)' : 'rgba(103, 171, 175, 0.1)'}
-                        />
-                        {/* Dot */}
-                        <circle
-                          cx={x} cy={y}
-                          r={isHovered ? r + 1 : r}
-                          fill={port.primary ? '#67abaf' : 'rgba(103, 171, 175, 0.6)'}
-                          stroke={isHovered ? '#ffffff' : 'rgba(255,255,255,0.3)'}
-                          strokeWidth={isHovered ? 1.5 : 0.5}
-                          style={{ transition: 'all 0.25s ease' }}
-                        />
-                        {/* Label */}
-                        {(isHovered || port.primary) && (
-                          <text
-                            x={x}
-                            y={y - (port.primary ? 14 : 10)}
-                            textAnchor="middle"
-                            fill={isHovered ? '#ffffff' : 'rgba(255,255,255,0.8)'}
-                            fontSize={isHovered ? '11' : '9'}
-                            fontFamily="'Articulat CF', sans-serif"
-                            fontWeight={port.primary ? '700' : '500'}
-                            style={{ transition: 'all 0.25s ease', textShadow: '0 2px 6px rgba(0,0,0,0.8)' }}
-                          >
-                            {port.name}
-                          </text>
-                        )}
-                      </g>
-                    );
-                  })}
-
-                  {/* "BLACK SEA" label */}
-                  <text
-                    x="300" y="175"
-                    textAnchor="middle"
-                    fill="rgba(103, 171, 175, 0.18)"
-                    fontSize="22"
-                    fontFamily="'Articulat CF', sans-serif"
-                    fontWeight="800"
-                    letterSpacing="0.25em"
-                  >
-                    BLACK SEA
-                  </text>
-                </svg>
+              {/* Copyright Notice */}
+              <div className="footer__card-copyright">
+                &copy; {new Date().getFullYear()} Gorod International Agency Pvt Ltd. All rights reserved.
               </div>
             </div>
           </div>
 
-          {/* Right Column: CTA & Quote Submission Form + Contacts Card Right Below */}
+          {/* Right Column: CTA & Quote Submission Form + Interactive Port Map */}
           <div id="inquiry-form" className="footer__right-pane">
             <div className="contact-form-pane footer-form-card">
               {submitted ? (
@@ -457,14 +290,161 @@ export const Footer: React.FC = () => {
                 </form>
               )}
             </div>
-          </div>
-        </div>
 
-        {/* Bottom Bar: Copyright */}
-        <div className="footer__bottom-bar">
-          <span className="footer__copyright">
-            &copy; {new Date().getFullYear()} Gorod International Agency Pvt Ltd. All rights reserved.
-          </span>
+            {/* Interactive Map — Service Ports */}
+            <div className="footer__map-card">
+              <div className="footer__map-header">
+                <Anchor size={16} className="footer__map-header-icon" />
+                <h4 className="footer__map-title">Service Port Network</h4>
+                <span className="footer__map-badge">{PORT_LOCATIONS.length} Ports</span>
+              </div>
+              <div className="footer__map-svg-wrap">
+                <svg
+                  viewBox="0 0 600 320"
+                  className="footer__map-svg"
+                  xmlns="http://www.w3.org/2000/svg"
+                >
+                  {/* Water fill (Indian Ocean, Arabian Sea, Bay of Bengal) */}
+                  <rect x="0" y="0" width="600" height="320" rx="12" fill="rgba(7, 24, 32, 0.65)" />
+
+                  {/* Grid lines */}
+                  {[100, 200, 300, 400, 500].map((x) => (
+                    <line key={`vl-${x}`} x1={x} y1="0" x2={x} y2="320" stroke="rgba(103,171,175,0.06)" strokeWidth="0.5" />
+                  ))}
+                  {[64, 128, 192, 256].map((y) => (
+                    <line key={`hl-${y}`} x1="0" y1={y} x2="600" y2={y} stroke="rgba(103,171,175,0.06)" strokeWidth="0.5" />
+                  ))}
+
+                  {/* Indian Subcontinent Landmass */}
+                  <path
+                    d={INDIA_LAND_PATH}
+                    fill="rgba(103, 171, 175, 0.08)"
+                    stroke="rgba(103, 171, 175, 0.16)"
+                    strokeWidth="1"
+                  />
+
+                  {/* Indian Coastline Stroke */}
+                  <path
+                    d={INDIA_COAST_STROKE}
+                    fill="none"
+                    stroke="rgba(103, 171, 175, 0.45)"
+                    strokeWidth="1.4"
+                    strokeLinejoin="round"
+                    strokeLinecap="round"
+                  />
+
+                  {/* Sri Lanka */}
+                  <path
+                    d={SRI_LANKA_PATH}
+                    fill="rgba(103, 171, 175, 0.09)"
+                    stroke="rgba(103, 171, 175, 0.35)"
+                    strokeWidth="1"
+                  />
+
+                  {/* Major Coastal Shipping Lane */}
+                  <path
+                    d={SHIPPING_LANE_PATH}
+                    fill="none"
+                    stroke="rgba(103, 171, 175, 0.22)"
+                    strokeWidth="1.2"
+                    strokeDasharray="4 3"
+                  />
+
+                  {/* Ocean / Sea Region Labels */}
+                  <text
+                    x="95" y="210"
+                    textAnchor="middle"
+                    fill="rgba(103, 171, 175, 0.18)"
+                    fontSize="12.5"
+                    fontFamily="'Articulat CF', sans-serif"
+                    fontWeight="800"
+                    letterSpacing="0.22em"
+                  >
+                    ARABIAN SEA
+                  </text>
+
+                  <text
+                    x="475" y="210"
+                    textAnchor="middle"
+                    fill="rgba(103, 171, 175, 0.18)"
+                    fontSize="12.5"
+                    fontFamily="'Articulat CF', sans-serif"
+                    fontWeight="800"
+                    letterSpacing="0.22em"
+                  >
+                    BAY OF BENGAL
+                  </text>
+
+                  <text
+                    x="290" y="312"
+                    textAnchor="middle"
+                    fill="rgba(103, 171, 175, 0.18)"
+                    fontSize="11.5"
+                    fontFamily="'Articulat CF', sans-serif"
+                    fontWeight="800"
+                    letterSpacing="0.22em"
+                  >
+                    INDIAN OCEAN
+                  </text>
+
+                  {/* Port pins */}
+                  {PORT_LOCATIONS.map((port) => {
+                    const isHovered = hoveredPort === port.name;
+                    const r = port.primary ? 5.5 : 3.8;
+                    return (
+                      <g
+                        key={port.name}
+                        onMouseEnter={() => setHoveredPort(port.name)}
+                        onMouseLeave={() => setHoveredPort(null)}
+                        style={{ cursor: 'pointer' }}
+                      >
+                        {/* Pulse ring for primary ports */}
+                        {port.primary && (
+                          <circle
+                            cx={port.x} cy={port.y} r={r + 5}
+                            fill="none"
+                            stroke="rgba(103, 171, 175, 0.45)"
+                            strokeWidth="1"
+                            className="footer__map-pulse"
+                          />
+                        )}
+                        {/* Glow */}
+                        <circle
+                          cx={port.x} cy={port.y}
+                          r={isHovered ? r + 4 : r + 2}
+                          fill={port.primary ? 'rgba(103, 171, 175, 0.25)' : 'rgba(103, 171, 175, 0.12)'}
+                        />
+                        {/* Dot */}
+                        <circle
+                          cx={port.x} cy={port.y}
+                          r={isHovered ? r + 1.2 : r}
+                          fill={port.primary ? '#67abaf' : 'rgba(103, 171, 175, 0.65)'}
+                          stroke={isHovered ? '#ffffff' : 'rgba(255,255,255,0.4)'}
+                          strokeWidth={isHovered ? 1.5 : 0.6}
+                          style={{ transition: 'all 0.25s ease' }}
+                        />
+                        {/* Label */}
+                        {(isHovered || port.primary) && (
+                          <text
+                            x={port.x + (port.dx || 0)}
+                            y={port.y + (port.dy || -8)}
+                            textAnchor={port.anchor || 'middle'}
+                            fill={isHovered ? '#ffffff' : 'rgba(255,255,255,0.9)'}
+                            fontSize={isHovered ? '10.5' : '9'}
+                            fontFamily="'Articulat CF', sans-serif"
+                            fontWeight={port.primary ? '700' : '500'}
+                            style={{ transition: 'all 0.25s ease', textShadow: '0 2px 6px rgba(0,0,0,0.95)' }}
+                          >
+                            {port.name}
+                          </text>
+                        )}
+                      </g>
+                    );
+                  })}
+                </svg>
+              </div>
+            </div>
+          </div>
         </div>
       </div>
     </footer>
