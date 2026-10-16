@@ -2984,19 +2984,20 @@ button {
 
 .form-label {
   font-family: var(--font-body);
-  font-size: 12px;
+  font-size: 12.5px;
   font-weight: 600;
   color: #334155;
   letter-spacing: 0.02em;
+  margin-bottom: 2px;
 }
 
 .form-input {
   background: #f8fafc;
   border: 1px solid #e2e8f0;
-  border-radius: 8px;
-  padding: 0 14px;
-  height: 46px;
-  font-size: 13.5px;
+  border-radius: 9px;
+  padding: 0 16px;
+  height: 52px;
+  font-size: 14px;
   color: #0f172a;
   font-family: var(--font-body);
   box-sizing: border-box;
@@ -3024,7 +3025,7 @@ button {
 
 .input-with-icon .input-icon {
   position: absolute;
-  right: 14px;
+  right: 16px;
   color: #64748b;
   pointer-events: none;
 }
@@ -3035,16 +3036,16 @@ button {
   justify-content: center;
   gap: 10px;
   width: 100%;
-  height: 48px;
+  height: 52px;
   background: var(--deep-cyan);
   color: #ffffff;
   font-family: var(--font-body);
-  font-size: 12.5px;
+  font-size: 13px;
   font-weight: 700;
   letter-spacing: 0.08em;
   text-transform: uppercase;
   border: none;
-  border-radius: 8px;
+  border-radius: 9px;
   cursor: pointer;
   transition: background-color 0.25s ease, transform 0.15s ease, box-shadow 0.25s ease;
   margin-top: 6px;
@@ -3087,13 +3088,13 @@ button {
   align-items: center;
   justify-content: space-between;
   width: 100%;
-  height: 46px;
-  padding: 0 14px;
+  height: 52px;
+  padding: 0 16px;
   background: #f8fafc;
   border: 1px solid #e2e8f0;
-  border-radius: 8px;
+  border-radius: 9px;
   font-family: var(--font-body);
-  font-size: 13.5px;
+  font-size: 14px;
   color: #0f172a;
   cursor: pointer;
   box-sizing: border-box;
@@ -3347,36 +3348,39 @@ footer#contact,
 
 .footer__main-grid {
   display: grid;
-  grid-template-columns: 1.05fr 0.95fr;
-  gap: clamp(28px, 3.5vw, 48px);
-  align-items: start;
+  grid-template-columns: 1fr 1fr;
+  gap: clamp(28px, 3.5vw, 44px);
+  align-items: stretch;
 }
 
 .footer__left-pane {
   display: flex;
   flex-direction: column;
-  gap: 20px;
+  height: 100%;
 }
 
-/* --- FROSTED GLASS CARDS (matches About Us) --- */
-.footer__glass-card,
-.footer__map-card {
+/* --- FROSTED GLASS CARDS (matches About Us space box) --- */
+.footer__glass-card {
   display: flex;
   flex-direction: column;
-  gap: 24px;
-  padding: 28px;
-  background: rgba(7, 24, 32, 0.72);
-  backdrop-filter: blur(16px);
-  -webkit-backdrop-filter: blur(16px);
-  border: 1px solid rgba(103, 171, 175, 0.28);
-  border-radius: 16px;
-  box-shadow: 0 16px 36px rgba(0, 0, 0, 0.35);
+  gap: 20px;
+  padding: clamp(28px, 3.2vw, 40px) clamp(24px, 2.8vw, 36px);
+  background: rgba(255, 255, 255, 0.08);
+  backdrop-filter: blur(8px);
+  -webkit-backdrop-filter: blur(8px);
+  border: 1px solid rgba(255, 255, 255, 0.25);
+  border-radius: clamp(20px, 2.5vw, 32px);
+  box-shadow:
+    0 20px 50px rgba(0, 0, 0, 0.35),
+    inset 0 1px 1px rgba(255, 255, 255, 0.2);
+  box-sizing: border-box;
+  height: 100%;
 }
 
 .footer__brand-block {
   display: flex;
   flex-direction: column;
-  max-width: 440px;
+  max-width: 100%;
 }
 
 
@@ -3418,7 +3422,7 @@ footer#contact,
   flex-direction: column;
   gap: 14px;
   padding-top: 20px;
-  border-top: 1px solid rgba(103, 171, 175, 0.2);
+  border-top: 1px solid rgba(255, 255, 255, 0.15);
 }
 
 .footer__contact-header {
@@ -3550,92 +3554,298 @@ footer#contact,
   color: rgba(255, 255, 255, 0.85);
 }
 
-/* --- MAP CARD --- */
-.footer__map-card {
+/* --- LEAFLET PORT MAP EMBED (inside left panel) --- */
+.port-map-embed {
+  background: rgba(7, 24, 32, 0.72);
+  border: 1px solid rgba(103, 171, 175, 0.25);
+  border-radius: 16px;
   overflow: hidden;
+  box-shadow: inset 0 1px 1px rgba(255, 255, 255, 0.12), 0 8px 24px rgba(0, 0, 0, 0.35);
+  display: flex;
+  flex-direction: column;
 }
 
-.footer__map-header {
+.port-map-embed__header {
   display: flex;
   align-items: center;
-  gap: 10px;
-  padding: 14px 20px;
-  border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+  justify-content: space-between;
+  padding: 10px 16px;
+  background: rgba(4, 18, 25, 0.9);
+  border-bottom: 1px solid rgba(103, 171, 175, 0.18);
 }
 
-.footer__map-header-icon {
+.port-map-embed__title-wrap {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.port-map-embed__icon {
   color: var(--light-cyan, #67abaf);
 }
 
-.footer__map-title {
-  font-family: 'Articulat CF', var(--font-display, sans-serif);
-  font-size: 13px;
+.port-map-embed__title {
+  font-family: var(--font-display, sans-serif);
+  font-size: 11.5px;
   font-weight: 700;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
   color: #ffffff;
-  margin: 0;
-  letter-spacing: 0.04em;
 }
 
-.footer__map-badge {
-  margin-left: auto;
+.port-map-embed__badge {
   font-family: var(--font-display, sans-serif);
   font-size: 10px;
   font-weight: 800;
   letter-spacing: 0.1em;
   color: var(--light-cyan, #67abaf);
-  background: rgba(103, 171, 175, 0.12);
-  border: 1px solid rgba(103, 171, 175, 0.25);
-  padding: 3px 8px;
+  background: rgba(103, 171, 175, 0.15);
+  border: 1px solid rgba(103, 171, 175, 0.3);
+  padding: 2px 8px;
   border-radius: 9999px;
 }
 
-.footer__map-svg-wrap {
-  padding: 8px;
-}
-
-.footer__map-svg {
+.port-map-embed__canvas {
   width: 100%;
-  height: auto;
-  display: block;
-  border-radius: 10px;
+  height: 290px;
+  background: #071820;
 }
 
-/* Map pulse animation for primary ports */
-@keyframes mapPulse {
+/* Custom Leaflet Port Markers */
+.leaflet-port-divicon {
+  background: transparent !important;
+  border: none !important;
+}
+
+.leaflet-port-pin {
+  position: relative;
+  width: 24px;
+  height: 24px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+}
+
+.leaflet-port-pin .pin-core {
+  width: 8px;
+  height: 8px;
+  background: #67abaf;
+  border: 1.5px solid #ffffff;
+  border-radius: 50%;
+  box-shadow: 0 0 8px rgba(103, 171, 175, 0.9);
+  transition: transform 0.2s ease, background 0.2s ease;
+  z-index: 2;
+}
+
+.leaflet-port-pin.--hq .pin-core {
+  background: #38bdf8;
+  width: 10px;
+  height: 10px;
+  box-shadow: 0 0 12px #38bdf8;
+}
+
+.leaflet-port-pin .pin-ring {
+  position: absolute;
+  width: 18px;
+  height: 18px;
+  border-radius: 50%;
+  border: 1px solid rgba(103, 171, 175, 0.6);
+  animation: portRingPulse 2.4s ease-out infinite;
+  z-index: 1;
+}
+
+.leaflet-port-pin.--hq .pin-ring {
+  border-color: rgba(56, 189, 248, 0.85);
+  animation-duration: 1.8s;
+}
+
+@keyframes portRingPulse {
   0% {
-    r: 12;
-    opacity: 0.5;
+    transform: scale(0.6);
+    opacity: 0.9;
   }
   100% {
-    r: 20;
+    transform: scale(1.8);
     opacity: 0;
   }
 }
 
-.footer__map-pulse {
-  animation: mapPulse 2.5s ease-out infinite;
+.leaflet-port-pin .pin-title {
+  position: absolute;
+  top: -14px;
+  left: 50%;
+  transform: translateX(-50%);
+  font-family: 'Articulat CF', var(--font-body, sans-serif);
+  font-size: 9px;
+  font-weight: 700;
+  color: #ffffff;
+  white-space: nowrap;
+  text-shadow: 0 1px 4px rgba(0, 0, 0, 0.95), 0 0 8px rgba(0, 0, 0, 0.95);
+  pointer-events: none;
+  opacity: 0.85;
 }
 
-/* --- RIGHT PANE --- */
+.leaflet-port-pin:hover .pin-core {
+  transform: scale(1.3);
+  background: #ffffff;
+}
+
+.leaflet-port-pin:hover .pin-title {
+  opacity: 1;
+  color: #67abaf;
+}
+
+/* Tooltip */
+.leaflet-port-tooltip {
+  background: rgba(7, 24, 32, 0.95) !important;
+  border: 1px solid rgba(103, 171, 175, 0.4) !important;
+  border-radius: 8px !important;
+  color: #ffffff !important;
+  padding: 6px 10px !important;
+  box-shadow: 0 8px 20px rgba(0, 0, 0, 0.6) !important;
+}
+
+.leaflet-port-tooltip:before {
+  border-top-color: rgba(7, 24, 32, 0.95) !important;
+}
+
+.port-popup-body {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  font-family: var(--font-body, sans-serif);
+}
+
+.port-popup-body strong {
+  font-size: 11px;
+  color: #ffffff;
+}
+
+.port-popup-body span {
+  font-size: 9.5px;
+  color: var(--light-cyan, #67abaf);
+}
+
+.port-map-embed .leaflet-control-zoom {
+  border: 1px solid rgba(103, 171, 175, 0.3) !important;
+  border-radius: 6px !important;
+  overflow: hidden;
+  margin-top: 8px !important;
+  margin-right: 8px !important;
+}
+
+.port-map-embed .leaflet-control-zoom a {
+  background: rgba(7, 24, 32, 0.88) !important;
+  color: #67abaf !important;
+  border-bottom: 1px solid rgba(103, 171, 175, 0.2) !important;
+  transition: all 0.2s ease;
+}
+
+.port-map-embed .leaflet-control-zoom a:hover {
+  background: rgba(103, 171, 175, 0.25) !important;
+  color: #ffffff !important;
+}
+
+/* --- RIGHT PANE: PARALLEL EQUAL-HEIGHT NOMINATION BOX --- */
 .footer__right-pane {
   position: relative;
   z-index: 5;
   display: flex;
   flex-direction: column;
+  height: 100%;
+}
+
+.footer-form-card,
+.contact-form-pane.footer-form-card {
+  background: #ffffff;
+  border-radius: clamp(20px, 2.5vw, 32px);
+  box-shadow: 0 24px 50px rgba(0, 0, 0, 0.45);
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+  padding: clamp(28px, 3.2vw, 40px) clamp(24px, 2.8vw, 36px);
+  box-sizing: border-box;
+}
+
+.footer-form-card .agency-form {
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+}
+
+.form-header-group {
+  margin-bottom: 2px;
+}
+
+.form-fields-container {
+  display: flex;
+  flex-direction: column;
   gap: 16px;
 }
 
-.footer-form-card {
-  background: #ffffff;
-  border-radius: 18px;
-  box-shadow: 0 24px 50px rgba(0, 0, 0, 0.45);
+.form-textarea {
+  height: 96px !important;
+  padding: 12px 16px !important;
+  resize: vertical;
+  line-height: 1.5;
+}
+
+.form-group--full {
+  grid-column: 1 / -1;
+  width: 100%;
+}
+
+.form-footer-action {
+  margin-top: 6px;
+}
+
+.form-success-box {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+  height: 100%;
+  padding: 36px 16px;
+}
+
+.form-success-box .success-icon {
+  color: #006873;
+  margin-bottom: 16px;
+}
+
+.form-success-box .success-title {
+  font-family: var(--font-display, sans-serif);
+  font-size: 22px;
+  font-weight: 700;
+  color: #062837;
+  margin: 0 0 12px 0;
+}
+
+.form-success-box .success-text {
+  font-family: var(--font-body, sans-serif);
+  font-size: 14px;
+  line-height: 1.6;
+  color: #334155;
+  max-width: 440px;
+  margin: 0 auto 8px;
+}
+
+.form-success-box .success-subtext {
+  font-family: var(--font-body, sans-serif);
+  font-size: 13px;
+  line-height: 1.55;
+  color: #64748b;
+  max-width: 420px;
+  margin: 0 auto;
 }
 
 /* Copyright text placed inside the left glass box */
 .footer__card-copyright {
   margin-top: 4px;
   padding-top: 18px;
-  border-top: 1px solid rgba(103, 171, 175, 0.18);
+  border-top: 1px solid rgba(255, 255, 255, 0.15);
   font-family: 'Articulat CF', var(--font-body, sans-serif);
   font-size: 11.5px;
   color: rgba(255, 255, 255, 0.52);
@@ -3705,7 +3915,11 @@ footer#contact,
 
   .footer__glass-card {
     padding: 24px 18px;
-    border-radius: 16px;
+    border-radius: 20px;
+  }
+
+  .footer-form-card {
+    border-radius: 20px;
   }
 
   .footer__logo-img {
@@ -3717,7 +3931,7 @@ footer#contact,
   }
 
   .footer__map-card {
-    border-radius: 14px;
+    border-radius: 20px;
   }
 
 }
