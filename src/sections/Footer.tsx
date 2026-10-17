@@ -55,70 +55,69 @@ export const Footer: React.FC = () => {
           <span>03 / CONTACT</span>
         </div>
 
-        {/* Logo + Tagline Header */}
+        {/* Logo + Tagline Header & Copyright on Top */}
         <div className="footer__logo-header">
-          <img
-            src="/images/gorod-marine-white.png"
-            alt="Gorod International Agency"
-            className="footer__logo-img"
-          />
-          <span className="footer__logo-divider" aria-hidden="true" />
-          <span className="footer__logo-tagline">International Maritime Agency</span>
+          <div className="footer__logo-brand">
+            <img
+              src="/images/gorod-marine-white.png"
+              alt="Gorod International Agency"
+              className="footer__logo-img"
+            />
+            <span className="footer__logo-divider" aria-hidden="true" />
+            <span className="footer__logo-tagline">International Maritime Agency</span>
+          </div>
+          <div className="footer__top-copyright">
+            &copy; {new Date().getFullYear()} Gorod International Agency Pvt Ltd. All rights reserved.
+          </div>
         </div>
 
         <div className="footer__main-grid">
-          {/* Left Column: Brand, Head Office, Real Map & Copyright */}
+          {/* Left Column: Brand (outside glass), Head Office Contacts Card, Real Map */}
           <div className="footer__left-pane">
-            <div className="footer__glass-card">
-              <div className="footer__brand-block">
-                <div className="footer__cta-badge">MARITIME REPRESENTATION &amp; PORT OPERATIONS</div>
-                <h2 className="footer__cta-headline">
-                  Our Representation.<br />
-                  Your Operations.<br />
-                  Every City.
-                </h2>
-                <p className="footer__brand-tagline">
-                  European standards in port agency, vessel husbandry, bunkering, and 24/7 PDA coordination across commercial Indian deep-sea ports.
-                </p>
-              </div>
+            {/* Content outside the glassy box */}
+            <div className="footer__brand-block">
+              <div className="footer__cta-badge">MARITIME REPRESENTATION &amp; PORT OPERATIONS</div>
+              <h2 className="footer__cta-headline">
+                Our Representation.<br />
+                Your Operations.<br />
+                Every City.
+              </h2>
+              <p className="footer__brand-tagline">
+                European standards in port agency, vessel husbandry, bunkering, and 24/7 PDA coordination across commercial Indian deep-sea ports.
+              </p>
+            </div>
 
-              {/* Head Office Contacts Section */}
-              <div className="footer__contact-row-inline">
-                <div className="footer__contact-header">
-                  <div className="footer__contact-icon-box">
-                    <MapPin size={20} />
-                  </div>
-                  <div className="footer__contact-main">
-                    <h4 className="footer__contact-title">Head Office</h4>
-                    <p className="footer__contact-address">
-                      TC : 95/238 (13), Anamugham, Poonthi Road,<br />
-                      Anayara P.O, Trivandrum, Kerala, India &bull; PIN: 695029
-                    </p>
-                  </div>
+            {/* Head Office Contacts Section (Glassy Card) */}
+            <div className="footer__contact-card">
+              <div className="footer__contact-office">
+                <div className="footer__contact-icon-box">
+                  <MapPin size={18} />
                 </div>
-                <div className="footer__contact-actions">
-                  <a href="tel:+919480512223" className="footer__contact-action-btn">
-                    <Phone size={15} />
-                    <span>+91 9480512223</span>
-                  </a>
-                  <a href="mailto:info@gorodagency.com" className="footer__contact-action-btn">
-                    <Mail size={15} />
-                    <span>info@gorodagency.com</span>
-                  </a>
+                <div className="footer__contact-info">
+                  <h4 className="footer__contact-title">Head Office</h4>
+                  <p className="footer__contact-address">
+                    TC: 95/238 (13), Anamugham, Poonthi Road,<br />
+                    Anayara P.O, Trivandrum, Kerala, India - PIN: 695029
+                  </p>
                 </div>
               </div>
-
-              {/* Real Interactive Map placed below Head Office */}
-              <PortMap
-                selectedPort={formState.port}
-                onSelectPort={(portName) => setFormState((prev) => ({ ...prev, port: portName }))}
-              />
-
-              {/* Copyright Notice */}
-              <div className="footer__card-copyright">
-                &copy; {new Date().getFullYear()} Gorod International Agency Pvt Ltd. All rights reserved.
+              <div className="footer__contact-links">
+                <a href="tel:+919480512223" className="footer__contact-link">
+                  <Phone size={14} className="footer__contact-link-icon" />
+                  <span>+91 9480512223</span>
+                </a>
+                <a href="mailto:info@gorodagency.com" className="footer__contact-link">
+                  <Mail size={14} className="footer__contact-link-icon" />
+                  <span>info@gorodagency.com</span>
+                </a>
               </div>
             </div>
+
+            {/* Real Interactive Map placed right below Head Office */}
+            <PortMap
+              selectedPort={formState.port}
+              onSelectPort={(portName) => setFormState((prev) => ({ ...prev, port: portName }))}
+            />
           </div>
 
           {/* Right Column: CTA & Quote Submission Form (Equal Height & Parallel) */}
@@ -158,6 +157,7 @@ export const Footer: React.FC = () => {
               ) : (
                 <form onSubmit={handleSubmit} className="agency-form">
                   <div className="form-header-group">
+                    <div className="form-eyebrow">PORT AGENCY</div>
                     <div className="form-heading-row">
                       <h3 className="form-heading">Agency Nomination / PDA Request</h3>
                       <span className="form-heading-accent" />

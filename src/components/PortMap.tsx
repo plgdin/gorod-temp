@@ -1,7 +1,6 @@
 import React, { useEffect, useRef } from 'react';
 import L from 'leaflet';
 import 'leaflet/dist/leaflet.css';
-import { Anchor } from 'lucide-react';
 
 export interface PortItem {
   name: string;
@@ -49,9 +48,9 @@ export const PortMap: React.FC<PortMapProps> = ({ selectedPort, onSelectPort }) 
 
     // Initialize Leaflet map centered on Indian coastline
     const map = L.map(mapContainerRef.current, {
-      center: [16.5, 79.0],
-      zoom: 5,
-      minZoom: 4,
+      center: [16.0, 78.5],
+      zoom: 4.3,
+      minZoom: 3.5,
       maxZoom: 9,
       zoomControl: true,
       attributionControl: false,
@@ -140,8 +139,19 @@ export const PortMap: React.FC<PortMapProps> = ({ selectedPort, onSelectPort }) 
       map.invalidateSize();
     }, 200);
 
+    let resizeObserver: ResizeObserver | null = null;
+    if (mapContainerRef.current && typeof ResizeObserver !== 'undefined') {
+      resizeObserver = new ResizeObserver(() => {
+        map.invalidateSize();
+      });
+      resizeObserver.observe(mapContainerRef.current);
+    }
+
     return () => {
       clearTimeout(timer);
+      if (resizeObserver) {
+        resizeObserver.disconnect();
+      }
       if (mapInstanceRef.current) {
         mapInstanceRef.current.remove();
         mapInstanceRef.current = null;
@@ -151,13 +161,6 @@ export const PortMap: React.FC<PortMapProps> = ({ selectedPort, onSelectPort }) 
 
   return (
     <div className="port-map-embed">
-      <div className="port-map-embed__header">
-        <div className="port-map-embed__title-wrap">
-          <Anchor size={15} className="port-map-embed__icon" />
-          <span className="port-map-embed__title">Live Port Agency Network</span>
-        </div>
-        <span className="port-map-embed__badge">{PORT_DATA.length} Indian Seaports</span>
-      </div>
       <div ref={mapContainerRef} className="port-map-embed__canvas" />
     </div>
   );

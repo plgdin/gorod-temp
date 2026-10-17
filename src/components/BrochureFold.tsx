@@ -428,9 +428,6 @@ export default function BrochureFold() {
           stage.classList.remove('is-scroll-scrubbed');
           left.style.transition = '';
           right.style.transition = '';
-          if (hint) {
-            hint.textContent = 'Select a service in the middle panel to explore';
-          }
         },
       });
 
@@ -765,7 +762,6 @@ export default function BrochureFold() {
                 How can we<br />
                 support your vessel?
               </h3>
-              <p className="selector-subtitle">Select a service to explore details.</p>
             </div>
 
             {/* 8 INTERACTIVE SERVICE BUTTONS */}
@@ -787,8 +783,8 @@ export default function BrochureFold() {
                   >
                     <div className="selector-item__left">
                       <ItemIcon
-                        size={21}
-                        strokeWidth={2}
+                        size={25}
+                        strokeWidth={2.1}
                         className="selector-item__icon"
                       />
                       <span className="selector-item__title">{item.title}</span>
@@ -796,7 +792,7 @@ export default function BrochureFold() {
                     <div className="selector-item__right">
                       <span className="selector-item__index">{item.number}</span>
                       <ChevronRight
-                        size={17}
+                        size={19}
                         strokeWidth={2.2}
                         className="selector-item__arrow"
                       />
@@ -922,11 +918,6 @@ export default function BrochureFold() {
             </div>
           </div>
         </div>
-      </div>
-
-      {/* Scroll indicator & status hint */}
-      <div className="fold-brochure__hint" aria-live="polite">
-        Select a service in the middle panel to explore
       </div>
     </section>
   );
