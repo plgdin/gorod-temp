@@ -3257,29 +3257,32 @@ footer#contact,
   color: #ffffff;
 }
 
-/* Render high-definition 3440x1920 footer-shore.png on ::before */
+/* Keep the page ocean untouched at the footer entry. The aerial port image
+   arrives only low in the section, over matching water, so the journey into
+   harbour reads as one continuous approach rather than a horizontal cut. */
 .footer::before {
   content: '';
   position: absolute;
   inset: 0;
-  background-image: url('/images/footer-shore.png');
+  background-image: url('/images/footer-shore-v2.png');
   background-size: cover;
-  background-position: center center;
+  background-position: center top;
   background-repeat: no-repeat;
-  /* Smoothly feathers into the body ocean while keeping the port at 100% solid opacity */
   -webkit-mask-image: linear-gradient(
     to bottom,
     transparent 0%,
-    transparent 6%,
-    rgba(0, 0, 0, 0.6) 18%,
-    #000000 38%
+    transparent 48%,
+    rgba(0, 0, 0, 0.12) 58%,
+    rgba(0, 0, 0, 0.55) 70%,
+    #000 86%
   );
   mask-image: linear-gradient(
     to bottom,
     transparent 0%,
-    transparent 6%,
-    rgba(0, 0, 0, 0.6) 18%,
-    #000000 38%
+    transparent 48%,
+    rgba(0, 0, 0, 0.12) 58%,
+    rgba(0, 0, 0, 0.55) 70%,
+    #000 86%
   );
   z-index: 0;
   pointer-events: none;
