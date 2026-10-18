@@ -9,12 +9,10 @@ interface HeaderProps {
 
 export const Header: React.FC<HeaderProps> = ({
   menuOpen,
-  onToggleMenu,
+  onToggleMenu: _onToggleMenu,
   isLightSection = false,
   isReady = false,
 }) => {
-  const [scrollDown, setScrollDown] = useState(false);
-  const lastScrollYRef = React.useRef(0);
   const [startPosition, setStartPosition] = useState(true);
   const [isScrolled, setIsScrolled] = useState(false);
 
@@ -30,31 +28,13 @@ export const Header: React.FC<HeaderProps> = ({
   useEffect(() => {
     const handleScroll = () => {
       const currentScrollY = window.scrollY;
-      const heroEl = document.getElementById('main-screen');
-      const heroHeight = heroEl ? heroEl.offsetHeight : window.innerHeight;
-      const isPastHero = currentScrollY > heroHeight - 100;
-
-      setIsScrolled(isPastHero);
-
-      const delta = currentScrollY - lastScrollYRef.current;
-
-      if (currentScrollY > 80) {
-        if (delta > 5 && !menuOpen) {
-          setScrollDown(true);
-        } else if (delta < -5) {
-          setScrollDown(false);
-        }
-      } else {
-        setScrollDown(false);
-      }
-
-      lastScrollYRef.current = currentScrollY;
+      setIsScrolled(currentScrollY > 60);
     };
 
     handleScroll();
     window.addEventListener('scroll', handleScroll, { passive: true });
     return () => window.removeEventListener('scroll', handleScroll);
-  }, [menuOpen]);
+  }, []);
 
   const [activeSection, setActiveSection] = useState<string | null>(null);
 
@@ -101,9 +81,9 @@ export const Header: React.FC<HeaderProps> = ({
       id="header"
       className={`header ${startPosition ? '--start-position' : ''} ${
         isReady ? '--ready' : ''
-      } ${scrollDown ? '--scroll-down' : ''} ${
-        menuOpen ? '--menu-opened' : ''
-      } ${isScrolled || isLightSection ? '--scrolled' : ''}`}
+      } ${menuOpen ? '--menu-opened' : ''} ${
+        isScrolled || isLightSection ? '--scrolled' : ''
+      }`}
     >
       <div className="header__top">
         <div className="header__logo">
@@ -112,11 +92,6 @@ export const Header: React.FC<HeaderProps> = ({
               src="/images/gorod-marine-white.png"
               alt="Gorod Marine"
               className="logo-img logo-img--white"
-            />
-            <img
-              src="/images/gorod-marine-black.png"
-              alt="Gorod Marine"
-              className="logo-img logo-img--black"
             />
           </a>
         </div>
@@ -154,20 +129,6 @@ export const Header: React.FC<HeaderProps> = ({
             <span>Nominate Now</span>
             <span className="header__enquire-arrow">→</span>
           </a>
-
-          <div
-            className={`header__burger ${menuOpen ? '--open' : ''}`}
-            onClick={onToggleMenu}
-            aria-label="Toggle Navigation"
-            role="button"
-            tabIndex={0}
-            onKeyDown={(e) => e.key === 'Enter' && onToggleMenu()}
-          >
-            <svg width="28" height="28" viewBox="0 0 28 28" fill="none">
-              <line x1="4" y1="10" x2="24" y2="10" stroke="currentColor" strokeWidth="2" strokeLinecap="round" />
-              <line x1="4" y1="18" x2="24" y2="18" stroke="currentColor" strokeWidth="2" strokeLinecap="round" />
-            </svg>
-          </div>
         </div>
       </div>
     </header>

@@ -74,22 +74,22 @@ const SERVICES: ServiceItem[] = [
     capabilities: [
       {
         title: 'Port clearance',
-        desc: 'Efficient handling of all customs and immigration formalities.',
+        desc: 'Customs, immigration, and port health clearances before and upon arrival.',
         icon: FileText,
       },
       {
         title: 'Authority liaison',
-        desc: 'Strong relationships with local authorities for faster approvals.',
+        desc: 'Direct liaison with Port Trusts, Harbour Masters, and pilots for fast approvals.',
         icon: ShieldCheck,
       },
       {
         title: '24/7 on-ground support',
-        desc: 'Our team is available round the clock during your port stay.',
+        desc: 'Round-the-clock boarding attendance to supervise operations and emergency needs.',
         icon: Clock,
       },
       {
         title: 'Local expertise',
-        desc: 'Deep knowledge of port procedures and requirements.',
+        desc: 'Actionable guidance on port bylaws, draft limits, and tidal navigation windows.',
         icon: Compass,
       },
     ],
@@ -109,22 +109,22 @@ const SERVICES: ServiceItem[] = [
     capabilities: [
       {
         title: 'Crew transfers',
-        desc: 'Safe, reliable transit between vessels, terminals, and airports.',
+        desc: 'Safe transit connecting berths, launch points, transit hotels, and airports.',
         icon: Users,
       },
       {
         title: 'Visa & immigration',
-        desc: 'Fast-track clearance with port immigration and border agencies.',
+        desc: 'Fast-track OK-to-Board approvals, transit visas, and shore pass processing.',
         icon: FileCheck,
       },
       {
         title: 'Medical assistance',
-        desc: '24/7 emergency medical appointments, hospitalization, and care.',
+        desc: '24/7 emergency medical evacuations, doctor vessel visits, and hospital care.',
         icon: HeartPulse,
       },
       {
         title: 'Hotel & lodging',
-        desc: 'Comfortable accommodations and transit lounges for relief seafarers.',
+        desc: 'Comfortable accommodations and transit lounges for relief crew.',
         icon: Building2,
       },
     ],
@@ -144,17 +144,17 @@ const SERVICES: ServiceItem[] = [
     capabilities: [
       {
         title: 'Stevedoring liaison',
-        desc: 'Continuous oversight of crane cycles and cargo loading plans.',
+        desc: 'Continuous oversight of crane cycles, hatch operations, and stowage plans.',
         icon: Package,
       },
       {
         title: 'Terminal dispatch',
-        desc: 'Direct communication with port berths and harbor masters.',
+        desc: 'Real-time synchronization with berth planning teams and harbor masters.',
         icon: Building2,
       },
       {
         title: 'Cargo manifests',
-        desc: 'Accurate customs declarations and bill of lading releases.',
+        desc: 'Accurate customs filings, bill of lading releases, and draft surveys.',
         icon: FileText,
       },
       {
@@ -179,7 +179,7 @@ const SERVICES: ServiceItem[] = [
     capabilities: [
       {
         title: 'Ship provisions',
-        desc: 'High-standard galley stores, fresh food, and potable water.',
+        desc: 'High-standard galley stores, fresh provisions, and potable water.',
         icon: ShoppingBag,
       },
       {
@@ -189,12 +189,12 @@ const SERVICES: ServiceItem[] = [
       },
       {
         title: 'Spares logistics',
-        desc: 'Launch delivery and customs clearance for marine parts.',
+        desc: 'Launch delivery, bonded warehousing, and customs clearance for parts.',
         icon: Package,
       },
       {
         title: 'Launch services',
-        desc: 'Dependable offshore boat support for technicians and crew.',
+        desc: 'Dependable offshore boat support for technicians and crew 24/7.',
         icon: Anchor,
       },
     ],
@@ -214,7 +214,7 @@ const SERVICES: ServiceItem[] = [
     capabilities: [
       {
         title: 'Customs clearance',
-        desc: 'Advance filing of manifests and inward / outward clearance.',
+        desc: 'Advance electronic manifest filings (EDI) and port clearances.',
         icon: FileSignature,
       },
       {
@@ -224,12 +224,12 @@ const SERVICES: ServiceItem[] = [
       },
       {
         title: 'Disbursements',
-        desc: 'Transparent proforma disbursement accounting with zero markup.',
+        desc: 'Transparent proforma disbursement accounting with zero hidden markup.',
         icon: Receipt,
       },
       {
         title: 'Regulatory advisory',
-        desc: 'Real-time updates on regional maritime tariffs and shifting rules.',
+        desc: 'Real-time updates on tariffs, cabotage, and regional rules.',
         icon: ShieldCheck,
       },
     ],
@@ -249,12 +249,12 @@ const SERVICES: ServiceItem[] = [
     capabilities: [
       {
         title: 'Quality testing',
-        desc: 'Strict compliance with MARPOL Annex VI and sulfur limits.',
+        desc: 'Strict compliance with MARPOL Annex VI and fuel sulfur limits.',
         icon: Droplets,
       },
       {
         title: 'Barge scheduling',
-        desc: 'Alignment with local bunker suppliers to prevent delays.',
+        desc: 'Direct alignment with local bunker suppliers to prevent delays.',
         icon: Ship,
       },
       {
@@ -289,12 +289,12 @@ const SERVICES: ServiceItem[] = [
       },
       {
         title: 'Workshop repairs',
-        desc: 'Motor rewinding, pump refurbishment, and lathe fabrication.',
+        desc: 'Motor rewinding, pump refurbishment, and precision lathe fabrication.',
         icon: Cpu,
       },
       {
         title: 'Class surveyor liaison',
-        desc: 'Arranging surveyor visits for Lloyd’s, DNV, ABS, and BV.',
+        desc: "Arranging surveyor visits for Lloyd's, DNV, ABS, and BV.",
         icon: ShieldCheck,
       },
       {
@@ -529,7 +529,7 @@ export default function BrochureFold() {
     // 1. Fade out the right panel content
     setFadeState('fading-out');
 
-    // 2. After fade-out completes (400ms), swap data and fade back in
+    // 2. After fade-out completes (260ms), swap data and fade back in
     fadeTimerRef.current = window.setTimeout(() => {
       setSelectedIndex(idx);
       setFadeState('fading-in');
@@ -537,8 +537,8 @@ export default function BrochureFold() {
       // 3. Return to visible after fade-in completes
       fadeTimerRef.current = window.setTimeout(() => {
         setFadeState('visible');
-      }, 450);
-    }, 420);
+      }, 300);
+    }, 270);
   };
 
   const handleClick = useCallback((e: React.MouseEvent) => {
@@ -630,7 +630,7 @@ export default function BrochureFold() {
             <div className="fold-brochure__sheen fold-brochure__sheen--left" aria-hidden="true" />
             <div className="inside-cover__top-brand">
               <img
-                src="/images/gorod-marine-teal.png"
+                src="/images/gorod-marine-white.png"
                 alt="Gorod Marine"
                 className="inside-cover__logo"
               />
@@ -850,7 +850,7 @@ export default function BrochureFold() {
               {/* Details Body */}
               <div className="details-body">
                 <div className="details-badge">
-                  <CurrentIcon size={22} strokeWidth={2} className="details-badge__icon" />
+                  <CurrentIcon size={18} strokeWidth={2.2} className="details-badge__icon" />
                   <span className="details-badge__text">{currentService.category}</span>
                 </div>
 
@@ -865,7 +865,7 @@ export default function BrochureFold() {
                     return (
                       <div key={i} className="capability-card">
                         <div className="capability-card__header">
-                          <CapIcon size={20} strokeWidth={2} className="capability-card__icon" />
+                          <CapIcon size={17} strokeWidth={2.2} className="capability-card__icon" />
                           <span className="capability-card__title">{cap.title}</span>
                         </div>
                         <p className="capability-card__desc">{cap.desc}</p>
