@@ -195,8 +195,25 @@ button {
   opacity: 1;
 }
 
-.header.--scrolled .header__logo .logo-img--white {
+.header__logo .logo-img--black {
+  position: absolute;
+  top: 0;
+  left: 0;
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity 0.3s ease;
+}
+
+.header__logo.--over-light .logo-img--white,
+.header.--scrolled .header__logo.--over-light .logo-img--white {
+  opacity: 0;
+  pointer-events: none;
+}
+
+.header__logo.--over-light .logo-img--black,
+.header.--scrolled .header__logo.--over-light .logo-img--black {
   opacity: 1;
+  pointer-events: auto;
 }
 
 .header.--scrolled .header__logo .logo-img {
@@ -220,6 +237,21 @@ button {
 }
 
 .header.--scrolled .header__enquire-btn:hover {
+  border-color: var(--deep-cyan);
+  background: var(--deep-cyan);
+  color: #ffffff;
+}
+
+.header__enquire-btn.--over-light,
+.header.--scrolled .header__enquire-btn.--over-light {
+  border-color: rgba(10, 28, 34, 0.55);
+  color: #0A1C22;
+  background: rgba(10, 28, 34, 0.06);
+  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.1);
+}
+
+.header__enquire-btn.--over-light:hover,
+.header.--scrolled .header__enquire-btn.--over-light:hover {
   border-color: var(--deep-cyan);
   background: var(--deep-cyan);
   color: #ffffff;
@@ -280,7 +312,6 @@ button {
   display: flex;
   align-items: center;
   gap: clamp(24px, 3vw, 56px);
-  mix-blend-mode: difference;
 }
 
 .header__nav-item {
@@ -293,7 +324,7 @@ button {
   color: rgba(255, 255, 255, 0.88);
   text-decoration: none;
   background-color: transparent;
-  transition: color 0.25s ease, opacity 0.25s ease, text-shadow 0.25s ease;
+  transition: color 0.3s ease, opacity 0.25s ease, text-shadow 0.3s ease;
   white-space: nowrap;
   text-shadow: 0 2px 8px rgba(0, 0, 0, 0.6);
   padding: 6px 4px 8px;
@@ -339,6 +370,40 @@ button {
 .header.--scrolled .header__nav-item:hover {
   color: #ffffff;
   text-shadow: 0 0 12px rgba(103, 171, 175, 0.8), 0 2px 8px rgba(0, 0, 0, 0.8);
+}
+
+/* Light background state (hovering over white / bright sections) */
+.header__nav-item.--over-light,
+.header.--scrolled .header__nav-item.--over-light,
+.header__nav-links.--over-light .header__nav-item {
+  color: #0A1C22;
+  text-shadow: none;
+  font-weight: 700;
+}
+
+.header__nav-item.--over-light:hover,
+.header.--scrolled .header__nav-item.--over-light:hover,
+.header__nav-links.--over-light .header__nav-item:hover {
+  color: var(--deep-cyan, #006873);
+  text-shadow: 0 0 10px rgba(0, 104, 115, 0.25);
+}
+
+.header__nav-item.--over-light::after,
+.header.--scrolled .header__nav-item.--over-light::after,
+.header__nav-links.--over-light .header__nav-item::after {
+  background: var(--deep-cyan, #006873);
+}
+
+.header__nav-item.--over-light.--active,
+.header.--scrolled .header__nav-item.--over-light.--active,
+.header__nav-links.--over-light .header__nav-item.--active {
+  color: #051d23;
+}
+
+.header__nav-item.--over-light.--active::after,
+.header.--scrolled .header__nav-item.--over-light.--active::after,
+.header__nav-links.--over-light .header__nav-item.--active::after {
+  background: #051d23;
 }
 
 .header__actions {
