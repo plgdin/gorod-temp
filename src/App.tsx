@@ -8,6 +8,7 @@ import { Hero } from './sections/Hero';
 import { AboutUs } from './sections/AboutUs';
 import { Services } from './sections/Services';
 import { Footer } from './sections/Footer';
+import { OceanBackground } from './components/OceanBackground';
 import './styles/globals.css';
 
 gsap.registerPlugin(ScrollTrigger);
@@ -70,7 +71,7 @@ export function App() {
 
   return (
     <>
-      <div className="fixed-ocean-bg" aria-hidden="true" />
+      <OceanBackground />
       <Header
         menuOpen={menuOpen}
         onToggleMenu={() => setMenuOpen((prev) => !prev)}

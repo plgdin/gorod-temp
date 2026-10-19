@@ -24,13 +24,85 @@ body {
   font-size: 15px;
   line-height: 1.4;
   overflow-x: hidden;
-  background-color: #071820;
-  background-image: url('/images/background.png');
-  background-size: cover;
-  background-position: center;
-  background-repeat: no-repeat;
-  background-attachment: fixed;
+  background-color: transparent;
   color: #ffffff;
+}
+
+#root {
+  position: relative;
+  min-height: 100vh;
+}
+
+/* ======================================================
+   DYNAMIC OCEAN PARALLAX BACKGROUND
+   Continuously moves with scroll, landing at port in footer
+   ====================================================== */
+.fixed-ocean-bg {
+  position: fixed;
+  inset: 0;
+  width: 100vw;
+  height: 100vh;
+  z-index: 0;
+  pointer-events: none;
+  overflow: hidden;
+}
+
+.fixed-ocean-bg__track {
+  position: absolute;
+  top: 0;
+  left: 50%;
+  transform: translate3d(-50%, 0, 0);
+  pointer-events: none;
+  user-select: none;
+}
+
+.ocean-slice-wrap {
+  position: absolute;
+  left: 0;
+  width: 100%;
+  overflow: hidden;
+  pointer-events: none;
+}
+
+.ocean-slice-wrap:not(:first-child) {
+  -webkit-mask-image: linear-gradient(to bottom, transparent 0%, #000 80px);
+  mask-image: linear-gradient(to bottom, transparent 0%, #000 80px);
+}
+
+.ocean-slice-wrap picture {
+  display: block;
+  width: 100%;
+  height: 100%;
+}
+
+.ocean-slice-img {
+  width: 100%;
+  height: 100%;
+  display: block;
+  object-fit: cover;
+  pointer-events: none;
+  image-rendering: -webkit-optimize-contrast;
+  -webkit-backface-visibility: hidden;
+  backface-visibility: hidden;
+}
+
+.fixed-ocean-bg__overlay {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  background: radial-gradient(
+    ellipse at 50% 50%,
+    rgba(7, 24, 32, 0) 0%,
+    rgba(7, 24, 32, 0.18) 100%
+  );
+}
+
+#header,
+main,
+footer,
+.footer {
+  position: relative;
+  z-index: 2;
 }
 
 a {
@@ -3266,38 +3338,8 @@ footer#contact,
   color: #ffffff;
 }
 
-/* Keep the page ocean untouched at the footer entry. The aerial port image
-   arrives only low in the section, over matching water, so the journey into
-   harbour reads as one continuous approach rather than a horizontal cut. */
-.footer::before {
-  content: '';
-  position: absolute;
-  inset: 0;
-  background-image: url('/images/footer-shore-v3.png');
-  background-size: cover;
-  background-position: center bottom;
-  background-repeat: no-repeat;
-  -webkit-mask-image: linear-gradient(
-    to bottom,
-    transparent 0%,
-    transparent 48%,
-    rgba(0, 0, 0, 0.12) 58%,
-    rgba(0, 0, 0, 0.55) 70%,
-    #000 86%
-  );
-  mask-image: linear-gradient(
-    to bottom,
-    transparent 0%,
-    transparent 48%,
-    rgba(0, 0, 0, 0.12) 58%,
-    rgba(0, 0, 0, 0.55) 70%,
-    #000 86%
-  );
-  z-index: 0;
-  pointer-events: none;
-}
-
-/* Remove the old ::after tint since ::before's filter + mask handles both color & feathering */
+/* Old footer shoreline overlay replaced by natural Background2.png port finale */
+.footer::before,
 .footer::after {
   display: none !important;
 }
