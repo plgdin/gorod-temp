@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { Mail, Phone, MapPin, Calendar, CheckCircle2, ArrowRight } from 'lucide-react';
+import { Mail, Phone, MapPin, Calendar, CheckCircle2, ArrowRight, ArrowUpRight, ShieldCheck } from 'lucide-react';
 import { CustomDropdown } from '../components/ui/CustomDropdown';
 import { PortMap } from '../components/PortMap';
 
@@ -66,8 +66,10 @@ export const Footer: React.FC = () => {
             <span className="footer__logo-divider" aria-hidden="true" />
             <span className="footer__logo-tagline">International Maritime Agency</span>
           </div>
-          <div className="footer__top-copyright">
-            &copy; {new Date().getFullYear()} Gorod International Agency Pvt Ltd. All rights reserved.
+          <div className="footer__availability" aria-label="Operations desk available 24 hours a day">
+            <span className="footer__availability-dot" aria-hidden="true" />
+            <span>Operations desk</span>
+            <strong>24 / 7</strong>
           </div>
         </div>
 
@@ -262,11 +264,27 @@ export const Footer: React.FC = () => {
                       <span>SUBMIT PORT CALL REQUEST</span>
                       <ArrowRight size={16} />
                     </button>
+                    <p className="form-reassurance">
+                      <ShieldCheck size={15} aria-hidden="true" />
+                      Your enquiry goes directly to our operations desk.
+                    </p>
                   </div>
                 </form>
               )}
             </div>
           </div>
+        </div>
+
+        <div className="footer__bottom">
+          <nav className="footer__nav" aria-label="Footer navigation">
+            <a href="#main-screen">Home <ArrowUpRight size={13} aria-hidden="true" /></a>
+            <a href="#about">About <ArrowUpRight size={13} aria-hidden="true" /></a>
+            <a href="#services">Services <ArrowUpRight size={13} aria-hidden="true" /></a>
+            <a href="#inquiry-form">Make an enquiry <ArrowUpRight size={13} aria-hidden="true" /></a>
+          </nav>
+          <p className="footer__copyright">
+            &copy; {new Date().getFullYear()} Gorod International Agency Pvt Ltd. All rights reserved.
+          </p>
         </div>
       </div>
     </footer>
