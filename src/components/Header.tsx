@@ -208,7 +208,7 @@ export const Header: React.FC<HeaderProps> = ({
     }
   };
 
-  const anyNavOverLight = overLight.about || overLight.services || overLight.contact;
+  const anyNavOverLight = !isScrolled && (overLight.about || overLight.services || overLight.contact);
 
   return (
     <header
@@ -220,7 +220,7 @@ export const Header: React.FC<HeaderProps> = ({
       }`}
     >
       <div className="header__top">
-        <div ref={logoRef} className={`header__logo ${overLight.logo ? '--over-light' : ''}`}>
+        <div ref={logoRef} className={`header__logo ${!isScrolled && overLight.logo ? '--over-light' : ''}`}>
           <a href="/" className="logo --pc" aria-label="Gorod Marine">
             <img
               src="/images/gorod-marine-white.png"
@@ -239,7 +239,7 @@ export const Header: React.FC<HeaderProps> = ({
           <a
             ref={aboutRef}
             href="#about"
-            className={`header__nav-item ${activeSection === 'about' ? '--active' : ''} ${overLight.about ? '--over-light' : ''}`}
+            className={`header__nav-item ${activeSection === 'about' ? '--active' : ''} ${!isScrolled && overLight.about ? '--over-light' : ''}`}
             onClick={(e) => handleSmoothScroll(e, 'about')}
           >
             About Us
@@ -247,7 +247,7 @@ export const Header: React.FC<HeaderProps> = ({
           <a
             ref={servicesRef}
             href="#services"
-            className={`header__nav-item ${activeSection === 'services' ? '--active' : ''} ${overLight.services ? '--over-light' : ''}`}
+            className={`header__nav-item ${activeSection === 'services' ? '--active' : ''} ${!isScrolled && overLight.services ? '--over-light' : ''}`}
             onClick={(e) => handleSmoothScroll(e, 'services')}
           >
             Services
@@ -255,7 +255,7 @@ export const Header: React.FC<HeaderProps> = ({
           <a
             ref={contactRef}
             href="#contact"
-            className={`header__nav-item ${activeSection === 'contact' ? '--active' : ''} ${overLight.contact ? '--over-light' : ''}`}
+            className={`header__nav-item ${activeSection === 'contact' ? '--active' : ''} ${!isScrolled && overLight.contact ? '--over-light' : ''}`}
             onClick={(e) => handleSmoothScroll(e, 'contact')}
           >
             Contact
@@ -266,7 +266,7 @@ export const Header: React.FC<HeaderProps> = ({
           <a
             ref={enquireRef}
             href="#contact"
-            className={`header__enquire-btn ${overLight.enquire ? '--over-light' : ''}`}
+            className={`header__enquire-btn ${!isScrolled && overLight.enquire ? '--over-light' : ''}`}
             onClick={(e) => handleSmoothScroll(e, 'contact')}
           >
             <span>Nominate Now</span>

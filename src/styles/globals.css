@@ -170,15 +170,15 @@ button {
 
 .header.--scrolled .header__top {
   height: 90px;
-  background: rgba(255, 255, 255, 0.08);
-  backdrop-filter: blur(8px);
-  -webkit-backdrop-filter: blur(8px);
-  border-bottom: 1px solid rgba(255, 255, 255, 0.25);
+  background: rgba(4, 18, 26, 0.94);
+  backdrop-filter: blur(16px) brightness(0.5);
+  -webkit-backdrop-filter: blur(16px) brightness(0.5);
+  border-bottom: 1px solid rgba(255, 255, 255, 0.12);
   border-bottom-left-radius: 24px;
   border-bottom-right-radius: 24px;
   box-shadow:
-    0 20px 50px rgba(0, 0, 0, 0.35),
-    inset 0 1px 1px rgba(255, 255, 255, 0.2);
+    0 20px 50px rgba(0, 0, 0, 0.55),
+    inset 0 1px 1px rgba(255, 255, 255, 0.1);
 }
 
 .header__logo .logo {
@@ -204,14 +204,12 @@ button {
   transition: opacity 0.3s ease;
 }
 
-.header__logo.--over-light .logo-img--white,
-.header.--scrolled .header__logo.--over-light .logo-img--white {
+.header:not(.--scrolled) .header__logo.--over-light .logo-img--white {
   opacity: 0;
   pointer-events: none;
 }
 
-.header__logo.--over-light .logo-img--black,
-.header.--scrolled .header__logo.--over-light .logo-img--black {
+.header:not(.--scrolled) .header__logo.--over-light .logo-img--black {
   opacity: 1;
   pointer-events: auto;
 }
@@ -372,37 +370,32 @@ button {
   text-shadow: 0 0 12px rgba(103, 171, 175, 0.8), 0 2px 8px rgba(0, 0, 0, 0.8);
 }
 
-/* Light background state (hovering over white / bright sections) */
-.header__nav-item.--over-light,
-.header.--scrolled .header__nav-item.--over-light,
-.header__nav-links.--over-light .header__nav-item {
+/* Light background state (only applies when navbar is transparent and hovering over white / bright sections) */
+.header:not(.--scrolled) .header__nav-item.--over-light,
+.header:not(.--scrolled) .header__nav-links.--over-light .header__nav-item {
   color: #0A1C22;
   text-shadow: none;
   font-weight: 700;
 }
 
-.header__nav-item.--over-light:hover,
-.header.--scrolled .header__nav-item.--over-light:hover,
-.header__nav-links.--over-light .header__nav-item:hover {
+.header:not(.--scrolled) .header__nav-item.--over-light:hover,
+.header:not(.--scrolled) .header__nav-links.--over-light .header__nav-item:hover {
   color: var(--deep-cyan, #006873);
   text-shadow: 0 0 10px rgba(0, 104, 115, 0.25);
 }
 
-.header__nav-item.--over-light::after,
-.header.--scrolled .header__nav-item.--over-light::after,
-.header__nav-links.--over-light .header__nav-item::after {
+.header:not(.--scrolled) .header__nav-item.--over-light::after,
+.header:not(.--scrolled) .header__nav-links.--over-light .header__nav-item::after {
   background: var(--deep-cyan, #006873);
 }
 
-.header__nav-item.--over-light.--active,
-.header.--scrolled .header__nav-item.--over-light.--active,
-.header__nav-links.--over-light .header__nav-item.--active {
+.header:not(.--scrolled) .header__nav-item.--over-light.--active,
+.header:not(.--scrolled) .header__nav-links.--over-light .header__nav-item.--active {
   color: #051d23;
 }
 
-.header__nav-item.--over-light.--active::after,
-.header.--scrolled .header__nav-item.--over-light.--active::after,
-.header__nav-links.--over-light .header__nav-item.--active::after {
+.header:not(.--scrolled) .header__nav-item.--over-light.--active::after,
+.header:not(.--scrolled) .header__nav-links.--over-light .header__nav-item.--active::after {
   background: #051d23;
 }
 
@@ -2008,6 +2001,7 @@ button {
 .section-services {
   scroll-margin-top: 100px;
   padding: 110px clamp(20px, 4.5vw, 75px) 120px;
+  margin-bottom: clamp(40px, 5vw, 64px);
   background: transparent;
   border-top: none;
   position: relative;
@@ -3318,7 +3312,7 @@ button {
   margin: 0 auto 28px;
 }
 
-/* --- 2. FOOTER SECTION: COLOR-MATCHED SHORELINE FINALE --- */
+/* --- 2. FOOTER SECTION: HIGH-RES ASYMMETRIC PORT TERMINAL FINALE --- */
 footer#contact,
 .footer {
   position: relative;
@@ -3327,56 +3321,38 @@ footer#contact,
   background-color: transparent !important;
   border-top: none;
   min-height: auto;
-  padding: clamp(56px, 6vw, 92px) 0 clamp(48px, 6vw, 88px);
+  scroll-margin-top: 80px;
+  padding: clamp(72px, 7vw, 100px) 0 clamp(44px, 5vw, 76px);
   color: #ffffff;
 }
 
-/* Keep the page ocean untouched at the footer entry. The aerial port image
-   arrives smoothly in the section, over matching water, so the journey into
-   harbour reads as one continuous approach. */
+/* High-resolution asymmetric port terminal anchored to the bottom with 100% transparent water */
 .footer::before {
   content: '';
   position: absolute;
-  inset: 0;
-  background-image: url('/images/footer-shore-v3.png');
-  background-size: cover;
-  background-position: center bottom;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  width: 100%;
+  height: clamp(380px, 38vw, 620px);
+  background-image: url('/images/footer-shore-port.png');
+  background-size: max(120%, 1200px) auto;
+  background-position: right bottom;
   background-repeat: no-repeat;
   opacity: 1;
-  -webkit-mask-image: linear-gradient(
-    to bottom,
-    transparent 0%,
-    transparent 18%,
-    rgba(0, 0, 0, 0.25) 34%,
-    rgba(0, 0, 0, 0.8) 54%,
-    #000 70%
-  );
-  mask-image: linear-gradient(
-    to bottom,
-    transparent 0%,
-    transparent 18%,
-    rgba(0, 0, 0, 0.25) 34%,
-    rgba(0, 0, 0, 0.8) 54%,
-    #000 70%
-  );
-  z-index: 0;
+  z-index: 1;
   pointer-events: none;
 }
 
 .footer::after {
-  content: '';
-  position: absolute;
-  inset: auto 0 0;
-  height: 48%;
-  background: linear-gradient(180deg, rgba(3, 16, 22, 0) 0%, rgba(3, 16, 22, 0.54) 44%, rgba(3, 16, 22, 0.88) 100%);
-  z-index: 1;
-  pointer-events: none;
+  display: none !important;
+  content: none !important;
 }
 
 
 .footer__container {
   position: relative;
-  z-index: 3;
+  z-index: 10;
   max-width: 1400px;
   margin: 0 auto;
   padding: 0 clamp(20px, 3.5vw, 48px);
@@ -3468,7 +3444,18 @@ footer#contact,
   color: rgba(255, 255, 255, 0.85);
 }
 
+.footer__top-copyright {
+  margin: 0;
+  color: rgba(255, 255, 255, 0.56);
+  font-family: var(--font-body, sans-serif);
+  font-size: 10.5px;
+  letter-spacing: 0.02em;
+  text-align: right;
+}
+
 .footer__main-grid {
+  position: relative;
+  z-index: 10;
   display: grid;
   grid-template-columns: 1fr 1fr;
   gap: clamp(28px, 3.5vw, 54px);
@@ -3476,6 +3463,8 @@ footer#contact,
 }
 
 .footer__left-pane {
+  position: relative;
+  z-index: 10;
   display: flex;
   flex-direction: column;
   height: 100%;
@@ -3613,6 +3602,8 @@ footer#contact,
 
 /* --- LEAFLET PORT MAP EMBED (placed right below contact card) --- */
 .port-map-embed {
+  position: relative;
+  z-index: 10;
   background: rgba(7, 24, 32, 0.74);
   backdrop-filter: blur(12px);
   -webkit-backdrop-filter: blur(12px);
@@ -3625,7 +3616,7 @@ footer#contact,
   display: flex;
   flex-direction: column;
   flex: 1;
-  min-height: 240px;
+  min-height: 200px;
   box-sizing: border-box;
 }
 
@@ -3717,6 +3708,73 @@ footer#contact,
 .port-map-embed__canvas iframe {
   filter: invert(92%) hue-rotate(180deg) contrast(88%);
 }
+
+/* Local port-coverage map: a crisp replacement for an externally hosted map. */
+.port-map-embed--coverage {
+  position: relative;
+  min-height: 0;
+  background: #0b151a;
+}
+
+.port-map-embed--coverage .port-map-embed__canvas {
+  min-height: 0;
+  height: 100%;
+}
+
+.coverage-map {
+  display: block;
+  width: 100%;
+  height: 100%;
+  min-height: 200px;
+}
+
+.coverage-map__coast {
+  fill: rgba(94, 171, 174, 0.07);
+  stroke: rgba(139, 214, 213, 0.24);
+  stroke-width: 1.4;
+}
+
+.coverage-map__route {
+  fill: none;
+  stroke: rgba(103, 171, 175, 0.25);
+  stroke-width: 1;
+  stroke-dasharray: 3 5;
+}
+
+.coverage-map__port { cursor: pointer; outline: none; }
+.coverage-map__ring { fill: rgba(103, 171, 175, 0.12); stroke: rgba(103, 171, 175, 0.48); stroke-width: 1.2; }
+.coverage-map__dot { fill: #67abaf; stroke: #e7ffff; stroke-width: 1.6; }
+.coverage-map__port.--hq .coverage-map__dot { fill: #3cc4ee; }
+.coverage-map__port.--selected .coverage-map__ring { fill: rgba(70, 212, 224, 0.25); stroke: #7ce8e9; }
+.coverage-map__port.--selected .coverage-map__dot { fill: #ffffff; }
+.coverage-map__label {
+  fill: rgba(255, 255, 255, 0.86);
+  font-family: 'Articulat CF', var(--font-body, sans-serif);
+  font-size: 10px;
+  font-weight: 700;
+  paint-order: stroke;
+  stroke: rgba(7, 24, 32, 0.95);
+  stroke-width: 3px;
+  stroke-linejoin: round;
+}
+.coverage-map__port:hover .coverage-map__label, .coverage-map__port:focus .coverage-map__label { fill: #8ce6e4; }
+.coverage-map__watermark { fill: rgba(255,255,255,0.2); font-size: 15px; font-family: var(--font-display, sans-serif); font-weight: 700; letter-spacing: .15em; }
+
+.port-map-controls {
+  position: absolute;
+  z-index: 2;
+  top: 12px;
+  left: 12px;
+  overflow: hidden;
+  border: 1px solid rgba(103, 171, 175, 0.34);
+  border-radius: 5px;
+  background: rgba(6, 32, 41, 0.9);
+  color: #73cad0;
+  box-shadow: 0 3px 12px rgba(0, 0, 0, 0.35);
+}
+
+.port-map-controls span { display: grid; place-items: center; width: 31px; height: 31px; }
+.port-map-controls span + span { border-top: 1px solid rgba(103, 171, 175, 0.28); }
 
 /* Custom Leaflet Port Markers */
 .leaflet-port-divicon {
@@ -3858,7 +3916,7 @@ footer#contact,
 /* --- RIGHT PANE: PARALLEL EQUAL-HEIGHT NOMINATION BOX --- */
 .footer__right-pane {
   position: relative;
-  z-index: 5;
+  z-index: 10;
   display: flex;
   flex-direction: column;
   height: 100%;
@@ -3867,33 +3925,31 @@ footer#contact,
 .footer-form-card,
 .contact-form-pane.footer-form-card {
   position: relative;
+  z-index: 10;
   overflow: hidden;
-  background: linear-gradient(145deg, #ffffff 0%, #f5faf9 100%);
-  border-radius: clamp(18px, 2.2vw, 28px);
-  border: 1px solid rgba(255, 255, 255, 0.82);
-  box-shadow: 0 28px 68px rgba(0, 0, 0, 0.38), 0 2px 0 rgba(255, 255, 255, 0.6) inset;
+  background-clip: padding-box;
+  -webkit-background-clip: padding-box;
+  background: #ffffff;
+  border-radius: 16px;
+  border: 1px solid rgba(255, 255, 255, 0.95);
+  box-shadow: 0 20px 48px rgba(0, 0, 0, 0.32);
   height: 100%;
   display: flex;
   flex-direction: column;
-  padding: clamp(22px, 2.6vw, 32px) clamp(20px, 2.2vw, 30px);
+  padding: clamp(18px, 2vw, 24px) clamp(18px, 2vw, 26px);
   box-sizing: border-box;
 }
 
-.footer-form-card::before {
-  content: '';
-  position: absolute;
-  top: 0;
-  right: 0;
-  width: 118px;
-  height: 4px;
-  background: linear-gradient(90deg, #006873, #75c7c7);
-  border-radius: 0 0 0 8px;
+.footer-form-card::before,
+.contact-form-pane.footer-form-card::before {
+  display: none !important;
+  content: none !important;
 }
 
 .footer-form-card .agency-form {
   display: flex;
   flex-direction: column;
-  gap: 14px;
+  gap: 10px;
 }
 
 .form-header-group {
@@ -3908,20 +3964,20 @@ footer#contact,
   letter-spacing: 0.14em;
   color: #087881;
   text-transform: uppercase;
-  margin-bottom: 4px;
+  margin-bottom: 3px;
 }
 
 .form-fields-container {
   display: flex;
   flex-direction: column;
-  gap: 12px;
+  gap: 10px;
 }
 
 .form-textarea {
-  height: 76px !important;
-  padding: 10px 14px !important;
+  height: 62px !important;
+  padding: 8px 12px !important;
   resize: vertical;
-  line-height: 1.45;
+  line-height: 1.4;
 }
 
 .form-group--full {
@@ -3930,7 +3986,7 @@ footer#contact,
 }
 
 .form-footer-action {
-  margin-top: 8px;
+  margin-top: 4px;
 }
 
 .form-reassurance {
@@ -3990,59 +4046,13 @@ footer#contact,
   max-width: 420px;
 }
 
-.footer__bottom {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  gap: 24px;
-  margin-top: clamp(34px, 4vw, 56px);
-  padding-top: 18px;
-  border-top: 1px solid rgba(255, 255, 255, 0.19);
-}
 
-.footer__nav {
-  display: flex;
-  flex-wrap: wrap;
-  gap: 6px 20px;
-}
-
-.footer__nav a {
-  display: inline-flex;
-  align-items: center;
-  gap: 5px;
-  color: rgba(255, 255, 255, 0.74);
-  font-family: var(--font-body, sans-serif);
-  font-size: 11.5px;
-  font-weight: 600;
-  letter-spacing: 0.035em;
-  text-decoration: none;
-  transition: color 0.2s ease, transform 0.2s ease;
-}
-
-.footer__nav a svg {
-  color: var(--light-cyan, #67abaf);
-  transition: transform 0.2s ease;
-}
-
-.footer__nav a:hover {
-  color: #ffffff;
-}
-
-.footer__nav a:hover svg {
-  transform: translate(2px, -2px);
-}
-
-.footer__copyright {
-  margin: 0;
-  color: rgba(255, 255, 255, 0.53);
-  font-family: var(--font-body, sans-serif);
-  font-size: 10.5px;
-  letter-spacing: 0.02em;
-  text-align: right;
-}
 
 /* Responsive Breakpoints */
 @media (max-width: 1024px) {
+  .footer::before {
+    background-size: max(100%, 1200px) auto;
+  }
   .services-grid {
     grid-template-columns: repeat(2, 1fr);
   }
@@ -4067,6 +4077,10 @@ footer#contact,
 
   .footer__logo-header {
     gap: 12px;
+  }
+
+  .footer__top-copyright {
+    text-align: left;
   }
 }
 
