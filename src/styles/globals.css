@@ -3316,27 +3316,26 @@ button {
 footer#contact,
 .footer {
   position: relative;
-  overflow: hidden;
+  overflow: visible;
   background: transparent !important;
   background-color: transparent !important;
   border-top: none;
   min-height: auto;
   scroll-margin-top: 80px;
-  padding: clamp(72px, 7vw, 100px) 0 clamp(44px, 5vw, 76px);
+  padding: clamp(48px, 5vw, 72px) 0 clamp(44px, 5vw, 76px);
   color: #ffffff;
 }
 
-/* High-resolution asymmetric port terminal anchored to the bottom with 100% transparent water */
+/* Two port images overlaid to cover full width — seamless port panorama */
 .footer::before {
   content: '';
   position: absolute;
   left: 0;
-  right: 0;
-  bottom: -50px;
-  width: 100%;
+  bottom: -80px;
+  width: 55%;
   height: clamp(380px, 38vw, 620px);
   background-image: url('/images/footer-port-overlay.png');
-  background-size: max(120%, 1200px) auto;
+  background-size: cover;
   background-position: right bottom;
   background-repeat: no-repeat;
   image-rendering: -webkit-optimize-contrast;
@@ -3347,8 +3346,21 @@ footer#contact,
 }
 
 .footer::after {
-  display: none !important;
-  content: none !important;
+  content: '';
+  position: absolute;
+  right: 0;
+  bottom: -80px;
+  width: 55%;
+  height: clamp(380px, 38vw, 620px);
+  background-image: url('/images/footer-port-overlay.png');
+  background-size: cover;
+  background-position: left bottom;
+  background-repeat: no-repeat;
+  image-rendering: -webkit-optimize-contrast;
+  image-rendering: high-quality;
+  opacity: 1;
+  z-index: 1;
+  pointer-events: none;
 }
 
 
@@ -3618,8 +3630,8 @@ footer#contact,
   display: flex;
   flex-direction: column;
   /* Keep the map compact instead of stretching to match the enquiry form. */
-  flex: 0 0 190px;
-  height: 190px;
+  flex: 0 0 280px;
+  height: 280px;
   min-height: 0;
   box-sizing: border-box;
 }
