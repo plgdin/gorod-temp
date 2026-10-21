@@ -3335,7 +3335,7 @@ footer#contact,
   bottom: 0;
   width: 100%;
   height: clamp(380px, 38vw, 620px);
-  background-image: url('/images/footer-shore-port.png');
+  background-image: url('/images/footer-port-overlay.png');
   background-size: max(120%, 1200px) auto;
   background-position: right bottom;
   background-repeat: no-repeat;
