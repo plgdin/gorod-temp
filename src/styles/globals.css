@@ -901,12 +901,13 @@ button {
 /* Ship Presentation */
 .ships {
   position: absolute;
-  top: calc(50% - clamp(20px, 3vh, 36px));
+  top: calc(50% - clamp(20px, 2.5vh, 32px));
   left: 50%;
   transform: translate(-50%, -50%);
   z-index: 2;
   width: clamp(840px, 78vw, 1480px);
   max-width: 96vw;
+  max-height: min(520px, calc(100dvh - 260px));
   aspect-ratio: 2.85 / 1;
   font-size: 0;
   line-height: 0;
