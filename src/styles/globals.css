@@ -927,12 +927,6 @@ button {
   will-change: transform, opacity;
 }
 
-.ships__vessel.--tugboat .ships__tanker {
-  width: 86%;
-  height: 86%;
-  object-fit: contain;
-}
-
 .ships__glow {
   position: absolute;
   width: 120%;

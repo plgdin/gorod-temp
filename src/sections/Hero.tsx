@@ -42,13 +42,6 @@ export const VESSELS: VesselItem[] = [
     imageSrc: '/images/Gorod_cruise.png',
     alt: 'Gorod Cruise Ship Vessel',
   },
-  {
-    id: 'tugboat',
-    name: 'Tugboat',
-    word: 'TUGBOATS',
-    imageSrc: '/images/Gorod_tug.png',
-    alt: 'Gorod Port Tugboat Vessel',
-  },
 ];
 
 export interface HeroProps {
@@ -78,20 +71,21 @@ export const Hero: React.FC<HeroProps> = ({ onReady, onVesselChange }) => {
   }, []);
 
   useEffect(() => {
-    const vessels = vesselRefs.current.filter(Boolean) as HTMLDivElement[];
-    const words = wordRefs.current.filter(Boolean) as HTMLSpanElement[];
+    const mainScreen = mainScreenRef.current;
+    if (!mainScreen) return;
+
+    const vessels = Array.from(mainScreen.querySelectorAll<HTMLDivElement>('.ships__vessel'));
+    const words = Array.from(mainScreen.querySelectorAll<HTMLSpanElement>('.main-screen__flipper-word'));
     const wordRepresenting = wordRepresentingRef.current;
     const wordAcross = wordAcrossRef.current;
     const wordSeas = wordSeasRef.current;
-    const mainScreen = mainScreenRef.current;
 
     if (
       vessels.length !== VESSELS.length ||
       words.length !== VESSELS.length ||
       !wordRepresenting ||
       !wordAcross ||
-      !wordSeas ||
-      !mainScreen
+      !wordSeas
     )
       return;
 
@@ -146,7 +140,7 @@ export const Hero: React.FC<HeroProps> = ({ onReady, onVesselChange }) => {
         scale: 1,
       });
 
-      // Continuous loop cycling through all 4 vessels sailing forward to the right (bow-first)
+      // Continuous loop cycling seamlessly through all vessels
       const startVesselLoop = () => {
         loopTlRef.current?.kill();
 
@@ -161,14 +155,9 @@ export const Hero: React.FC<HeroProps> = ({ onReady, onVesselChange }) => {
           const nextWord = words[nextIdx];
 
           const label = `cycle_${i}`;
-
-          // 1. Current vessel rests in center for 3.0s
-          loopTl.to({}, { duration: 3.0 });
-
-          // 2. Mark departure point
           loopTl.addLabel(label);
 
-          // 3. Word flip: current flips up and out snappily
+          // 1. Current word flips up and out snappily
           loopTl.to(
             currentWord,
             {
@@ -181,7 +170,19 @@ export const Hero: React.FC<HeroProps> = ({ onReady, onVesselChange }) => {
             label
           );
 
-          // 4. Next word flips in smoothly from below
+          // 2. Current vessel sails forward off to the RIGHT
+          const exitDuration = 1.3;
+          loopTl.to(
+            currentVessel,
+            {
+              x: () => getExitDistance(),
+              duration: exitDuration,
+              ease: 'power2.in',
+            },
+            label
+          );
+
+          // 3. Next word flips in smoothly from below
           loopTl.fromTo(
             nextWord,
             {
@@ -195,51 +196,40 @@ export const Hero: React.FC<HeroProps> = ({ onReady, onVesselChange }) => {
               opacity: 1,
               duration: 0.45,
               ease: 'back.out(1.3)',
-              immediateRender: false,
             },
+            `${label}+=0.2`
+          );
+
+          loopTl.call(
+            () => {
+              setActiveIdx(nextIdx);
+              onVesselChangeRef.current?.(VESSELS[nextIdx]);
+            },
+            [],
             `${label}+=0.25`
           );
 
-          loopTl.call(() => {
-            setActiveIdx(nextIdx);
-            onVesselChangeRef.current?.(VESSELS[nextIdx]);
-          }, [], `${label}+=0.25`);
-
-          // 5. Reset current word for next round
+          // 4. Reset current word for next round once flipped out
           loopTl.set(
             currentWord,
             {
               rotateX: -90,
               y: 15,
               opacity: 0,
-              immediateRender: false,
             },
             `${label}+=0.8`
           );
 
-          // 6. Current vessel sails forward off to the RIGHT
-          const exitDuration = 1.3;
-          loopTl.to(
-            currentVessel,
-            {
-              x: () => getExitDistance(),
-              duration: exitDuration,
-              ease: 'power2.in',
-            },
-            label
-          );
-
-          // 7. Reset current vessel back off-screen to the left once exited
+          // 5. Reset current vessel back off-screen to the left once fully exited
           loopTl.set(
             currentVessel,
             {
               x: () => -getExitDistance(),
-              immediateRender: false,
             },
             `${label}+=${exitDuration}`
           );
 
-          // 8. Next vessel seamlessly enters from the left as current clears screen
+          // 6. Next vessel seamlessly enters from the left with continuous overlap (no empty ocean gap)
           loopTl.fromTo(
             nextVessel,
             {
@@ -251,10 +241,12 @@ export const Hero: React.FC<HeroProps> = ({ onReady, onVesselChange }) => {
               opacity: 1,
               duration: 1.5,
               ease: 'power2.out',
-              immediateRender: false,
             },
-            `${label}+=0.85`
+            `${label}+=0.45`
           );
+
+          // 7. Next vessel rests in center for 3.0s before the subsequent cycle begins
+          loopTl.to({}, { duration: 3.0 });
         }
       };
 
@@ -328,7 +320,9 @@ export const Hero: React.FC<HeroProps> = ({ onReady, onVesselChange }) => {
             ease: 'power2.out',
           },
           1.4
-        );
+        )
+        // 5. Initial Carrier rests in center for 3.0s before departure loop begins
+        .to({}, { duration: 3.0 });
 
       // Pause Hero carousel when scrolled out of view, resume when back in view
       ScrollTrigger.create({
@@ -384,7 +378,7 @@ export const Hero: React.FC<HeroProps> = ({ onReady, onVesselChange }) => {
           <div className="main-screen__main-title translation-block --line-1">
             <div className="main-screen__flipper">
               <span className="main-screen__flipper-spacer" aria-hidden="true">
-                TUGBOATS
+                CARRIERS
               </span>
               {VESSELS.map((vessel, idx) => (
                 <span
@@ -430,7 +424,7 @@ export const Hero: React.FC<HeroProps> = ({ onReady, onVesselChange }) => {
         </div>
       </div>
 
-      {/* Primary Visual: Multi-Vessel Presentation (Carrier, Tanker, Cruise, Tugboat) */}
+      {/* Primary Visual: Multi-Vessel Presentation (Carrier, Bulker, Tanker, Cruise) */}
       <div className="ships">
         <div className="ships__glow" />
         {VESSELS.map((vessel, idx) => (
