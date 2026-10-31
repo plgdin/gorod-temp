@@ -265,7 +265,7 @@ export const Hero: React.FC<HeroProps> = ({ onReady, onVesselChange }) => {
           {
             rotateZ: 45,
             scale: 1.05,
-            duration: 1.2,
+            duration: 0.9,
             ease: 'sine.inOut',
           },
           0
@@ -276,11 +276,11 @@ export const Hero: React.FC<HeroProps> = ({ onReady, onVesselChange }) => {
           {
             opacity: 0,
             scale: 0.85,
-            duration: 0.6,
+            duration: 0.45,
             ease: 'power2.inOut',
             onComplete: () => setIsPreloaderDone(true),
           },
-          0.8
+          0.5
         )
         // 3. First vessel (Carrier) smoothly sails in from left into center (moving right, forward)
         .fromTo(
@@ -292,11 +292,11 @@ export const Hero: React.FC<HeroProps> = ({ onReady, onVesselChange }) => {
           {
             x: 0,
             opacity: 1,
-            duration: 2.0,
+            duration: 1.7,
             ease: 'power3.out',
             immediateRender: false,
           },
-          0.2
+          0.1
         )
         // 4. Hero titles emerge to frame the vessel
         .to(
@@ -304,22 +304,22 @@ export const Hero: React.FC<HeroProps> = ({ onReady, onVesselChange }) => {
           {
             opacity: 1,
             y: 0,
-            duration: 0.85,
-            stagger: 0.08,
+            duration: 0.75,
+            stagger: 0.07,
             ease: 'power2.out',
           },
-          1.2
+          0.35
         )
         .to(
           ['.main-screen__sub-row', '.main-screen__bottom-bar'],
           {
             opacity: 1,
             y: 0,
-            duration: 0.8,
-            stagger: 0.1,
+            duration: 0.65,
+            stagger: 0.08,
             ease: 'power2.out',
           },
-          1.4
+          0.55
         )
         // 5. Initial Carrier rests in center for 3.0s before departure loop begins
         .to({}, { duration: 3.0 });

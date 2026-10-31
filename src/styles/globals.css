@@ -617,9 +617,10 @@ button {
 .main-screen {
   position: relative;
   height: 100vh;
-  min-height: 700px;
+  height: 100dvh;
+  min-height: 560px;
   width: 100%;
-  padding: 105px clamp(24px, 4.5vw, 64px) 36px;
+  padding: clamp(68px, 7.8vh, 84px) clamp(24px, 4.5vw, 64px) clamp(14px, 1.8vh, 22px);
   background: transparent;
   overflow: hidden;
   display: flex;
@@ -630,16 +631,17 @@ button {
 
 @media (max-width: 1300px) {
   .main-screen {
-    padding-top: 90px;
+    padding-top: clamp(64px, 7vh, 76px);
   }
 }
 
 @media (max-width: 768px) {
   .main-screen {
-    padding-top: 76px;
+    padding-top: 68px;
     padding-left: 16px;
     padding-right: 16px;
-    padding-bottom: 24px;
+    padding-bottom: 20px;
+    min-height: 520px;
   }
 }
 
@@ -647,7 +649,7 @@ button {
   position: relative;
   z-index: 3;
   width: 100%;
-  height: calc(100vh - 170px);
+  height: calc(100dvh - clamp(108px, 12vh, 132px));
   display: flex;
   flex-direction: column;
   justify-content: space-between;
@@ -661,7 +663,7 @@ button {
   text-shadow: 0 4px 28px rgba(0, 0, 0, 0.45);
   pointer-events: none;
   box-sizing: border-box;
-  padding-bottom: 40px;
+  padding-bottom: clamp(14px, 2vh, 24px);
 }
 
 .main-screen__row {
@@ -673,14 +675,14 @@ button {
 }
 
 .main-screen__row.--top {
-  margin-top: clamp(8px, 2vh, 32px);
+  margin-top: clamp(0px, 0.4vh, 6px);
   justify-content: center;
   text-align: center;
 }
 
 .main-screen__row.--bottom {
   margin-top: auto;
-  margin-bottom: 20px;
+  margin-bottom: clamp(8px, 1.2vh, 14px);
 }
 
 .main-screen__main-title {
@@ -822,7 +824,7 @@ button {
 /* Bottom Timeline & Pagination Bar */
 .main-screen__bottom-bar {
   position: absolute;
-  bottom: 28px;
+  bottom: clamp(12px, 1.8dvh, 22px);
   left: clamp(24px, 4.5vw, 64px);
   right: clamp(24px, 4.5vw, 64px);
   display: flex;
@@ -898,7 +900,7 @@ button {
 /* Ship Presentation */
 .ships {
   position: absolute;
-  top: 50%;
+  top: calc(50% - clamp(20px, 3vh, 36px));
   left: 50%;
   transform: translate(-50%, -50%);
   z-index: 2;
@@ -1685,7 +1687,7 @@ button {
 .main-screen__preloader-center {
   position: absolute;
   left: 50%;
-  top: 50vh;
+  top: calc(50vh - clamp(20px, 3vh, 36px));
   transform: translate(-50%, -50%);
   z-index: 2;
   width: 119px;
@@ -1704,7 +1706,7 @@ button {
 .main-screen__preloader-dots {
   position: absolute;
   left: 50%;
-  top: 50vh;
+  top: calc(50vh - clamp(20px, 3vh, 36px));
   transform: translate(-50%, -50%);
   z-index: 1;
   width: 320px;
