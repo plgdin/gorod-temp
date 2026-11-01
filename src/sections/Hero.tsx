@@ -158,26 +158,38 @@ export const Hero: React.FC<HeroProps> = ({ onReady, onVesselChange }) => {
           loopTl.addLabel(label);
 
           // 1. Current word flips up and out snappily
-          loopTl.to(
+          loopTl.fromTo(
             currentWord,
+            {
+              rotateX: 0,
+              y: 0,
+              opacity: 1,
+            },
             {
               rotateX: 90,
               y: -15,
               opacity: 0,
               duration: 0.35,
               ease: 'power2.in',
+              immediateRender: false,
             },
             label
           );
 
           // 2. Current vessel sails forward off to the RIGHT
           const exitDuration = 1.3;
-          loopTl.to(
+          loopTl.fromTo(
             currentVessel,
             {
+              x: 0,
+              opacity: 1,
+            },
+            {
               x: () => getExitDistance(),
+              opacity: 1,
               duration: exitDuration,
               ease: 'power2.in',
+              immediateRender: false,
             },
             label
           );
@@ -196,6 +208,7 @@ export const Hero: React.FC<HeroProps> = ({ onReady, onVesselChange }) => {
               opacity: 1,
               duration: 0.45,
               ease: 'back.out(1.3)',
+              immediateRender: false,
             },
             `${label}+=0.2`
           );
@@ -242,6 +255,7 @@ export const Hero: React.FC<HeroProps> = ({ onReady, onVesselChange }) => {
               opacity: 1,
               duration: 1.5,
               ease: 'power2.out',
+              immediateRender: false,
             },
             `${label}+=0.45`
           );
