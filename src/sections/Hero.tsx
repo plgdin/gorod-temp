@@ -99,12 +99,12 @@ export const Hero: React.FC<HeroProps> = ({ onReady, onVesselChange }) => {
         });
       }
 
-      const getExitDistance = () => Math.max(window.innerWidth * 1.25, 1400);
+      const getExitDistance = () => Math.max(window.innerWidth * 1.6, 2500);
 
-      // Initial state: Carrier starts off-screen to the left, others wait off-screen to the left
-      vessels.forEach((vessel) => {
+      // Initial state: Carrier starts off-screen to the left, others wait off-screen to the left hidden
+      vessels.forEach((vessel, idx) => {
         gsap.set(vessel, {
-          opacity: 1,
+          opacity: idx === 0 ? 1 : 0,
           x: () => -getExitDistance(),
         });
       });
@@ -220,11 +220,12 @@ export const Hero: React.FC<HeroProps> = ({ onReady, onVesselChange }) => {
             `${label}+=0.8`
           );
 
-          // 5. Reset current vessel back off-screen to the left once fully exited
+          // 5. Reset current vessel back off-screen to the left once fully exited and hide it
           loopTl.set(
             currentVessel,
             {
               x: () => -getExitDistance(),
+              opacity: 0,
             },
             `${label}+=${exitDuration}`
           );
