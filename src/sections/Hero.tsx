@@ -140,22 +140,36 @@ export const Hero: React.FC<HeroProps> = ({ onReady, onVesselChange }) => {
         scale: 1,
       });
 
-      // Continuous loop cycling seamlessly through all vessels
+      // Continuous loop cycling seamlessly through all vessels.
+      // Each transition gets its own timeline so no cached start values leak
+      // across loop iterations (which previously caused a ship to streak across).
       const startVesselLoop = () => {
         loopTlRef.current?.kill();
 
-        const loopTl = gsap.timeline({ repeat: -1 });
-        loopTlRef.current = loopTl;
-
-        for (let i = 0; i < VESSELS.length; i++) {
+        const playCycle = (i: number) => {
           const currentVessel = vessels[i];
           const currentWord = words[i];
           const nextIdx = (i + 1) % VESSELS.length;
           const nextVessel = vessels[nextIdx];
           const nextWord = words[nextIdx];
+          // Give each ship a slower, more deliberate passage across the hero.
+          const exitDuration = 2.4;
+          const nextEntryDuration = 2.4;
+          const nextEntryStart = 1.5;
 
-          const label = `cycle_${i}`;
-          loopTl.addLabel(label);
+          // Re-establish a known position for every vessel at the start of a
+          // cycle. This prevents a previously animated vessel from retaining
+          // a stale transform and appearing to be the one that flies away.
+          vessels.forEach((vessel, vesselIdx) => {
+            gsap.set(vessel, {
+              x: vesselIdx === i ? 0 : -getExitDistance(),
+            });
+          });
+
+          const loopTl = gsap.timeline({
+            onComplete: () => playCycle(nextIdx),
+          });
+          loopTlRef.current = loopTl;
 
           // 1. Current word flips up and out snappily
           loopTl.to(
@@ -164,14 +178,13 @@ export const Hero: React.FC<HeroProps> = ({ onReady, onVesselChange }) => {
               rotateX: 90,
               y: -15,
               opacity: 0,
-              duration: 0.35,
+              duration: 0.5,
               ease: 'power2.in',
             },
-            label
+            0
           );
 
-          // 2. Current vessel sails forward off to the RIGHT
-          const exitDuration = 1.3;
+          // 2. Current vessel sails forward off to the RIGHT, always from center
           loopTl.to(
             currentVessel,
             {
@@ -179,7 +192,7 @@ export const Hero: React.FC<HeroProps> = ({ onReady, onVesselChange }) => {
               duration: exitDuration,
               ease: 'power2.in',
             },
-            label
+            0
           );
 
           // 3. Next word flips in smoothly from below
@@ -197,7 +210,7 @@ export const Hero: React.FC<HeroProps> = ({ onReady, onVesselChange }) => {
               duration: 0.45,
               ease: 'back.out(1.3)',
             },
-            `${label}+=0.2`
+            0.2
           );
 
           loopTl.call(
@@ -206,7 +219,7 @@ export const Hero: React.FC<HeroProps> = ({ onReady, onVesselChange }) => {
               onVesselChangeRef.current?.(VESSELS[nextIdx]);
             },
             [],
-            `${label}+=0.25`
+            0.25
           );
 
           // 4. Reset current word for next round once flipped out
@@ -217,37 +230,40 @@ export const Hero: React.FC<HeroProps> = ({ onReady, onVesselChange }) => {
               y: 15,
               opacity: 0,
             },
-            `${label}+=0.8`
+            0.8
           );
 
-          // 5. Reset current vessel back off-screen to the left once fully exited
+          // 5. Park the departed vessel back off-screen to the left
           loopTl.set(
             currentVessel,
             {
               x: () => -getExitDistance(),
             },
-            `${label}+=${exitDuration}`
+            exitDuration
           );
 
-          // 6. Next vessel seamlessly enters from the left with continuous overlap (no empty ocean gap)
+          // 6. Bring the next vessel in as the current one approaches the edge,
+          // keeping the ocean occupied through the handoff.
           loopTl.fromTo(
             nextVessel,
             {
               x: () => -getExitDistance(),
-              opacity: 1,
             },
             {
               x: 0,
-              opacity: 1,
-              duration: 1.5,
+              duration: nextEntryDuration,
               ease: 'power2.out',
+              immediateRender: false,
             },
-            `${label}+=0.45`
+            nextEntryStart
           );
 
-          // 7. Next vessel rests in center for 3.0s before the subsequent cycle begins
-          loopTl.to({}, { duration: 3.0 });
-        }
+          // Keep each ship in the center long enough to register before the
+          // next transition starts.
+          loopTl.to({}, { duration: 3.5 });
+        };
+
+        playCycle(0);
       };
 
       // Entrance sequence
