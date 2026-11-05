@@ -7,16 +7,16 @@ interface SectionSlice {
   hd: string;
 }
 
-// 4 high-resolution 1672x941 background sections
+// 4 high-resolution 1920x1080 background sections
 const SECTIONS: SectionSlice[] = [
-  { id: 1, base: '/images/section1.png', hd: '/images/section1.webp' },
-  { id: 2, base: '/images/section2.png', hd: '/images/section2.webp' },
-  { id: 3, base: '/images/section3.png', hd: '/images/section3.webp' },
-  { id: 4, base: '/images/section4.png', hd: '/images/section4.webp' },
+  { id: 1, base: '/images/sections1.png', hd: '/images/sections1.webp' },
+  { id: 2, base: '/images/sections2.png', hd: '/images/sections2.webp' },
+  { id: 3, base: '/images/sections3.png', hd: '/images/sections3.webp' },
+  { id: 4, base: '/images/sections4.png', hd: '/images/sections4.webp' },
 ];
 
-const RAW_W = 1672;
-const RAW_H = 941;
+const RAW_W = 1920;
+const RAW_H = 1080;
 const ASPECT = RAW_W / RAW_H; // ~1.776833
 
 export const OceanBackground: React.FC = () => {
@@ -42,7 +42,7 @@ export const OceanBackground: React.FC = () => {
       const secW = Math.max(vw, Math.round(secH * ASPECT));
 
       // Overlap between adjacent sections for smooth seamless gradient blend
-      const blendOverlap = Math.round(Math.min(80, secH * 0.08));
+      const blendOverlap = Math.round(Math.min(150, secH * 0.14));
 
       // Total track height is 4 sections minus 3 overlaps
       const totalTrackH = secH * 4 - blendOverlap * 3;

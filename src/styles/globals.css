@@ -65,8 +65,19 @@ body {
 }
 
 .ocean-slice-wrap:not(:first-child) {
-  -webkit-mask-image: linear-gradient(to bottom, transparent 0%, #000 80px);
-  mask-image: linear-gradient(to bottom, transparent 0%, #000 80px);
+  -webkit-mask-image: linear-gradient(to bottom, transparent 0%, #000 150px);
+  mask-image: linear-gradient(to bottom, transparent 0%, #000 150px);
+}
+
+.ocean-slice-wrap:not(:last-child) {
+  -webkit-mask-image: linear-gradient(to top, transparent 0%, #000 150px);
+  mask-image: linear-gradient(to top, transparent 0%, #000 150px);
+}
+
+/* Middle slices need both top AND bottom fade */
+.ocean-slice-wrap:not(:first-child):not(:last-child) {
+  -webkit-mask-image: linear-gradient(to bottom, transparent 0%, #000 150px, #000 calc(100% - 150px), transparent 100%);
+  mask-image: linear-gradient(to bottom, transparent 0%, #000 150px, #000 calc(100% - 150px), transparent 100%);
 }
 
 .ocean-slice-wrap picture {
@@ -80,8 +91,9 @@ body {
   height: 100%;
   display: block;
   object-fit: cover;
+  object-position: center center;
   pointer-events: none;
-  image-rendering: -webkit-optimize-contrast;
+  image-rendering: auto;
   -webkit-backface-visibility: hidden;
   backface-visibility: hidden;
 }
@@ -90,11 +102,9 @@ body {
   position: absolute;
   inset: 0;
   pointer-events: none;
-  background: radial-gradient(
-    ellipse at 50% 50%,
-    rgba(7, 24, 32, 0) 0%,
-    rgba(7, 24, 32, 0.18) 100%
-  );
+  background: radial-gradient(ellipse at 50% 50%,
+      rgba(7, 24, 32, 0) 0%,
+      rgba(7, 24, 32, 0.18) 100%);
 }
 
 #header,
@@ -617,9 +627,9 @@ button {
 .main-screen {
   position: relative;
   height: 100vh;
-  min-height: 700px;
+  min-height: 600px;
   width: 100%;
-  padding: 105px clamp(24px, 4.5vw, 64px) 36px;
+  padding: 60px clamp(24px, 4.5vw, 64px) 20px;
   background: transparent;
   overflow: hidden;
   display: flex;
@@ -630,16 +640,16 @@ button {
 
 @media (max-width: 1300px) {
   .main-screen {
-    padding-top: 90px;
+    padding-top: 56px;
   }
 }
 
 @media (max-width: 768px) {
   .main-screen {
-    padding-top: 76px;
+    padding-top: 52px;
     padding-left: 16px;
     padding-right: 16px;
-    padding-bottom: 24px;
+    padding-bottom: 16px;
   }
 }
 
@@ -647,7 +657,7 @@ button {
   position: relative;
   z-index: 3;
   width: 100%;
-  height: calc(100vh - 170px);
+  height: 100%;
   display: flex;
   flex-direction: column;
   justify-content: space-between;
@@ -661,7 +671,7 @@ button {
   text-shadow: 0 4px 28px rgba(0, 0, 0, 0.45);
   pointer-events: none;
   box-sizing: border-box;
-  padding-bottom: 40px;
+  padding-bottom: 56px;
 }
 
 .main-screen__row {
@@ -673,14 +683,14 @@ button {
 }
 
 .main-screen__row.--top {
-  margin-top: clamp(8px, 2vh, 32px);
+  margin-top: 0;
   justify-content: center;
   text-align: center;
 }
 
 .main-screen__row.--bottom {
   margin-top: auto;
-  margin-bottom: 20px;
+  margin-bottom: 14px;
 }
 
 .main-screen__main-title {
@@ -822,7 +832,7 @@ button {
 /* Bottom Timeline & Pagination Bar */
 .main-screen__bottom-bar {
   position: absolute;
-  bottom: 28px;
+  bottom: clamp(34px, 4.5vh, 48px);
   left: clamp(24px, 4.5vw, 64px);
   right: clamp(24px, 4.5vw, 64px);
   display: flex;
@@ -898,7 +908,7 @@ button {
 /* Ship Presentation */
 .ships {
   position: absolute;
-  top: 50%;
+  top: 45%;
   left: 50%;
   transform: translate(-50%, -50%);
   z-index: 2;
@@ -957,7 +967,7 @@ button {
 
 @media (max-width: 992px) {
   .main-screen__main {
-    height: calc(100vh - 130px);
+    height: calc(100vh - 100px);
     font-size: clamp(22px, 4.4vw, 42px);
     padding: 0 clamp(8px, 2vw, 16px);
   }
@@ -988,14 +998,14 @@ button {
   }
 
   .ships {
-    top: 50% !important;
+    top: 46% !important;
     width: clamp(280px, 86vw, 540px);
   }
 }
 
 @media (max-width: 576px) {
   .main-screen {
-    padding: 70px 16px 20px;
+    padding: 50px 16px 16px;
   }
 
   .main-screen__main {
@@ -3714,6 +3724,7 @@ footer#contact,
     transform: scale(0.6);
     opacity: 0.9;
   }
+
   100% {
     transform: scale(1.8);
     opacity: 0;
