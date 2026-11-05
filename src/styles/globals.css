@@ -807,7 +807,9 @@ button {
 
 .main-screen__explore:hover .main-screen__explore-circle {
   border-color: #ffffff;
-  background-color: rgba(255, 255, 255, 0.2);
+  background-color: rgba(255, 255, 255, 0.08);
+  backdrop-filter: blur(8px);
+  -webkit-backdrop-filter: blur(8px);
   transform: scale(1.05);
 }
 
@@ -908,7 +910,7 @@ button {
 /* Ship Presentation */
 .ships {
   position: absolute;
-  top: 45%;
+  top: 42%;
   left: 50%;
   transform: translate(-50%, -50%);
   z-index: 2;
