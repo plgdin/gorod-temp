@@ -3616,35 +3616,6 @@ footer#contact,
   box-sizing: border-box;
 }
 
-.port-map-embed__header {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  padding: 9px 16px;
-  background: rgba(4, 18, 25, 0.88);
-  border-bottom: 1px solid rgba(103, 171, 175, 0.18);
-  flex-shrink: 0;
-}
-
-.port-map-embed__title-wrap {
-  display: flex;
-  align-items: center;
-  gap: 8px;
-}
-
-.port-map-embed__icon {
-  color: var(--light-cyan, #67abaf);
-}
-
-.port-map-embed__title {
-  font-family: var(--font-display, sans-serif);
-  font-size: 11px;
-  font-weight: 700;
-  letter-spacing: 0.08em;
-  text-transform: uppercase;
-  color: #ffffff;
-}
-
 .port-map-embed__badge {
   display: inline-flex;
   align-items: center;
@@ -3658,39 +3629,6 @@ footer#contact,
   border: 1px solid rgba(103, 171, 175, 0.3);
   padding: 3px 9px;
   border-radius: 9999px;
-}
-
-.port-map-embed__actions {
-  display: flex;
-  align-items: center;
-  gap: 6px;
-}
-
-.port-map-tab-btn {
-  background: rgba(103, 171, 175, 0.12);
-  border: 1px solid rgba(103, 171, 175, 0.25);
-  color: rgba(255, 255, 255, 0.75);
-  font-family: var(--font-display, sans-serif);
-  font-size: 10px;
-  font-weight: 700;
-  letter-spacing: 0.05em;
-  padding: 4px 10px;
-  border-radius: 6px;
-  cursor: pointer;
-  transition: all 0.2s ease;
-}
-
-.port-map-tab-btn:hover {
-  background: rgba(103, 171, 175, 0.22);
-  color: #ffffff;
-  border-color: rgba(103, 171, 175, 0.45);
-}
-
-.port-map-tab-btn.--active {
-  background: var(--light-cyan, #67abaf);
-  color: #071820;
-  border-color: var(--light-cyan, #67abaf);
-  font-weight: 800;
 }
 
 .port-map-embed__canvas {

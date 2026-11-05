@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { Calendar, CheckCircle2, ArrowRight } from 'lucide-react';
+import { Calendar, CheckCircle2, ArrowRight, MapPin, Phone, Mail } from 'lucide-react';
 import { CustomDropdown } from '../components/ui/CustomDropdown';
 import { PortMap } from '../components/PortMap';
 
@@ -84,11 +84,32 @@ export const Footer: React.FC = () => {
               </p>
             </div>
 
-            {/* Keep the interactive port map as the location reference. */}
-            <PortMap
-              selectedPort={formState.port}
-              onSelectPort={(portName) => setFormState((prev) => ({ ...prev, port: portName }))}
-            />
+            <div className="footer__contact-card">
+              <div className="footer__contact-office">
+                <div className="footer__contact-icon-box">
+                  <MapPin size={18} />
+                </div>
+                <div className="footer__contact-info">
+                  <h4 className="footer__contact-title">Head Office</h4>
+                  <p className="footer__contact-address">
+                    TC: 95/238 (13), Anamugham, Poonthi Road,<br />
+                    Anayara P.O, Trivandrum, Kerala, India - PIN: 695029
+                  </p>
+                </div>
+              </div>
+              <div className="footer__contact-links">
+                <a href="tel:+919480512223" className="footer__contact-link">
+                  <Phone size={14} className="footer__contact-link-icon" />
+                  <span>+91 9480512223</span>
+                </a>
+                <a href="mailto:info@gorodagency.com" className="footer__contact-link">
+                  <Mail size={14} className="footer__contact-link-icon" />
+                  <span>info@gorodagency.com</span>
+                </a>
+              </div>
+            </div>
+
+            <PortMap />
           </div>
 
           {/* Right Column: CTA & Quote Submission Form (Equal Height & Parallel) */}
