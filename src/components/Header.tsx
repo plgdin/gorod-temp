@@ -26,14 +26,59 @@ export const Header: React.FC<HeaderProps> = ({
   }, [isReady]);
 
   useEffect(() => {
+    const updateContrast = () => {
+      const header = document.getElementById('header');
+      if (!header) return;
+
+      const isOnLightSurface = (element: Element) => {
+        const bounds = element.getBoundingClientRect();
+        const x = Math.max(0, Math.min(window.innerWidth - 1, bounds.left + bounds.width / 2));
+        const y = Math.max(0, Math.min(window.innerHeight - 1, bounds.top + bounds.height / 2));
+        const underHeader = document.elementsFromPoint(x, y).filter(
+          (candidate) => candidate !== header && !header.contains(candidate)
+        );
+
+        for (const candidate of underHeader) {
+          let current: Element | null = candidate;
+          while (current && current !== document.documentElement) {
+            const background = window.getComputedStyle(current).backgroundColor;
+            const channels = background.match(/[\d.]+/g)?.map(Number);
+            if (channels && channels.length >= 3) {
+              const alpha = channels.length > 3 ? channels[3] : 1;
+              if (alpha >= 0.5) {
+                const luminance = (0.2126 * channels[0] + 0.7152 * channels[1] + 0.0722 * channels[2]) / 255;
+                return luminance > 0.68;
+              }
+            }
+            current = current.parentElement;
+          }
+        }
+
+        return false;
+      };
+
+      const navItems = Array.from(header.querySelectorAll<HTMLElement>('.header__nav-item'));
+      const navIsOverLight = navItems.some(isOnLightSurface);
+      navItems.forEach((item) => item.classList.toggle('--over-light', navIsOverLight));
+
+      header
+        .querySelectorAll<HTMLElement>('.header__enquire-btn, .header__logo .logo')
+        .forEach((item) => item.classList.toggle('--over-light', isOnLightSurface(item)));
+    };
+
     const handleScroll = () => {
       const currentScrollY = window.scrollY;
       setIsScrolled(currentScrollY > 60);
+      updateContrast();
     };
 
     handleScroll();
     window.addEventListener('scroll', handleScroll, { passive: true });
-    return () => window.removeEventListener('scroll', handleScroll);
+    window.addEventListener('resize', handleScroll, { passive: true });
+    return () => {
+      window.removeEventListener('scroll', handleScroll);
+      window.removeEventListener('resize', handleScroll);
+    };
   }, []);
 
   const [activeSection, setActiveSection] = useState<string | null>(null);

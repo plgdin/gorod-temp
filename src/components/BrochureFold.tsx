@@ -403,8 +403,7 @@ export default function BrochureFold() {
       right.style.transition = 'none';
 
       const STAGE_H = 800;
-      const fit = () =>
-        Math.min(1, Math.max(0.72, (window.innerHeight - 120) / STAGE_H));
+      const fit = () => 1;
 
       // Set initial 3D folded brochure state
       gsap.set(left, { rotateY: 180, transformOrigin: 'right center' });
